@@ -1,0 +1,317 @@
+/* Define styles with em units */
+html {
+  font-size: 16px; /* Set default font-size for the root */
+}
+
+.App {
+  background-image: url('./assets/Images/Background-Image.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.PopUp {
+  width: 100%; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 24em;
+  height: auto; 
+  display: flex;
+  padding: 2em 2.175em 2em 2.175em; /* 20px / 20px for top and bottom, 63.5px / 20px for left and right */
+  margin-left: 1em;
+  margin-right: 1em;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  border-radius: 20px;
+  transition: all 0.2s ease ease-in; 
+}
+
+.PopUp.hidden {
+  animation: fadeOut linear 0.1s;
+  visibility: hidden;
+}
+
+.PopUpContent{
+  display: flex;
+  width: 100%; 
+  height: 100%; 
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.fadeIn {
+  animation: fadeIn 0.5s linear forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.Logo {
+  display: block;
+  text-align: center;
+  width: 100%; /* 202px / 20px */
+  height: auto;
+}
+
+.inputPrompt {
+  margin-top: 1em; /* 30px / 20px */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.userNameInput {
+  display: flex;
+  width: auto;
+  justify-content: center; /* Center aligns text horizontally */
+  align-items: center; /* Center aligns text vertically */
+  padding:  0.5em; /* 8px/20px = 0.4em vertically, 10px/20px = 0.5em horizontally */
+  background: #2D2D2D;
+  border: 0.05em solid #9BA185; /* 1px/20px = 0.05em */
+  border-radius: 0.1em; /* 2px/20px = 0.1em */
+  color: #FFFFFF; /* Sets text color to white */
+  font-family: 'Lato', sans-serif;
+  font-weight: 300; /* Thin variant of Lato font */
+  font-size: 1.2em; /* 24px/20px = 1.2em */
+  text-align: center;
+  flex: none;
+  order: 1;
+  flex-shrink: 0;
+}
+
+.firstTimeToggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  margin-top: 1em;
+  padding: 0.5em 0.5em 0.5em 0;
+  width: auto;
+  height: auto;
+}
+
+.toggleButtons {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  gap: 0.5em;
+}
+
+.yesButton,.noButton{
+  width: 6em; /* 120px/20px */
+  height: 2em; /* 50px/20px */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-color: transparent;
+  border: transparent;
+  transition: all 0ms ease-in;
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 1.25em; /* 25px/20px */
+  color: #FFFFFF;
+  cursor: pointer;
+  text-align: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.yesButton {
+ 
+  background-image: url('./assets/Images/svg/firstTime_Toggle_Yes_Default.svg');
+}
+.yesButton:hover {
+  background-image: url('./assets/Images/svg/firstTime_Toggle_Yes_Hover.svg');
+}
+.yesButton.active {
+  background-image: url('./assets/Images/svg/firstTime_Toggle_Yes_Active.svg');
+}
+
+
+.noButton {
+  background-image: url('./assets/Images/svg/firstTime_Toggle_No_Default.svg');
+}
+.noButton:hover {
+  background-image: url('./assets/Images/svg/firstTime_Toggle_No_Hover.svg');
+}
+.noButton.active {
+  background-image: url('./assets/Images/svg/firstTime_Toggle_No_Active.svg');
+}
+
+
+.consentCTA {
+  display: flex;
+  justify-content: center;
+  text-align: left;
+  vertical-align: text-top;
+}
+
+.consentCheckBox {
+  max-width: 18em;
+  display: flex;
+  gap: 0.5em;
+}
+
+.consentCheckBox input[type="checkbox"] {
+  width: 2em;
+  height: 2em;
+  background: #494949;
+  border: 0.075em solid #898989; /* 1.5px/20px */
+  border-radius: 0.25em; /* 5px/20px */
+  margin-top: 1em;
+}
+
+.consentCheckBox p {
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 0.7em; /* 14px/20px */
+  line-height: 1.2em; /* 17px/20px */
+  color: #FFFFFF;
+}
+
+.proceedButton {
+  background-image: url('./assets/Images/svg/proceed_Button_Default.svg');
+  width: 10em; /* 100px/20px */
+  height: 2em; /* 38.38px/20px */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-color: transparent;
+  border: transparent;
+  transition: all 0ms ease-in;
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 1.25em; /* 25px/20px */
+  color: #FFFFFF;
+  margin-top: 1em;
+  cursor: pointer;
+}
+.proceedButton:hover {
+  background-image: url('./assets/Images/svg/proceed_Button_Hover.svg');
+}
+
+
+.progressBar {
+  width: auto; 
+  max-width: 28em;
+  height: 0.5em; 
+  width: 100%;
+  height: 0.5em;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  background-color: #404040;
+  border-radius: 1em;
+}
+
+.progressBarProgress {
+  height: 100%;
+  background-color: #D9D9D9;
+  transition: width 1s ease;
+  border-radius: 1em;
+}
+
+.loadingStep {
+  height: 2em;
+  color: white;
+  font-size: 1.2em;
+  transition: opacity 0.1s linear;
+}
+
+.active {
+  opacity: 1;
+}
+
+.prevent-scroll {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+.passwordInput {
+  display: flex;
+  width: auto;
+  justify-content: center; /* Center aligns text horizontally */
+  align-items: center; /* Center aligns text vertically */
+  padding:  0.5em; /* 8px/20px = 0.4em vertically, 10px/20px = 0.5em horizontally */
+  background: #2D2D2D;
+  border: 0.05em solid #9BA185; /* 1px/20px = 0.05em */
+  border-radius: 0.1em; /* 2px/20px = 0.1em */
+  color: #FFFFFF; /* Sets text color to white */
+  font-family: 'Lato', sans-serif;
+  font-weight: 300; /* Thin variant of Lato font */
+  font-size: 1.2em; /* 24px/20px = 1.2em */
+  text-align: center;
+  flex: none;
+  order: 1;
+  flex-shrink: 0;
+  margin-top: 0.5em; /* Add some margin at the top if you want to separate it from the username input field */
+}
+
+p {
+  font-family: lato;
+  color: white;
+}
+
+/* Responsive design for Tablet and Mobile */
+@media (max-width: 1024px) {
+  html {
+    font-size: 14px; /* Decrease the root font size for tablet and mobile */
+  }
+
+  .PopUp{
+    width: auto;
+  }
+  
+  .userNameInput {
+    font-size: 1em; /* 24px / 16px */
+  }
+
+  .progressBar {
+    max-width: 24em;
+  }
+}
+
+
+@media screen and (max-width: 812px) and (orientation: landscape) {
+  .yesButton,.noButton,.proceedButton {
+    font-size: 10px;  /* decrease the font size */
+    margin-top: 0em;
+    margin-bottom: 0em;
+  }
+  .toggleButtons,.inputPrompt,.firstTimeToggle{
+    margin-top: 0em;
+    margin-bottom: 0em;
+  }
+  .progressBar {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .PopUp{
+    padding: 1em 2.175em 1em 2.175em;
+  }
+
+  .PopUpContent{
+    font-size: 12px;
+  }
+}
+
+/*Animation key frame*/
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
