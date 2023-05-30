@@ -170,9 +170,7 @@ canvas {
 }
 
 #streamingVideo {
-	opacity: 0;
 	transition: opacity 1s;
-	pointer-events: none;
 }
 
 /* UI STUFF */
@@ -337,7 +335,8 @@ object {
 	-webkit-backdrop-filter: blur(10px);
 	overflow-y: auto;
 	overflow-x: hidden;
-	background-color: rgba(30, 29, 34, 0.5)
+	background-color: rgba(30, 29, 34, 0.5);
+	display: none;
 }
 
 .panel-wrap-visible {
@@ -426,7 +425,7 @@ object {
 #errorOverlay,
 #afkOverlay,
 #disconnectOverlay {
-	z-index: 30;
+	z-index: 100;
 	position: absolute;
 	color: white; /*var(--colour4);*/
 	font-size: 1.8em;

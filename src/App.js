@@ -4,14 +4,18 @@ import './App.css';
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
+import delegate from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var libspsfrontend = require("backend-dom-components");
 
 function App() {
 
   // State management
   const { device } = useDeviceDetect();
   const [popUpVisible, setPopUpVisible] = useState(true);
-  /*const { serverResponseMessage, popUpVisible, checkPassword } = usePasswordValidation();*/ //password validation resutl from server
+  /*const { serverResponseMessage, popUpVisible, checkPassword } = usePasswordValidation();*/ //password validation result from server
   const [userName, setUserName] = useState('');
   const [firstTimeUser, setFirstTimeUser] = useState(null);
   const [activeButton, setActiveButton] = useState(null);
@@ -27,21 +31,22 @@ function App() {
   const stepTimeoutRef = useRef();
 
 
-  //uncomment this block for passing password validation msg in order to trigger window fadeout
+    //uncomment this block for passing password validation msg in order to trigger window fadeout
 
-  /*const checkPassword = async (password) => {
-    // simulate a call to the server to check the password
-    const passwordIsCorrect = await someServerFunction(password);
-     setPopUpVisible(false);
-    if (!passwordIsCorrect) {
-      setServerResponseMessage('Password incorrect, please try again');
-    } else {
-      setServerResponseMessage('Success!');
-      setPopUpVisible(false); // hides the PopUp div
-    }
-  };*/
+    /*const checkPassword = async (password) => {
+      // simulate a call to the server to check the password
+      const passwordIsCorrect = await someServerFunction(password);
+       setPopUpVisible(false);
+      if (!passwordIsCorrect) {
+        setServerResponseMessage('Password incorrect, please try again');
+      } else {
+        setServerResponseMessage('Success!');
+        setPopUpVisible(false); // hides the PopUp div
+      }
+    };*/
 
 
+  document.addEventListener('contextmenu', e => { e.preventDefault(); })
 
   // Device detection logic
   useEffect(() => {
@@ -120,10 +125,17 @@ function App() {
     }
   };
 
+    const videoStyle = {
+        display: 'inline',
+        opacity: 0,
+        height: 0,
+        width: 0
+    };
 
   return (
     <div className="App">
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
+       <video id="myVideo" style={videoStyle}></video>
       <div className="Logo">
           <img src={logoPng} alt='logo'/>
         </div>
@@ -169,7 +181,7 @@ function App() {
                 required
               />
             </div>
-            <button id="join" className="proceedButton" onClick={handleSubmit}>SUBMIT</button>
+            <button className="proceedButton" onClick={handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setError)}>SUBMIT</button>
           </div>
         )}
         {error && <p className="error">{error}</p>}

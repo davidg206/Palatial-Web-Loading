@@ -13,5 +13,21 @@ code {
 }
 
 #root {
-	z-index: 100;
+    z-index: 100;
+    transition: opacity 1s ease-out;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.fade-in {
+    opacity: 1;
+    transition: opacity 1s;
+    pointer-events: auto;
+}
+
+.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease-out;
+    pointer-events: none;
 }

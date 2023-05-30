@@ -1,6 +1,9 @@
-import './assets/css/player.css';
+import '../assets/css/player.css';
 import { EventEmitter } from "events";
-import * as libspsfrontend from 'backend-dom-components'
+
+let libspsfrontend = require("backend-dom-components");
+
+Object.defineProperty(exports, "__esModule", { value: true });
 
 declare var WEBSOCKET_URL: string;
 
@@ -350,6 +353,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	videoStartTime: number;
 	mobileUser: boolean;
 	streamReady: boolean;
+	readyHook: Function;
 
 	// instantiate the WebRtcPlayerControllers interface var 
 	iWebRtcController: libspsfrontend.IWebRtcPlayerController;
@@ -413,6 +417,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.videoQpIndicator = new VideoQpIndicator("connectionStrength", "qualityText", "outer", "middle", "inner", "dot");
 		this.fullScreenLogic = new FullScreenLogic();
 		this.streamReady = false;
+		this.readyHook = () => { };
 
 		// build all of the overlays 
 		this.buildDisconnectOverlay();
@@ -426,36 +431,48 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.ConfigureButtons();
 	}
 
+	getPlayerController() {
+		return (<libspsfrontend.webRtcPlayerController>this.iWebRtcController);
+	}
+
 	updateVideoStreamSize(x: number, y: number) {
 		(<libspsfrontend.webRtcPlayerController>this.iWebRtcController).ueDescriptorUi.sendUpdateVideoStreamSize(x, y);
 	}
 
-        write(file: string, message: string) {
-            const data = {
-                filename: file,
-                data: message
-            };
+    write(file: string, message: string) {
+        const data = {
+            filename: file,
+            data: message
+        };
 
-            fetch('https://prophet.palatialxr.com:3001/save', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(response => {
-                    console.log(
-                        `statusCode: ${response.status}`
-                        );
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
+        fetch('https://prophet.palatialxr.com:3001/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                console.log(
+                    `statusCode: ${response.status}`
+                    );
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+	}
+
+	checkStreamReady( readyHook: () => void ) {
+		if (this.streamReady) {
+			readyHook();
+		} else {
+			this.readyHook = readyHook;
+		}
+	}
 
 	/**
 	 * Builds the disconnect overlay 
@@ -733,19 +750,8 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 			// insert the inner html into the base div
 			this.showTextOverlay(wrapperDiv.outerHTML);
 		} else {
-
+			// ....
 		}
-
-                function openFullscreen() {
-                        let body = document.documentElement;
-                        if (body.requestFullscreen) {
-                                body.requestFullscreen();
-                        } else if (body.webkitRequestFullscreen) { /* Safari */
-                                body.webkitRequestFullscreen();
-                        } else if (body.msRequestFullscreen) { /* IE11 */
-                                body.msRequestFullscreen();
-                        }
-                }
 	}
 
 	/**
@@ -985,6 +991,11 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.statsContainer.classList.remove("d-none");
 
 		this.videoStartTime = Date.now();
+		this.readyHook();
+
+		this.iWebRtcController.matchViewportResolution = true;
+		this.iWebRtcController.updateVideoStreamSize();
+		libspsfrontend.DataChannelController.coordinateConverter.setupNormalizeAndQuantize();
 	}
 
 	/**
