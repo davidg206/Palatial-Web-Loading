@@ -1,0 +1,71 @@
+/* font-weight guide 
+-Keyword values-
+font-weight: normal;
+font-weight: bold;
+
+-Keyword values relative to the parent-
+font-weight: lighter;
+font-weight: bolder;
+
+-Numeric keyword values-
+font-weight: 100;  -thin-
+font-weight: 200;  -semi light-
+font-weight: 300;  -light-
+font-weight: 400;  -normal-
+font-weight: 500;  -medium-
+font-weight: 600;  -semi bold-
+font-weight: 700;  -bold-
+font-weight: 800;  
+font-weight: 900;  -black-
+*/
+/*typography in palatial is based on relative system. 
+This set of typography is using EM system based on root font size = 20px (desktop+tablet); 14 (mobile portrait); 10(mobile landscape)
+
+/*import eurostile (Black, Medium, Normal)*/
+@font-face {
+    font-family: 'Eurostile';
+    src: url(src/assets/fonts/Eurostile/Eurostile_Extd_Black);
+    font-weight: 900
+}
+
+@font-face {
+    font-family: Eurostile;
+    src: url(src/assets/fonts/Eurostile/Eurostile_Extd_Medium);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Eurostile;
+    src: url(src/assets/fonts/Eurostile/Eurostile_Extd_Regular);
+    font-weight: 400;
+}
+
+h1{
+    font-family: 'Eurostile', sans-serif;
+    font-weight: 900;
+    font-size: 3.2em; 
+}
+
+h2{
+    font-family: 'Eurostile', sans-serif;
+    font-weight: 900;
+    font-size: 2.4em; 
+}
+
+h3{
+    font-family: 'Eurostile', sans-serif;
+    font-weight: 900;
+    font-size: 2em; 
+}
+
+h4{
+    font-family: 'Eurostile', sans-serif;
+    font-weight: 500;
+    font-size: 1.6em; 
+}
+
+h5{
+    font-family: 'lato', sans-serif;
+    font-weight: 700;
+    font-size: 1.6em; 
+}
