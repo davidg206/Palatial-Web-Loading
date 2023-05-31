@@ -354,6 +354,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	mobileUser: boolean;
 	streamReady: boolean;
 	readyHook: Function;
+	loadingProgress: number;
 
 	// instantiate the WebRtcPlayerControllers interface var 
 	iWebRtcController: libspsfrontend.IWebRtcPlayerController;
@@ -418,6 +419,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.fullScreenLogic = new FullScreenLogic();
 		this.streamReady = false;
 		this.readyHook = () => { };
+		this.loadingProgress = 0;
 
 		// build all of the overlays 
 		this.buildDisconnectOverlay();
@@ -429,6 +431,10 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 
 		// configure all buttons 
 		this.ConfigureButtons();
+	}
+
+	getLoadingProgress() {
+		return this.loadingProgress;
 	}
 
 	getPlayerController() {
@@ -691,6 +697,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				break;
 			case libspsfrontend.InstanceState.PENDING:
 				isInstancePending = true;
+				this.loadingProgress = 60;
 				if (instanceState.details == undefined || instanceState.details == null) {
 					instanceStateMessage = "Your application is pending";
 				} else {
@@ -698,6 +705,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				}
 				break;
 			case libspsfrontend.InstanceState.READY:
+				this.loadingProgress = 100;
 				if (instanceState.details == undefined || instanceState.details == null) {
 					instanceStateMessage = "Instance is Ready";
 					
@@ -765,6 +773,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		// get the response type
 		switch (authResponse.outcome) {
 			case libspsfrontend.MessageAuthResponseOutcomeType.AUTHENTICATED:
+				this.loadingProgress = 30;
 				instanceStateMessage = "Authentication has succeeded. Requesting Instance";
 				break;
 			case libspsfrontend.MessageAuthResponseOutcomeType.INVALID_TOKEN:

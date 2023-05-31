@@ -4,7 +4,7 @@ import './App.css';
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
-import delegate from './DOMDelegate';
+import { delegate } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -48,6 +48,12 @@ function App() {
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
 
+  const handleKeyPress = (e) => {
+    if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
+      handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setError)(e);
+    }
+  };
+
   // Device detection logic
   useEffect(() => {
     if (isMobile || isTablet || isIPad13) {
@@ -67,17 +73,27 @@ function App() {
 
   // progress bar animation
   useEffect(() => {
+    let val = 0;
     let interval = setInterval(() => {
       setProgress((prevProgress) => {
+	val += 1;
         if (prevProgress >= 100) {
-          setStep(0); // reset the step as well
-          return 0; // this line should be removed when connecting to the actual server
-        }
-        return prevProgress + 20;
+          //setStep(0); // reset the step as well
+          //return 0; // this line should be removed when connecting to the actual server
+	  return 100;
+	}
+        //return prevProgress + 20;
+	if (delegate) {
+	  const nextVal = delegate.getLoadingProgress() + val;
+	  if (nextVal >= 100) { setStep(4); return 100; }
+          return nextVal;
+	}
+	return 0;
       });
     }, 1000); // increase progress every 1 second
     return () => clearInterval(interval);
   }, []);
+
 
   useEffect(() => {
     stepTimeoutRef.current && clearTimeout(stepTimeoutRef.current);
@@ -87,6 +103,7 @@ function App() {
       }, 100);
     }
   }, [progress, step]);
+
 
   // maintain page after exiting keyboard
   useEffect(() => {
@@ -177,6 +194,7 @@ function App() {
                 className="passwordInput"
                 type="password"
                 value={password}
+		onKeyPress={handleKeyPress}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />

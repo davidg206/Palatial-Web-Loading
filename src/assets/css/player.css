@@ -165,6 +165,7 @@ canvas {
 	height: 100%;
 	position: absolute;
 	background-color: black;
+	transition: opacity 0.3 ease-in-out;
 	/*pointer-events: none;*/
 	/*z-index: 15;*/
 }

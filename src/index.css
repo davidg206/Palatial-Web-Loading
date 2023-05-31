@@ -14,7 +14,7 @@ code {
 
 #root {
     z-index: 100;
-    transition: opacity 1s ease-out;
+    transition: opacity 0.3s ease-out;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -29,5 +29,10 @@ code {
 .fade-out {
     opacity: 0;
     transition: opacity 1s ease-out;
+    pointer-events: none;
+}
+
+.proceedButton[disabled] {
+    opacity: 0.5;
     pointer-events: none;
 }
