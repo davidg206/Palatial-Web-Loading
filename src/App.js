@@ -4,11 +4,11 @@ import './App.css';
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
-import { delegate } from './DOMDelegate';
+import { delegate, emitUIInteraction } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var libspsfrontend = require("backend-dom-components");
+var libspsfrontend = require("backend-dom-components-1");
 
 function App() {
 
@@ -27,30 +27,36 @@ function App() {
   const [error, setError] = useState('');
   const [isInputFocused, setInputFocused] = useState(false);
   // add the names of the actual loading steps to the following and change the progress bar step value to 100/# of actual steps at :89 and :96
-  const loadingSteps = ['Loading assets', 'Setting up', 'Connecting to server', 'Finalizing', 'Done']; // Add your loading steps here
+  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Preparing Level', 'Done']; // Add your loading steps here
   const stepTimeoutRef = useRef();
 
 
-    //uncomment this block for passing password validation msg in order to trigger window fadeout
+  const waitForLevelReady = () => {
+    return new Promise((resolve, reject) => {
+      const checkReady = () => {
+	if (delegate.levelReady) {
+	  resolve(true);
+	} else {
+	  setTimeout(checkReady, 100);
+	}
+      };
+      checkReady();
+    });
+  };
 
-    /*const checkPassword = async (password) => {
-      // simulate a call to the server to check the password
-      const passwordIsCorrect = await someServerFunction(password);
-       setPopUpVisible(false);
-      if (!passwordIsCorrect) {
-        setServerResponseMessage('Password incorrect, please try again');
-      } else {
-        setServerResponseMessage('Success!');
-        setPopUpVisible(false); // hides the PopUp div
-      }
-    };*/
-
+  const checkLevelReady = async () => {
+    document.querySelector('.proceedButton').disabled = true;
+    const levelReady = await waitForLevelReady();
+    if (levelReady) {
+      handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setError, setFormStep);
+    }
+  };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
 
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
-      handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setError)(e);
+	checkLevelReady();
     }
   };
 
@@ -84,9 +90,9 @@ function App() {
 	}
         //return prevProgress + 20;
 	if (delegate) {
-	  const nextVal = delegate.getLoadingProgress() + val;
-	  if (nextVal >= 100) { setStep(4); return 100; }
-          return nextVal;
+	  //const nextVal = delegate.getLoadingProgress() + val;
+	  //if (nextVal >= 100) { setStep(4); return 100; }
+          return delegate.getLoadingProgress();
 	}
 	return 0;
       });
@@ -199,7 +205,7 @@ function App() {
                 required
               />
             </div>
-            <button className="proceedButton" onClick={handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setError)}>SUBMIT</button>
+            <button className="proceedButton" onClick={checkLevelReady}>SUBMIT</button>
           </div>
         )}
         {error && <p className="error">{error}</p>}
