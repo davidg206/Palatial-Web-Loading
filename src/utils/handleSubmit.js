@@ -2,16 +2,15 @@ import { osName, browserName } from 'react-device-detect';
 import { delegate, emitUIInteraction, config } from '../DOMDelegate';
 import React, { useState, useEffect, useRef } from 'react';
 
-const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setError) => {
-    return (event) => {
+const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setError, setFormStep) => {
         if (userName && password && firstTimeUser !== null && consentAccepted) {
             const port = {
-		tankhouse: 1111,
-		dev: 2222,
+		tankhouse:  1111,
+		dev:        2222,
 		officedemo: 3333,
-		epic: 4444,
-		demo: 5555,
-		prophet: 7777,
+		epic:       4444,
+		demo:       5555,
+		prophet:    7777,
 	    };
 
 	    const data = {
@@ -22,60 +21,56 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
                 userName: userName,
                 consentAccepted: consentAccepted,
                 firstTimeUser: firstTimeUser ? "Yes" : "No",
-                password: password,
                 timestamp: new Date().getTime(), // current time in Epoch time
 		join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]
             };
 
-	    console.log(data.join);
+	    const passwordQuery = (password) => {
+    	      return new Promise((resolve, reject) => {
+		const checkPassword = () => {
+		  if (delegate.passwordResponse) {
+		    resolve(delegate.passwordResponse.data.isValid);
+		  } else {
+		    setTimeout(checkPassword, 100);
+		  }
+		};
+    	      });
+            };
 
-            /*
-            //Use this to test if input is properly logged//
-
-            const json = JSON.stringify(data);
-            const blob = new Blob([json], {type: "application/json"});
-            const href = URL.createObjectURL(blob);
-
-            const link = document.createElement('a');
-            link.href = href;
-            link.download = 'userInformation.json';
-
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            */
-
-            console.log("Sending: " + JSON.stringify(data));
-
-            if (password !== "Palatial") {
-                setError('Wrong password. Please try again.');
-                return;
-            } else {
-                setError('');
-            }
-
-	    document.querySelector('.proceedButton').disabled = true;
+	    const proceedButton = document.querySelector('.proceedButton');
 
             const videoElement = document.getElementById("myVideo");
             videoElement.play();
 
-            delegate.checkStreamReady(() => {
-                emitUIInteraction(data);
-                const root = document.getElementById("root");
-                root.classList.add("fade-out");
+            delegate.checkStreamReady(async () => {
+	      emitUIInteraction({ password: password });
+              const validPassword = await passwordQuery(password);
+              if (!validPassword) {
+		proceedButton.disabled = false;
+        	setError("Wrong password. Please try again.");
+        	return;
+      	      } else {
+        	setError("");
+              }
+	      delegate.passwordResponse = null;
 
-                root.addEventListener("transitionend", () => {
-                    document.getElementById("player").classList.remove("fade-out");
-                    document.getElementById("player").classList.add("fade-in");
-                });
+              emitUIInteraction(data);
+              const root = document.getElementById("root");
+              root.classList.add("fade-out");
 
-                delegate.onPlayAction();
+              root.addEventListener("transitionend", () => {
+                  document.getElementById("player").classList.remove("fade-out");
+                  document.getElementById("player").classList.add("fade-in");
+              });
+
+	      setFormStep(1);
+
+              delegate.onPlayAction();
             });
 
         } else {
             // handle incomplete form
         }
-    }
 };
 
 export default handleSubmit;

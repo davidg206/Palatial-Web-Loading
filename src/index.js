@@ -11,7 +11,7 @@ import reportWebVitals from './reportWebVitals';
 import { delegate, config, playerElement } from './DOMDelegate';
 import { signallingServerAddress, application } from './signallingServer';
 
-var libspsfrontend = require("backend-dom-components");
+var libspsfrontend = require("backend-dom-components-1");
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
