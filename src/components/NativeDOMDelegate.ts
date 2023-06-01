@@ -1,7 +1,7 @@
 import '../assets/css/player.css';
 import { EventEmitter } from "events";
 
-let libspsfrontend = require("backend-dom-components");
+let libspsfrontend = require("backend-dom-components-1");
 
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -353,9 +353,10 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	videoStartTime: number;
 	mobileUser: boolean;
 	streamReady: boolean;
+	levelReady: boolean;
 	readyHook: Function;
 	loadingProgress: number;
-
+	passwordResponse: object;
 	// instantiate the WebRtcPlayerControllers interface var 
 	iWebRtcController: libspsfrontend.IWebRtcPlayerController;
 
@@ -418,8 +419,10 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.videoQpIndicator = new VideoQpIndicator("connectionStrength", "qualityText", "outer", "middle", "inner", "dot");
 		this.fullScreenLogic = new FullScreenLogic();
 		this.streamReady = false;
+		this.levelReady = false;
 		this.readyHook = () => { };
 		this.loadingProgress = 0;
+		this.passwordResponse = null;
 
 		// build all of the overlays 
 		this.buildDisconnectOverlay();
@@ -681,6 +684,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		// append the spinner to the element
 		spinnerDiv.appendChild(spinnerSpan);
 		this.showTextOverlay("Loading Stream " + spinnerDiv.outerHTML);
+		this.loadingProgress = 20;
 	}
 
         zoomIn() {
@@ -710,7 +714,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				break;
 			case libspsfrontend.InstanceState.PENDING:
 				isInstancePending = true;
-				this.loadingProgress = 60;
+				this.loadingProgress = 66;
 				if (instanceState.details == undefined || instanceState.details == null) {
 					instanceStateMessage = "Your application is pending";
 				} else {
@@ -980,7 +984,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	 * Handle when the Video has been Initialised
 	 */
 	onVideoInitialised() {
-		console.log('ready!');
+		console.log('we are ready!');
 		this.streamReady = true;
 		// starting a latency check
 		document.getElementById("btn-start-latency-test").onclick = () => {
@@ -1020,10 +1024,24 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		libspsfrontend.DataChannelController.coordinateConverter.setupNormalizeAndQuantize();
 
 		this.addResponseEventListener("delegate_work", (obj: any) => {
-                        if (obj.response === "selectedText") {
-                                navigator.clipboard.writeText(obj.data.text);
-                        }
-                });
+			switch (obj.response) {
+			case "selectedText":
+				navigator.clipboard.writeText(obj.data.text);
+				break;
+			case "levelLoaded":
+				this.levelReady = true;
+				this.loadingProgress = 100;
+				break;
+			case "passwordTest":
+				this.passwordResponse = obj.data;
+				break;
+			case "exitCommand":
+				document.getElementById("root").classList.remove("fade-out");
+				document.getElementById("player").classList.remove("fade-in");
+                                document.getElementById("player").classList.add("fade-out");
+				break;
+			}
+                });	
 	}
 
 	/**
