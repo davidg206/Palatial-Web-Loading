@@ -5,7 +5,16 @@ import React, { useState, useEffect, useRef } from 'react';
 const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setError) => {
     return (event) => {
         if (userName && password && firstTimeUser !== null && consentAccepted) {
-            const data = {
+            const port = {
+		tankhouse: 1111,
+		dev: 2222,
+		officedemo: 3333,
+		epic: 4444,
+		demo: 5555,
+		prophet: 7777,
+	    };
+
+	    const data = {
                 deviceType: device,
                 osName: osName,
                 browserName: browserName,
@@ -14,8 +23,11 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
                 consentAccepted: consentAccepted,
                 firstTimeUser: firstTimeUser ? "Yes" : "No",
                 password: password,
-                timestamp: new Date().getTime() // current time in Epoch time
+                timestamp: new Date().getTime(), // current time in Epoch time
+		join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]
             };
+
+	    console.log(data.join);
 
             /*
             //Use this to test if input is properly logged//
@@ -36,7 +48,7 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
             console.log("Sending: " + JSON.stringify(data));
 
             if (password !== "Palatial") {
-                setError('Wrong password. Please try again');
+                setError('Wrong password. Please try again.');
                 return;
             } else {
                 setError('');

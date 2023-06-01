@@ -1,8 +1,6 @@
 import { NativeDOMDelegate } from "./components/NativeDOMDelegate";
-import GetSignallingServerAddress from "./signallingServer";
+import { signallingServerAddress, application } from "./signallingServer";
 import * as libspsfrontend from 'backend-dom-components';
-
-const signallingServerAddress = GetSignallingServerAddress();
 
 // prep the player div element
 export let playerElement = document.getElementById("player");
@@ -17,6 +15,7 @@ config.fakeMouseWithTouches = false;
 
 // Create a Native DOM delegate instance that implements the Delegate interface class
 export let delegate = new NativeDOMDelegate(config);
+delegate.appName = application;
 
 // Create a config object instance
 export function CreateConfig(signalingAddress: string, playerElement: HTMLDivElement) {

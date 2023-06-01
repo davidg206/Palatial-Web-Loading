@@ -431,10 +431,23 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 
 		// configure all buttons 
 		this.ConfigureButtons();
+
 	}
 
 	getLoadingProgress() {
 		return this.loadingProgress;
+	}
+
+	getResponseEventListener() {
+		return this.getPlayerController().dataChannelController.responseEventListeners;
+	}
+
+	addResponseEventListener(eventKey: string, listener: (obj: any) => void) {
+		this.getResponseEventListener().set(eventKey, listener);
+	}
+
+	removeResponseEventListener(eventKey: string) {
+		this.getResponseEventListener().delete(eventKey);
 	}
 
 	getPlayerController() {
@@ -1005,6 +1018,12 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.iWebRtcController.matchViewportResolution = true;
 		this.iWebRtcController.updateVideoStreamSize();
 		libspsfrontend.DataChannelController.coordinateConverter.setupNormalizeAndQuantize();
+
+		this.addResponseEventListener("delegate_work", (obj: any) => {
+                        if (obj.response === "selectedText") {
+                                navigator.clipboard.writeText(obj.data.text);
+                        }
+                });
 	}
 
 	/**

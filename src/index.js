@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap-utilities.min.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { delegate, config, playerElement } from './DOMDelegate';
-import GetSignallingServerAddress from './signallingServer';
+import { signallingServerAddress, application } from './signallingServer';
 
 var libspsfrontend = require("backend-dom-components");
 
@@ -32,10 +32,6 @@ if (isMobile()) {
 	document.querySelector('.tooltiptext').style.opacity = '0';
 }*/
 
-const epicRegex = /\/([a-zA-Z0-9_-]+)\/ws$/;
-const signallingServerAddress = GetSignallingServerAddress();
-const app = signallingServerAddress.match(epicRegex);
-if (app) delegate.appName = app[1];
 // Create and return a new webRtcPlayerController instance
 var RTCPlayer = create(config, delegate);
 
