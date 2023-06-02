@@ -1,5 +1,6 @@
 import '../assets/css/player.css';
 import { EventEmitter } from "events";
+import ProgressBar from './ProgressBar';
 
 let libspsfrontend = require("backend-dom-components-1");
 
@@ -684,7 +685,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		// append the spinner to the element
 		spinnerDiv.appendChild(spinnerSpan);
 		this.showTextOverlay("Loading Stream " + spinnerDiv.outerHTML);
-		this.loadingProgress = 20;
 	}
 
         zoomIn() {
@@ -1024,13 +1024,13 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		libspsfrontend.DataChannelController.coordinateConverter.setupNormalizeAndQuantize();
 
 		this.addResponseEventListener("delegate_work", (obj: any) => {
+			console.log(obj.response);
 			switch (obj.response) {
 			case "selectedText":
 				navigator.clipboard.writeText(obj.data.text);
 				break;
 			case "levelLoaded":
 				this.levelReady = true;
-				this.loadingProgress = 100;
 				break;
 			case "passwordTest":
 				this.passwordResponse = obj.data;
