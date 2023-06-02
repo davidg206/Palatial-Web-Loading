@@ -8,7 +8,6 @@ import { delegate, emitUIInteraction } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var libspsfrontend = require("backend-dom-components-1");
 
 function App() {
 
@@ -32,8 +31,15 @@ function App() {
 
 
   const checkLevelReady = async () => {
-    document.querySelector('.proceedButton').disabled = true;
-    handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setError, setFormStep);
+    const proceedButton = document.querySelector('.proceedButton');
+    if (password !== "Palatial") {
+      setError("Wrong password. Please try again.");
+      return;
+    } else {
+      setError("");
+    }
+    proceedButton.disabled = true;
+    handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setFormStep);
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
@@ -65,7 +71,8 @@ function App() {
   useEffect(() => {
     let interval = setInterval(() => {
       setProgress((prevProgress) => {
-	return delegate.getLoadingProgress();
+        const cur = delegate.getLoadingProgress();
+	return cur;
       });
     }, 1000); // increase progress every 1 second
     return () => clearInterval(interval);
@@ -119,12 +126,12 @@ function App() {
     }
   };
 
-    const videoStyle = {
-        display: 'inline',
-        opacity: 0,
-        height: 0,
-        width: 0
-    };
+  const videoStyle = {
+    display: 'inline',
+    opacity: 0,
+    height: 0,
+    width: 0
+  };
 
   return (
     <div className="App">

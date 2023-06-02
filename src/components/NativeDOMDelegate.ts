@@ -1,8 +1,7 @@
 import '../assets/css/player.css';
 import { EventEmitter } from "events";
 import ProgressBar from './ProgressBar';
-
-let libspsfrontend = require("backend-dom-components-1");
+import * as libspsfrontend from "backend-dom-components-1";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -513,7 +512,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		// add the new event listener 
 		disconnectOverlayHtml.addEventListener('click', function onOverlayClick(event: Event) {			
 			disconnectOverlayEvent(event);
-			//whuzz
+			document.getElementById("root").classList.remove("fade-out");
 		});
 
 		// build the inner html container 
@@ -984,7 +983,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	 * Handle when the Video has been Initialised
 	 */
 	onVideoInitialised() {
-		console.log('we are ready!');
+		console.log('ready!');
 		this.streamReady = true;
 		// starting a latency check
 		document.getElementById("btn-start-latency-test").onclick = () => {
@@ -1024,7 +1023,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		libspsfrontend.DataChannelController.coordinateConverter.setupNormalizeAndQuantize();
 
 		this.addResponseEventListener("delegate_work", (obj: any) => {
-			console.log(obj.response);
 			switch (obj.response) {
 			case "selectedText":
 				navigator.clipboard.writeText(obj.data.text);
@@ -1035,10 +1033,11 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 			case "passwordTest":
 				this.passwordResponse = obj.data;
 				break;
-			case "exitCommand":
+			case "exitSession":
 				document.getElementById("root").classList.remove("fade-out");
-				document.getElementById("player").classList.remove("fade-in");
-                                document.getElementById("player").classList.add("fade-out");
+				break;
+			case "url":
+				window.open(obj.data.link, '_blank');
 				break;
 			}
                 });	

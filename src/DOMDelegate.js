@@ -18,7 +18,7 @@ export let delegate = new NativeDOMDelegate(config);
 delegate.appName = application;
 
 // Create a config object instance
-export function CreateConfig(signalingAddress: string, playerElement: HTMLDivElement) {
+export function CreateConfig(signalingAddress, playerElement) {
 	var config = new libspsfrontend
 		.Config(signalingAddress,
 			playerElement, isMobile());

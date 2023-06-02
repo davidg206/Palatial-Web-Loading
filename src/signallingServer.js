@@ -22,6 +22,5 @@
         // if the frontend for an application is served from a base-level domain
         // it has a trailing slash, so we need to account for this when appending the 'ws' for the websocket ingress
         signallingServerAddress += '/ws';
-	console.log(signallingServerAddress);
     }
 
