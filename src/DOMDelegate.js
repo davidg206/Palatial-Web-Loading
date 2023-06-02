@@ -1,6 +1,6 @@
 import { NativeDOMDelegate } from "./components/NativeDOMDelegate";
 import { signallingServerAddress, application } from "./signallingServer";
-import * as libspsfrontend from 'backend-dom-components';
+import * as libspsfrontend from 'backend-dom-components-1';
 
 // prep the player div element
 export let playerElement = document.getElementById("player");
