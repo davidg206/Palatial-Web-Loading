@@ -27,29 +27,13 @@ function App() {
   const [error, setError] = useState('');
   const [isInputFocused, setInputFocused] = useState(false);
   // add the names of the actual loading steps to the following and change the progress bar step value to 100/# of actual steps at :89 and :96
-  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Preparing Level', 'Done']; // Add your loading steps here
+  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Preparing Level', 'Done']; // Add your loading steps here
   const stepTimeoutRef = useRef();
 
 
-  const waitForLevelReady = () => {
-    return new Promise((resolve, reject) => {
-      const checkReady = () => {
-	if (delegate.levelReady) {
-	  resolve(true);
-	} else {
-	  setTimeout(checkReady, 100);
-	}
-      };
-      checkReady();
-    });
-  };
-
   const checkLevelReady = async () => {
     document.querySelector('.proceedButton').disabled = true;
-    const levelReady = await waitForLevelReady();
-    if (levelReady) {
-      handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setError, setFormStep);
-    }
+    handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setError, setFormStep);
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
@@ -79,22 +63,9 @@ function App() {
 
   // progress bar animation
   useEffect(() => {
-    let val = 0;
     let interval = setInterval(() => {
       setProgress((prevProgress) => {
-	val += 1;
-        if (prevProgress >= 100) {
-          //setStep(0); // reset the step as well
-          //return 0; // this line should be removed when connecting to the actual server
-	  return 100;
-	}
-        //return prevProgress + 20;
-	if (delegate) {
-	  //const nextVal = delegate.getLoadingProgress() + val;
-	  //if (nextVal >= 100) { setStep(4); return 100; }
-          return delegate.getLoadingProgress();
-	}
-	return 0;
+	return delegate.getLoadingProgress();
       });
     }, 1000); // increase progress every 1 second
     return () => clearInterval(interval);
