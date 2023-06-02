@@ -6,6 +6,7 @@ import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
 import { delegate, emitUIInteraction } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
+require('dotnet').config();
 
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -28,7 +29,7 @@ function App() {
   // add the names of the actual loading steps to the following and change the progress bar step value to 100/# of actual steps at :89 and :96
   const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Preparing Level', 'Done']; // Add your loading steps here
   const stepTimeoutRef = useRef();
-  require('dotenv').config();
+
 
   const checkLevelReady = async () => {
     const proceedButton = document.querySelector('.proceedButton');
