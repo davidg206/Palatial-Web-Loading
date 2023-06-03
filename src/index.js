@@ -26,12 +26,6 @@ root.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-/*
-if (isMobile()) {
-	//document.getElementById('fullscreen-btn').style.display = 'flex';
-	document.querySelector('.tooltiptext').style.opacity = '0';
-}*/
-
 // Create and return a new webRtcPlayerController instance
 var RTCPlayer = create(config, delegate);
 

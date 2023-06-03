@@ -28,11 +28,10 @@ function App() {
   // add the names of the actual loading steps to the following and change the progress bar step value to 100/# of actual steps at :89 and :96
   const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Preparing Level', 'Done']; // Add your loading steps here
   const stepTimeoutRef = useRef();
-  require('dotenv').config();
 
   const checkLevelReady = async () => {
     const proceedButton = document.querySelector('.proceedButton');
-    if (password !== process.env.MENU_PASS) {
+    if (password !== "Palatial") {
       setError("Wrong password. Please try again.");
       return;
     } else {
@@ -47,6 +46,12 @@ function App() {
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
 	checkLevelReady();
+    }
+  };
+
+  const handleOnInput = (e) => {
+    if (e.target.value == '') {
+      setError('');
     }
   };
 
@@ -174,13 +179,16 @@ function App() {
           <div className='PopUpContent fadeIn'>
             <div className="inputPrompt">
               <p>ENTER YOUR PASSWORD</p>
+	      <input type="text" style={{ display: "none" }}/>
               <input
                 className="passwordInput"
                 type="password"
                 value={password}
+		onInput={handleOnInput}
 		onKeyPress={handleKeyPress}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+		autoComplete="off"
               />
             </div>
             <button className="proceedButton" onClick={checkLevelReady}>SUBMIT</button>
