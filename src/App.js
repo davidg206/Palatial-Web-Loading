@@ -26,7 +26,7 @@ function App() {
   const [error, setError] = useState('');
   const [isInputFocused, setInputFocused] = useState(false);
   // add the names of the actual loading steps to the following and change the progress bar step value to 100/# of actual steps at :89 and :96
-  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Preparing Level', 'Done']; // Add your loading steps here
+  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building', 'Ready']; // Add your loading steps here
   const stepTimeoutRef = useRef();
 
   const checkLevelReady = async () => {
@@ -138,6 +138,15 @@ function App() {
     width: 0
   };
 
+
+  const handleOnFocus = (e) => {
+    const passwordInput = document.querySelector('.passwordInput');
+    const hiddenInput = e.target;
+    hiddenInput.setAttribute('type', 'password');
+    hiddenInput.style.display = 'none';
+    passwordInput.focus();
+  }
+
   return (
     <div className="App">
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
@@ -179,7 +188,7 @@ function App() {
           <div className='PopUpContent fadeIn'>
             <div className="inputPrompt">
               <p>ENTER YOUR PASSWORD</p>
-	      <input type="text" style={{ display: "none" }}/>
+	      <input type="text" id="hiddenInput" style={{ display: "none" }} onFocus={handleOnFocus} />
               <input
                 className="passwordInput"
                 type="password"

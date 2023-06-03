@@ -60,7 +60,7 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       emitUIInteraction(data);
       delegate.onPlayAction();
 
-      document.querySelector(".loadingStep").textContent = "Waiting for Level";
+      document.querySelector(".loadingStep").textContent = "Starting";
       waitForLevelReady().then(() => {
         const root = document.getElementById("root");
         const player = document.getElementById("player");
