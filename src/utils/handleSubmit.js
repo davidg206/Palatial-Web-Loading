@@ -2,7 +2,7 @@ import { osName, browserName } from 'react-device-detect';
 import { delegate, emitUIInteraction, config } from '../DOMDelegate';
 import React, { useState, useEffect, useRef } from 'react';
 
-const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setFormStep) => {
+const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setFormStep, setStep, setProgress) => {
   if (userName && password && firstTimeUser !== null && consentAccepted) {
     const port = {
       tankhouse: 1111,
@@ -58,25 +58,18 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
 
     delegate.checkStreamReady(async () => {
       emitUIInteraction(data);
-      delegate.onPlayAction();
 
       document.querySelector(".loadingStep").textContent = "Starting";
+
       waitForLevelReady().then(() => {
         const root = document.getElementById("root");
         const player = document.getElementById("player");
         delegate.loadingProgress = 100;
-        player.classList.remove("fade-out");
 
-        player.addEventListener("transitionend", () => {
-          root.classList.add("fade-out");
-          setFormStep(1);
-          /*document.querySelector(".passwordInput").value = "";
-          document.querySelector(".userNameInput").value = "";
-          if (firstTimeUser)
-                document.querySelector(".yesButton").classList.remove("active");
-          else document.querySelector(".noButton").classList.remove("active");
-          document.querySelector("input").checked = false;*/
-        });
+        root.classList.add("fade-out");
+        setFormStep(1);
+        delegate.levelReady = false;
+        document.querySelector(".loadingStep").textContent = "Ready";
       }).catch((e) => {
 	console.log(e);
       });

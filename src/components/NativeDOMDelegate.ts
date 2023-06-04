@@ -355,6 +355,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	streamReady: boolean;
 	levelReady: boolean;
 	readyHook: Function;
+	disconnectHook: Function;
 	loadingProgress: number;
 	passwordResponse: object;
 	// instantiate the WebRtcPlayerControllers interface var 
@@ -421,6 +422,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.streamReady = false;
 		this.levelReady = false;
 		this.readyHook = () => { };
+		this.disconnectHook = (boolean) => { };
 		this.loadingProgress = 0;
 		this.passwordResponse = null;
 
@@ -494,6 +496,10 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		} else {
 			this.readyHook = readyHook;
 		}
+	}
+
+	onDisconnectHook( disconnectHook: (boolean) => void ) {
+		this.disconnectHook = disconnectHook;
 	}
 
 	/**
@@ -1028,12 +1034,14 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				navigator.clipboard.writeText(obj.data.text);
 				break;
 			case "levelLoaded":
+				console.log('levelLoaded');
 				this.levelReady = true;
 				break;
 			case "passwordTest":
 				this.passwordResponse = obj.data;
 				break;
 			case "exitSession":
+				this.disconnectHook(false);
 				document.getElementById("root").classList.remove("fade-out");
 				break;
 			case "url":
@@ -1068,7 +1076,13 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.viewSettingsContainer.classList.add("d-none");
 		this.commandsContainer.classList.add("d-none");
 		this.streamingSettingsContainer.classList.add("d-none");
-		this.statsContainer.classList.add("d-none");	
+		this.statsContainer.classList.add("d-none");
+
+		this.levelReady = false;
+		this.loadingProgress = 0;
+		this.streamReady = false;
+		this.readyHook = () => void { };
+		this.disconnectHook(true);
 	}
 	/**
 	 * `Takes the InitialSettings and wired to frontend

@@ -38,7 +38,7 @@ function App() {
       setError("");
     }
     proceedButton.disabled = true;
-    handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setFormStep);
+    handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setFormStep, setStep, setProgress);
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
@@ -54,6 +54,22 @@ function App() {
       setError('');
     }
   };
+
+  useEffect(() => {
+    delegate.onDisconnectHook((fromDisconnect) => {
+      setFormStep(1);
+      setPassword('');
+      setUserName('');
+      setFirstTimeUser(null);
+      setConsentAccepted(false);
+      setActiveButton(null);
+      if (fromDisconnect) {
+        delegate.loadingProgress = 0;
+	setProgress(0);
+        setStep(0);
+      }
+    });
+  }, []);
 
   // Device detection logic
   useEffect(() => {
@@ -76,8 +92,7 @@ function App() {
   useEffect(() => {
     let interval = setInterval(() => {
       setProgress((prevProgress) => {
-        const cur = delegate.getLoadingProgress();
-	return cur;
+        return delegate.getLoadingProgress();
       });
     }, 1000); // increase progress every 1 second
     return () => clearInterval(interval);
@@ -95,7 +110,7 @@ function App() {
 
 
   // maintain page after exiting keyboard
-  useEffect(() => {
+  useEffect(() => {window.goBack = ()=>{setFormStep(1);};
     if (isInputFocused) {
       document.body.classList.add('prevent-scroll');
     } else {
@@ -116,7 +131,7 @@ function App() {
   const handleFormTransition = () => {
     if (formStep === 1) {
       if (userName && firstTimeUser !== null && consentAccepted) {
-        setFormStep(2);
+	setFormStep(2);
         setError('');
       } else {
         setError('Please complete all fields before proceeding.');
