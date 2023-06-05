@@ -29,6 +29,10 @@ export function emitUIInteraction(msg) {
 	return delegate.getPlayerController().ueDescriptorUi.sendCommand(msg);
 }
 
+export function sendCommand(cmd) {
+	return delegate.getPlayerController().ueDescriptorUi.sendCommand({ Console: cmd });
+}
+
 function isMobile() {
 	var check = false;
 	(function (a) {

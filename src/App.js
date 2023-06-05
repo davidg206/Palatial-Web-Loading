@@ -4,7 +4,7 @@ import './App.css';
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
-import { delegate, emitUIInteraction } from './DOMDelegate';
+import { delegate, sendCommand } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 import checkPassword from './utils/checkPassword';
 
@@ -60,13 +60,14 @@ function App() {
   };
 
   useEffect(() => {
-    delegate.onDisconnectHook((fromDisconnect) => {
+    delegate.onDisconnectHook(fromDisconnect => {
       setFormStep(1);
       setPassword('');
       setUserName('');
       setActiveButton(null);
       setFirstTimeUser(null);
       setConsentAccepted(false);
+      sendCommand("disconnectUser");
       if (fromDisconnect) {
         delegate.loadingProgress = 0;
 	setProgress(0);
