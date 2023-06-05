@@ -73,15 +73,17 @@ function App() {
   // Device detection logic
   useEffect(() => {
     if (isMobile || isTablet || isIPad13) {
-      document.body.style.height = `${window.innerHeight}px`;
+      const updateHeight = () => {
+        document.body.style.height = `${window.innerHeight}px`;
+      };
+      updateHeight();
+      window.addEventListener('resize', updateHeight);
       const preventScroll = event => {
         event.preventDefault();
       };
-      // Prevent scrolling when a mobile/tablet device is detected
       window.addEventListener('touchmove', preventScroll, { passive: false });
-
       return () => {
-        // Clean up event listener on unmount
+        window.removeEventListener('resize', updateHeight);
         window.removeEventListener('touchmove', preventScroll);
       };
     }
