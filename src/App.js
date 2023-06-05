@@ -180,8 +180,8 @@ function App() {
 
   return (
     <div className="App">
+      <video id="myVideo" style={videoStyle}></video>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
-       <video id="myVideo" style={videoStyle}></video>
       <div className="Logo">
           <img src={logoPng} alt='logo'/>
         </div>
