@@ -30,22 +30,6 @@
 									supported by Chrome, Edge, Opera and Firefox */
 }
 
-html, body {
-  overscroll-behavior: none;
-  overflow: hidden;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    /*display: flex;*/
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100vw;
-    background: #000000;
-}
-
 .textContainer {
     margin: 0;
     padding: 0;
