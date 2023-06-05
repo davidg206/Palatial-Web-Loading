@@ -2,15 +2,15 @@ import { osName, browserName } from 'react-device-detect';
 import { delegate, emitUIInteraction, config } from '../DOMDelegate';
 import React, { useState, useEffect, useRef } from 'react';
 
-const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setFormStep, setStep, setProgress) => {
+const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setFormStep) => {
   if (userName && password && firstTimeUser !== null && consentAccepted) {
     const port = {
-      tankhouse: 1111,
-      dev: 2222,
+      tankhouse:  1111,
+      dev:        2222,
       officedemo: 3333,
-      epic: 4444,
-      demo: 5555,
-      prophet: 7777,
+      epic:       4444,
+      demo:       5555,
+      prophet:    7777,
     };
 
     const data = {
@@ -26,18 +26,6 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]
     };
 
-    const passwordQuery = (password) => {
-      return new Promise((resolve, reject) => {
-        const checkPassword = () => {
-          if (delegate.passwordResponse) {
-            resolve(delegate.passwordResponse.data.isValid);
-          } else {
-            setTimeout(checkPassword, 100);
-          }
-        };
-      });
-    };
-
     const waitForLevelReady = () => {
       return new Promise((resolve, reject) => {
         const checkReady = () => {
@@ -51,26 +39,26 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       });
     };
 
-    const proceedButton = document.querySelector('.proceedButton');
-
     const videoElement = document.getElementById("myVideo");
     videoElement.play();
 
     delegate.checkStreamReady(async () => {
       emitUIInteraction(data);
 
-      document.querySelector(".loadingStep").textContent = "Starting";
+      const loadingStep = document.querySelector(".loadingStep");
+
+      setTimeout(() => { loadingStep.textContent = "Starting"; }, 480);
 
       waitForLevelReady().then(() => {
         const root = document.getElementById("root");
-        const player = document.getElementById("player");
         delegate.loadingProgress = 100;
-
         root.classList.add("fade-out");
-        setFormStep(1);
-        delegate.levelReady = false;
-        document.querySelector(".loadingStep").textContent = "Ready";
-      }).catch((e) => {
+        setTimeout(() => {
+	  setFormStep(1);
+	  loadingStep.textContent = "Ready";
+	  delegate.levelReady = false;
+        }, 1000);
+      }).catch(e => {
 	console.log(e);
       });
     });

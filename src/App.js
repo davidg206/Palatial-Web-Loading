@@ -6,8 +6,7 @@ import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
 import { delegate, emitUIInteraction } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
-
-Object.defineProperty(exports, "__esModule", { value: true });
+import checkPassword from './utils/checkPassword';
 
 function App() {
 
@@ -31,14 +30,14 @@ function App() {
 
   const checkLevelReady = async () => {
     const proceedButton = document.querySelector('.proceedButton');
-    if (password !== "Palatial") {
+    if (!checkPassword(password)) {
       setError("Wrong password. Please try again.");
       return;
     } else {
       setError("");
     }
     proceedButton.disabled = true;
-    handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setFormStep, setStep, setProgress);
+    handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setFormStep);
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
@@ -60,9 +59,9 @@ function App() {
       setFormStep(1);
       setPassword('');
       setUserName('');
+      setActiveButton(null);
       setFirstTimeUser(null);
       setConsentAccepted(false);
-      setActiveButton(null);
       if (fromDisconnect) {
         delegate.loadingProgress = 0;
 	setProgress(0);
@@ -161,6 +160,10 @@ function App() {
     hiddenInput.style.display = 'none';
     passwordInput.focus();
   }
+
+  const handleGoBack = () => {
+    setFormStep(1);
+  };
 
   return (
     <div className="App">
