@@ -1,11 +1,11 @@
     export let signallingServerAddress = '';
     export let application = '';
+    let apps = ["demo","dev","banyan","epic","prophet","tankhouse","officedemo","test","andpartners","experimental"];
     if (signallingServerAddress == '') {
         // define our signallingServerProtocol to be used based on whether
         // or not we're accessing our frontend via a tls
         var signallingServerProtocol = 'ws:';
-        if (window.location.protocol ===
-            'https:') {
+        if (window.location.protocol === 'https:') {
             signallingServerProtocol = 'wss:';
         }
         application = window.location.hostname.split('.');
@@ -14,7 +14,7 @@
 		application = "demo";
 	else
 		application = application[0];
-	if (!/^[a-zA-Z0-9]+$/.test(application)) {
+	if (!/^[a-zA-Z0-9]+$/.test(application) || !apps.includes(application)) {
             application = "demo";
         }
         // build the websocket endpoint based on the protocol used to load the frontend
