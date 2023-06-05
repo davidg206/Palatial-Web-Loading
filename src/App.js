@@ -148,10 +148,13 @@ function App() {
   };
 
   const videoStyle = {
-    display: 'inline',
-    opacity: 0,
-    height: 0,
-    width: 0
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: -1,  
+    objectFit: 'cover' 
   };
 
 
