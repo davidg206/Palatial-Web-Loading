@@ -63,6 +63,7 @@ canvas {
 	color: var(--colour2);
 	pointer-events: none;
 	overflow: hidden;
+	display: none;
 }
 
 .spsUiTool .tooltiptext {
@@ -151,7 +152,7 @@ canvas {
 #fullscreen-btn {
 	padding: 0.6rem !important;
 	background-color: var(--colour4);
-	/*display: none;*/
+	display: none;
 }
 
 object {
@@ -159,7 +160,7 @@ object {
 }
 
 #minimizeIcon {
-	/*display: none;*/
+	display: none;
 }
 
 #settingsBtn,
