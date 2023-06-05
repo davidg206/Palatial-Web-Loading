@@ -4,6 +4,7 @@ html {
 }
 
 .App {
+  height: calc(var(--vh, 1vh) * 100);
   background-image: url('./assets/Images/Background-Image.png');
   background-repeat: no-repeat;
   background-size: cover;

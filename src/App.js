@@ -10,6 +10,11 @@ import checkPassword from './utils/checkPassword';
 
 function App() {
 
+  const setAppHeight = () => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+
   // State management
   const { device } = useDeviceDetect();
   const [popUpVisible, setPopUpVisible] = useState(true);
@@ -72,6 +77,8 @@ function App() {
 
   // Device detection logic
   useEffect(() => {
+    setAppHeight();
+    window.addEventListener('resize', setAppHeight);
     if (isMobile || isTablet || isIPad13) {
       const updateHeight = () => {
         document.body.style.height = `${window.innerHeight}px`;
@@ -83,6 +90,7 @@ function App() {
       };
       window.addEventListener('touchmove', preventScroll, { passive: false });
       return () => {
+        window.removeEventListener('resize', setAppHeight);
         window.removeEventListener('resize', updateHeight);
         window.removeEventListener('touchmove', preventScroll);
       };
