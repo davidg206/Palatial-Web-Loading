@@ -136,7 +136,7 @@ function App() {
   // hook for transitioning form from username input to password input
   const handleFormTransition = () => {
     if (formStep === 1) {
-      if (userName !== null && consentAccepted) {
+      if (userName !== null /*&& consentAccepted*/) {
 	setFormStep(2);
         setError('');
       } else {
@@ -174,6 +174,16 @@ function App() {
     setFormStep(1);
   };
 
+/*
+<div className="consentCTA">
+  <div className="consentCheckBox" onClick={handleConsent}>
+    <input type="checkbox" checked={consentAccepted} readOnly />
+    <p>I agree to the terms and conditions</p>
+  </div>
+</div>
+{error && <p className="error">{error}</p>}
+*/
+
   return (
     <div className="App">
       <video id="myVideo" style={videoStyle}></video>
@@ -195,14 +205,7 @@ function App() {
                 required
               />
             </div>
-
-            <div className="consentCTA">
-              <div className="consentCheckBox" onClick={handleConsent}>
-                <input type="checkbox" checked={consentAccepted} readOnly />
-                <p>I agree to the terms and conditions</p>
-              </div>
-            </div>
-            {error && <p className="error">{error}</p>}
+            /******/
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}
