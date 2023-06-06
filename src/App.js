@@ -20,7 +20,6 @@ function App() {
   const [popUpVisible, setPopUpVisible] = useState(true);
   /*const { serverResponseMessage, popUpVisible, checkPassword } = usePasswordValidation();*/ //password validation result from server
   const [userName, setUserName] = useState('');
-  const [firstTimeUser, setFirstTimeUser] = useState(null);
   const [activeButton, setActiveButton] = useState(null);
   const [consentAccepted, setConsentAccepted] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -42,7 +41,7 @@ function App() {
       setError("");
     }
     proceedButton.disabled = true;
-    handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setFormStep);
+    handleSubmit(userName, password, consentAccepted, device, setFormStep);
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
@@ -66,7 +65,6 @@ function App() {
       setPassword('');
       setUserName('');
       setActiveButton(null);
-      setFirstTimeUser(null);
       setConsentAccepted(false);
       if (fromDisconnect) {
         delegate.loadingProgress = 0;
@@ -129,7 +127,6 @@ function App() {
   }, [isInputFocused]);
 
   const handleClick = isFirstTime => {
-    setFirstTimeUser(isFirstTime);
     setActiveButton(isFirstTime ? 'yes' : 'no');
   };
 
@@ -140,18 +137,18 @@ function App() {
   // hook for transitioning form from username input to password input
   const handleFormTransition = () => {
     if (formStep === 1) {
-      if (userName && firstTimeUser !== null && consentAccepted) {
+      if (userName !== null && consentAccepted) {
 	setFormStep(2);
         setError('');
       } else {
-        setError('Please complete all fields before proceeding.');
+        setError('Please complete all fields');
       }
     } else if (formStep === 2) {
       if (password) {
         setFormStep(3);
         setError('');
       } else {
-        setError('Please enter a password before proceeding.');
+        setError('Please enter a password');
       }
     }
   };
@@ -184,12 +181,12 @@ function App() {
       <video id="myVideo" style={videoStyle}></video>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
       <div className="Logo">
-          <img src={logoPng} alt='logo'/>
+          <img src={logoPng} style={{width:'10em'}} alt='logo'/>
         </div>
         {formStep === 1 && (
           <div className='PopUpContent fadeIn'>
             <div className="inputPrompt">
-              <p>ENTER YOUR NAME</p>
+              <p>Enter Your Name</p>
               <input
                 className="userNameInput"
                 type="text"
@@ -200,26 +197,21 @@ function App() {
                 required
               />
             </div>
-            <div className="firstTimeToggle">
-              <p>IS THIS YOUR FIRST TIME USING PALATIAL? </p>
-              <div className="toggleButtons">
-                <button className={`yesButton ${activeButton === 'yes' ? 'active' : ''}`} onClick={() => handleClick(true)}>YES</button>
-                <button className={`noButton ${activeButton === 'no' ? 'active' : ''}`} onClick={() => handleClick(false)}>NO</button>
-              </div>
-            </div>
+
             <div className="consentCTA">
               <div className="consentCheckBox" onClick={handleConsent}>
                 <input type="checkbox" checked={consentAccepted} readOnly />
-                <p>By clicking this box, I’m accepting the Terms and Conditions of using this platform.</p>
+                <p>I agree to the terms and conditions</p>
               </div>
             </div>
-            <button className="proceedButton" onClick={handleFormTransition}>PROCEED</button>
+            {error && <p className="error">{error}</p>}
+            <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}
         {formStep === 2 && (
           <div className='PopUpContent fadeIn'>
             <div className="inputPrompt">
-              <p>ENTER YOUR PASSWORD</p>
+              <p>Enter Your Password</p>
 	      <input type="text" id="hiddenInput" style={{ display: "none" }} onFocus={handleOnFocus} />
               <input
                 className="passwordInput"
@@ -232,10 +224,10 @@ function App() {
 		autoComplete="off"
               />
             </div>
-            <button className="proceedButton" onClick={checkLevelReady}>SUBMIT</button>
+            {error && <p className="error">{error}</p>}
+            <button className="proceedButton" onClick={checkLevelReady}>Submit</button>
           </div>
         )}
-        {error && <p className="error">{error}</p>}
       </div>
       <ProgressBar progress={progress} />
       <div className="loadingStep">
