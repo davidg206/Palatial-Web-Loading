@@ -46,6 +46,7 @@ function App() {
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
+  window.addEventListener('beforeunload', () => { sendCommand("disconnectUser"); });
 
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
@@ -67,7 +68,6 @@ function App() {
       setActiveButton(null);
       setFirstTimeUser(null);
       setConsentAccepted(false);
-      sendCommand("disconnectUser");
       if (fromDisconnect) {
         delegate.loadingProgress = 0;
 	setProgress(0);
