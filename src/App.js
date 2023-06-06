@@ -32,7 +32,7 @@ function App() {
   const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building', 'Ready']; // Add your loading steps here
   const stepTimeoutRef = useRef();
 
-  const checkLevelReady = async () => {
+  const preSubmitCheck = async () => {
     const proceedButton = document.querySelector('.proceedButton');
     if (!checkPassword(password)) {
       setError("Wrong password. Please try again.");
@@ -41,7 +41,7 @@ function App() {
       setError("");
     }
     proceedButton.disabled = true;
-    handleSubmit(userName, password, consentAccepted, device, setFormStep);
+    handleSubmit(userName, password, true, consentAccepted, device, setFormStep);
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
@@ -49,7 +49,7 @@ function App() {
 
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
-	checkLevelReady();
+	preSubmitCheck();
     }
   };
 
@@ -106,7 +106,6 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-
   useEffect(() => {
     stepTimeoutRef.current && clearTimeout(stepTimeoutRef.current);
     if (progress >= (step + 1) * 20) {
@@ -159,10 +158,9 @@ function App() {
     left: 0,
     width: '100%',
     height: '100%',
-    zIndex: -1,  
-    objectFit: 'cover' 
+    zIndex: -1,
+    objectFit: 'cover'
   };
-
 
   const handleOnFocus = (e) => {
     const passwordInput = document.querySelector('.passwordInput');
@@ -225,7 +223,7 @@ function App() {
               />
             </div>
             {error && <p className="error">{error}</p>}
-            <button className="proceedButton" onClick={checkLevelReady}>Submit</button>
+            <button className="proceedButton" onClick={preSubmitCheck}>Submit</button>
           </div>
         )}
       </div>

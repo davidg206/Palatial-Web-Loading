@@ -3,7 +3,7 @@ import { delegate, emitUIInteraction, config } from '../DOMDelegate';
 import React, { useState, useEffect, useRef } from 'react';
 
 const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setFormStep) => {
-  if (userName && password && firstTimeUser !== null && consentAccepted) {
+  if (userName && password && firstTimeUser && consentAccepted) {
     const port = {
       tankhouse:  1111,
       dev:        2222,
