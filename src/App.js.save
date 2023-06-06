@@ -4,22 +4,20 @@ import './App.css';
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
-import { delegate, sendCommand } from './DOMDelegate';
+import { delegate, emitUIInteraction } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
-import checkPassword from './utils/checkPassword';
+require('dotnet').config();
+
+Object.defineProperty(exports, "__esModule", { value: true });
 
 function App() {
-
-  const setAppHeight = () => {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-  };
 
   // State management
   const { device } = useDeviceDetect();
   const [popUpVisible, setPopUpVisible] = useState(true);
   /*const { serverResponseMessage, popUpVisible, checkPassword } = usePasswordValidation();*/ //password validation result from server
   const [userName, setUserName] = useState('');
+  const [firstTimeUser, setFirstTimeUser] = useState(null);
   const [activeButton, setActiveButton] = useState(null);
   const [consentAccepted, setConsentAccepted] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -29,19 +27,20 @@ function App() {
   const [error, setError] = useState('');
   const [isInputFocused, setInputFocused] = useState(false);
   // add the names of the actual loading steps to the following and change the progress bar step value to 100/# of actual steps at :89 and :96
-  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building', 'Ready']; // Add your loading steps here
+  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Preparing Level', 'Done']; // Add your loading steps here
   const stepTimeoutRef = useRef();
+
 
   const checkLevelReady = async () => {
     const proceedButton = document.querySelector('.proceedButton');
-    if (!checkPassword(password)) {
+    if (password !== process.env.MENU_PASS) {
       setError("Wrong password. Please try again.");
       return;
     } else {
       setError("");
     }
     proceedButton.disabled = true;
-    handleSubmit(userName, password, consentAccepted, device, setFormStep);
+    handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setFormStep);
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
@@ -52,45 +51,18 @@ function App() {
     }
   };
 
-  const handleOnInput = (e) => {
-    if (e.target.value == '') {
-      setError('');
-    }
-  };
-
-  useEffect(() => {
-    delegate.onDisconnectHook(fromDisconnect => {
-      setFormStep(1);
-      setPassword('');
-      setUserName('');
-      setActiveButton(null);
-      setConsentAccepted(false);
-      sendCommand("disconnectUser");
-      if (fromDisconnect) {
-        delegate.loadingProgress = 0;
-	setProgress(0);
-        setStep(0);
-      }
-    });
-  }, []);
-
   // Device detection logic
   useEffect(() => {
-    setAppHeight();
-    window.addEventListener('resize', setAppHeight);
     if (isMobile || isTablet || isIPad13) {
-      const updateHeight = () => {
-        document.body.style.height = `${window.innerHeight}px`;
-      };
-      updateHeight();
-      window.addEventListener('resize', updateHeight);
+      document.body.style.height = `${window.innerHeight}px`;
       const preventScroll = event => {
         event.preventDefault();
       };
+      // Prevent scrolling when a mobile/tablet device is detected
       window.addEventListener('touchmove', preventScroll, { passive: false });
+
       return () => {
-        window.removeEventListener('resize', setAppHeight);
-        window.removeEventListener('resize', updateHeight);
+        // Clean up event listener on unmount
         window.removeEventListener('touchmove', preventScroll);
       };
     }
@@ -100,7 +72,8 @@ function App() {
   useEffect(() => {
     let interval = setInterval(() => {
       setProgress((prevProgress) => {
-        return delegate.getLoadingProgress();
+        const cur = delegate.getLoadingProgress();
+	return cur;
       });
     }, 1000); // increase progress every 1 second
     return () => clearInterval(interval);
@@ -118,7 +91,7 @@ function App() {
 
 
   // maintain page after exiting keyboard
-  useEffect(() => {window.goBack = ()=>{setFormStep(1);};
+  useEffect(() => {
     if (isInputFocused) {
       document.body.classList.add('prevent-scroll');
     } else {
@@ -127,6 +100,7 @@ function App() {
   }, [isInputFocused]);
 
   const handleClick = isFirstTime => {
+    setFirstTimeUser(isFirstTime);
     setActiveButton(isFirstTime ? 'yes' : 'no');
   };
 
@@ -137,56 +111,40 @@ function App() {
   // hook for transitioning form from username input to password input
   const handleFormTransition = () => {
     if (formStep === 1) {
-      if (userName !== null && consentAccepted) {
-	setFormStep(2);
+      if (userName && firstTimeUser !== null && consentAccepted) {
+        setFormStep(2);
         setError('');
       } else {
-        setError('Please complete all fields');
+        setError('Please complete all fields before proceeding.');
       }
     } else if (formStep === 2) {
       if (password) {
         setFormStep(3);
         setError('');
       } else {
-        setError('Please enter a password');
+        setError('Please enter a password before proceeding.');
       }
     }
   };
 
   const videoStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: -1,  
-    objectFit: 'cover' 
-  };
-
-
-  const handleOnFocus = (e) => {
-    const passwordInput = document.querySelector('.passwordInput');
-    const hiddenInput = e.target;
-    hiddenInput.setAttribute('type', 'password');
-    hiddenInput.style.display = 'none';
-    passwordInput.focus();
-  }
-
-  const handleGoBack = () => {
-    setFormStep(1);
+    display: 'inline',
+    opacity: 0,
+    height: 0,
+    width: 0
   };
 
   return (
     <div className="App">
-      <video id="myVideo" style={videoStyle}></video>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
+       <video id="myVideo" style={videoStyle}></video>
       <div className="Logo">
-          <img src={logoPng} style={{width:'10em'}} alt='logo'/>
+          <img src={logoPng} alt='logo'/>
         </div>
         {formStep === 1 && (
           <div className='PopUpContent fadeIn'>
             <div className="inputPrompt">
-              <p>Enter Your Name</p>
+              <p>ENTER YOUR NAME</p>
               <input
                 className="userNameInput"
                 type="text"
@@ -197,37 +155,39 @@ function App() {
                 required
               />
             </div>
-
+            <div className="firstTimeToggle">
+              <p>IS THIS YOUR FIRST TIME USING PALATIAL? </p>
+              <div className="toggleButtons">
+                <button className={`yesButton ${activeButton === 'yes' ? 'active' : ''}`} onClick={() => handleClick(true)}>YES</button>
+                <button className={`noButton ${activeButton === 'no' ? 'active' : ''}`} onClick={() => handleClick(false)}>NO</button>
+              </div>
+            </div>
             <div className="consentCTA">
               <div className="consentCheckBox" onClick={handleConsent}>
                 <input type="checkbox" checked={consentAccepted} readOnly />
-                <p>I agree to the terms and conditions</p>
+                <p>By clicking this box, I’m accepting the Terms and Conditions of using this platform.</p>
               </div>
             </div>
-            {error && <p className="error">{error}</p>}
-            <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
+            <button className="proceedButton" onClick={handleFormTransition}>PROCEED</button>
           </div>
         )}
         {formStep === 2 && (
           <div className='PopUpContent fadeIn'>
             <div className="inputPrompt">
-              <p>Enter Your Password</p>
-	      <input type="text" id="hiddenInput" style={{ display: "none" }} onFocus={handleOnFocus} />
+              <p>ENTER YOUR PASSWORD</p>
               <input
                 className="passwordInput"
                 type="password"
                 value={password}
-		onInput={handleOnInput}
 		onKeyPress={handleKeyPress}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-		autoComplete="off"
               />
             </div>
-            {error && <p className="error">{error}</p>}
-            <button className="proceedButton" onClick={checkLevelReady}>Submit</button>
+            <button className="proceedButton" onClick={checkLevelReady}>SUBMIT</button>
           </div>
         )}
+        {error && <p className="error">{error}</p>}
       </div>
       <ProgressBar progress={progress} />
       <div className="loadingStep">
