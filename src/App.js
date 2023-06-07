@@ -126,9 +126,6 @@ function App() {
     }
   }, [isInputFocused]);
 
-  const handleClick = isFirstTime => {
-    setActiveButton(isFirstTime ? 'yes' : 'no');
-  };
 
   const handleConsent = () => {
     setConsentAccepted(!consentAccepted);
@@ -199,10 +196,7 @@ function App() {
             </div>
 
             <div className="consentCTA">
-              <div className="consentCheckBox" onClick={handleConsent}>
-                <input type="checkbox" checked={consentAccepted} readOnly />
-                <p>I agree to the terms and conditions</p>
-              </div>
+                <p>By proceeding you are agreeing to our terms and conditions</p>
             </div>
             {error && <p className="error">{error}</p>}
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
