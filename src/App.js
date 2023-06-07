@@ -205,7 +205,8 @@ function App() {
                 required
               />
             </div>
-            /******/
+            
+
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}
