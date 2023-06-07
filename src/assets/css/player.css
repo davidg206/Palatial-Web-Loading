@@ -30,126 +30,6 @@
 									supported by Chrome, Edge, Opera and Firefox */
 }
 
-html, body {
-  overscroll-behavior: none;
-  overflow: hidden;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    /*display: flex;*/
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100vw;
-    background: #000000;
-}
-
-.textContainer {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    justify-content: center;
-    align-items: center;
-    opacity: 1;
-    transition: opacity 1s;
-}
-
-.loader {
-    position: relative;
-    width: 35vh;
-    height: 35vh;
-    border-radius: 50%;
-    background: linear-gradient(#FEFEFE, #DDFF20, #6EA246);
-    animation: animate 3s linear infinite;
-}
-
-@keyframes animate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-.loader span {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: linear-gradient(#6EA246, #DDFF20, #6EA246);
-}
-
-.loader span:nth-child(1) {
-    filter: blur(5px);
-}
-
-.loader span:nth-child(2) {
-    filter: blur(10px);
-}
-
-.loader span:nth-child(3) {
-    filter: blur(25px);
-}
-
-.loader span:nth-child(4) {
-    filter: blur(50px);
-}
-
-.loader:after {
-    content: '';
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-    background: #000000;
-    border: solid white 2px;
-    border-radius: 50%;
-    z-index: 0;
-}
-
-.loadingNote{
-  position: absolute;
-  top: 85%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2vh;
-  font-weight: 300;
-  font-family: 'Lato', sans-serif, thin;
-  color: LightGoldenRodYellow;
-  text-align: center;
-  opacity: 0;
-  transition: opacity 1s;
-}
-
-.loadingText {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 3.5vh;
-  font-weight: 300;
-  color: white;
-  font-family: 'Lato', sans-serif, thin;
-  z-index: 10;
-  animation: loadFade 2.85s ease-in-out infinite;
-  text-align: left;
-}
-  @keyframes loadFade {
-  50% {
-    color: black;
-  }
-}
-
-html, body {
-  overscroll-behavior: none;
-}
-
 #playerUI {
 	width: 100%;
 	height: 100%;
@@ -183,6 +63,7 @@ canvas {
 	color: var(--colour2);
 	pointer-events: none;
 	overflow: hidden;
+	display: none;
 }
 
 .spsUiTool .tooltiptext {
@@ -271,7 +152,7 @@ canvas {
 #fullscreen-btn {
 	padding: 0.6rem !important;
 	background-color: var(--colour4);
-	/*display: none;*/
+	display: none;
 }
 
 object {
@@ -279,7 +160,7 @@ object {
 }
 
 #minimizeIcon {
-	/*display: none;*/
+	display: none;
 }
 
 #settingsBtn,

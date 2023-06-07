@@ -4,18 +4,22 @@ import './App.css';
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
-import { delegate, emitUIInteraction } from './DOMDelegate';
+import { delegate, sendCommand } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 import checkPassword from './utils/checkPassword';
 
 function App() {
+
+  const setAppHeight = () => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
 
   // State management
   const { device } = useDeviceDetect();
   const [popUpVisible, setPopUpVisible] = useState(true);
   /*const { serverResponseMessage, popUpVisible, checkPassword } = usePasswordValidation();*/ //password validation result from server
   const [userName, setUserName] = useState('');
-  const [firstTimeUser, setFirstTimeUser] = useState(null);
   const [activeButton, setActiveButton] = useState(null);
   const [consentAccepted, setConsentAccepted] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -28,7 +32,7 @@ function App() {
   const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building', 'Ready']; // Add your loading steps here
   const stepTimeoutRef = useRef();
 
-  const checkLevelReady = async () => {
+  const preSubmitCheck = async () => {
     const proceedButton = document.querySelector('.proceedButton');
     if (!checkPassword(password)) {
       setError("Wrong password. Please try again.");
@@ -37,14 +41,15 @@ function App() {
       setError("");
     }
     proceedButton.disabled = true;
-    handleSubmit(userName, password, firstTimeUser, consentAccepted, device, setFormStep);
+    handleSubmit(userName, password, true, consentAccepted, device, setFormStep);
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
+  window.addEventListener('beforeunload', () => { if (delegate.streamReady) sendCommand("disconnectUser"); });
 
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
-	checkLevelReady();
+	preSubmitCheck();
     }
   };
 
@@ -55,12 +60,11 @@ function App() {
   };
 
   useEffect(() => {
-    delegate.onDisconnectHook((fromDisconnect) => {
+    delegate.onDisconnectHook(fromDisconnect => {
       setFormStep(1);
       setPassword('');
       setUserName('');
       setActiveButton(null);
-      setFirstTimeUser(null);
       setConsentAccepted(false);
       if (fromDisconnect) {
         delegate.loadingProgress = 0;
@@ -72,16 +76,21 @@ function App() {
 
   // Device detection logic
   useEffect(() => {
+    setAppHeight();
+    window.addEventListener('resize', setAppHeight);
     if (isMobile || isTablet || isIPad13) {
-      document.body.style.height = `${window.innerHeight}px`;
+      const updateHeight = () => {
+        document.body.style.height = `${window.innerHeight}px`;
+      };
+      updateHeight();
+      window.addEventListener('resize', updateHeight);
       const preventScroll = event => {
         event.preventDefault();
       };
-      // Prevent scrolling when a mobile/tablet device is detected
       window.addEventListener('touchmove', preventScroll, { passive: false });
-
       return () => {
-        // Clean up event listener on unmount
+        window.removeEventListener('resize', setAppHeight);
+        window.removeEventListener('resize', updateHeight);
         window.removeEventListener('touchmove', preventScroll);
       };
     }
@@ -96,7 +105,6 @@ function App() {
     }, 1000); // increase progress every 1 second
     return () => clearInterval(interval);
   }, []);
-
 
   useEffect(() => {
     stepTimeoutRef.current && clearTimeout(stepTimeoutRef.current);
@@ -118,7 +126,6 @@ function App() {
   }, [isInputFocused]);
 
   const handleClick = isFirstTime => {
-    setFirstTimeUser(isFirstTime);
     setActiveButton(isFirstTime ? 'yes' : 'no');
   };
 
@@ -129,29 +136,31 @@ function App() {
   // hook for transitioning form from username input to password input
   const handleFormTransition = () => {
     if (formStep === 1) {
-      if (userName && firstTimeUser !== null && consentAccepted) {
+      if (userName !== null /*&& consentAccepted*/) {
 	setFormStep(2);
         setError('');
       } else {
-        setError('Please complete all fields before proceeding.');
+        setError('Please complete all fields');
       }
     } else if (formStep === 2) {
       if (password) {
         setFormStep(3);
         setError('');
       } else {
-        setError('Please enter a password before proceeding.');
+        setError('Please enter a password');
       }
     }
   };
 
   const videoStyle = {
-    display: 'inline',
-    opacity: 0,
-    height: 0,
-    width: 0
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
+    objectFit: 'cover'
   };
-
 
   const handleOnFocus = (e) => {
     const passwordInput = document.querySelector('.passwordInput');
@@ -165,17 +174,27 @@ function App() {
     setFormStep(1);
   };
 
+/*
+<div className="consentCTA">
+  <div className="consentCheckBox" onClick={handleConsent}>
+    <input type="checkbox" checked={consentAccepted} readOnly />
+    <p>I agree to the terms and conditions</p>
+  </div>
+</div>
+{error && <p className="error">{error}</p>}
+*/
+
   return (
     <div className="App">
+      <video id="myVideo" style={videoStyle}></video>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
-       <video id="myVideo" style={videoStyle}></video>
       <div className="Logo">
-          <img src={logoPng} alt='logo'/>
+          <img src={logoPng} style={{width:'10em'}} alt='logo'/>
         </div>
         {formStep === 1 && (
           <div className='PopUpContent fadeIn'>
             <div className="inputPrompt">
-              <p>ENTER YOUR NAME</p>
+              <p>Enter Your Name</p>
               <input
                 className="userNameInput"
                 type="text"
@@ -186,26 +205,14 @@ function App() {
                 required
               />
             </div>
-            <div className="firstTimeToggle">
-              <p>IS THIS YOUR FIRST TIME USING PALATIAL? </p>
-              <div className="toggleButtons">
-                <button className={`yesButton ${activeButton === 'yes' ? 'active' : ''}`} onClick={() => handleClick(true)}>YES</button>
-                <button className={`noButton ${activeButton === 'no' ? 'active' : ''}`} onClick={() => handleClick(false)}>NO</button>
-              </div>
-            </div>
-            <div className="consentCTA">
-              <div className="consentCheckBox" onClick={handleConsent}>
-                <input type="checkbox" checked={consentAccepted} readOnly />
-                <p>By clicking this box, I’m accepting the Terms and Conditions of using this platform.</p>
-              </div>
-            </div>
-            <button className="proceedButton" onClick={handleFormTransition}>PROCEED</button>
+            /******/
+            <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}
         {formStep === 2 && (
           <div className='PopUpContent fadeIn'>
             <div className="inputPrompt">
-              <p>ENTER YOUR PASSWORD</p>
+              <p>Enter Your Password</p>
 	      <input type="text" id="hiddenInput" style={{ display: "none" }} onFocus={handleOnFocus} />
               <input
                 className="passwordInput"
@@ -218,10 +225,10 @@ function App() {
 		autoComplete="off"
               />
             </div>
-            <button className="proceedButton" onClick={checkLevelReady}>SUBMIT</button>
+            {error && <p className="error">{error}</p>}
+            <button className="proceedButton" onClick={preSubmitCheck}>Submit</button>
           </div>
         )}
-        {error && <p className="error">{error}</p>}
       </div>
       <ProgressBar progress={progress} />
       <div className="loadingStep">
