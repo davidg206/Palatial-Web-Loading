@@ -1,4 +1,3 @@
-<<<<<<< HEAD
     export let signallingServerAddress = '';
     export let application = '';
     let apps = ["demo","dev","banyan","epic","prophet","tankhouse","officedemo","test","andpartners","experimental"];
@@ -24,17 +23,6 @@
         // it has a trailing slash, so we need to account for this when appending the 'ws' for the websocket ingress
         signallingServerAddress += '/ws';
     }
-=======
-export let signallingServerAddress = '';
-export let application = '';
-
-// define our signallingServerProtocol to be used based on whether
-// or not we're accessing our frontend via a tls
-let signallingServerProtocol = 'ws:';
-if (window.location.protocol === 'https:') {
-  signallingServerProtocol = 'wss:';
-}
->>>>>>> d6cbc96bac98e28ea3fc42733fe07527aecc22ba
 
 application = window.location.hostname.split('.');
 

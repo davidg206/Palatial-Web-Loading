@@ -7,6 +7,8 @@ import useDeviceDetect from './hooks/useDeviceDetect';
 import { delegate, sendCommand } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 import checkPassword from './utils/checkPassword';
+import visibleImg from './assets/Images/png/toggle_password_visible.png';
+import invisibleImg from './assets/Images/png/toggle_password_invisible.png';
 
 function App() {
 
@@ -17,11 +19,12 @@ function App() {
 
   // State management
   const { device } = useDeviceDetect();
+  const [showPassword, setShowPassword] = useState(false);
   const [popUpVisible, setPopUpVisible] = useState(true);
   /*const { serverResponseMessage, popUpVisible, checkPassword } = usePasswordValidation();*/ //password validation result from server
   const [userName, setUserName] = useState('');
   const [activeButton, setActiveButton] = useState(null);
-  const [consentAccepted, setConsentAccepted] = useState(false);
+  const [consentAccepted, setConsentAccepted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [step, setStep] = useState(0);
   const [formStep, setFormStep] = useState(1);
@@ -57,6 +60,12 @@ function App() {
       setError('');
     }
   };
+
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  
 
   useEffect(() => {
     delegate.onDisconnectHook(fromDisconnect => {
@@ -202,30 +211,36 @@ function App() {
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}
-        {formStep === 2 && (
-          <div className='PopUpContent fadeIn'>
-            <div className="inputPrompt">
-              <p>Enter Your Password</p>
-	      <input type="text" id="hiddenInput" style={{ display: "none" }} onFocus={handleOnFocus} />
-              <input
-                className="passwordInput"
-                type="password"
-                value={password}
-		onInput={handleOnInput}
-		onKeyPress={handleKeyPress}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-		autoComplete="off"
-              />
-            </div>
-            {error && <p className="error">{error}</p>}
-            <button className="proceedButton" onClick={checkLevelReady}>Submit</button>
-          </div>
-        )}
+{formStep === 2 && (
+  <div className='PopUpContent fadeIn'>
+    <div className="inputPrompt">
+      <p>Enter Your Password</p>
+      <div className="passwordWrapper">
+        <input
+          className="passwordInput"
+          type={showPassword ? "text" : "password"}
+          value={password}
+          onFocus={() => setInputFocused(true)}
+          onBlur={() => setInputFocused(false)}
+          onChange={(e) => setPassword(e.target.value)}
+          onInput={handleOnInput}
+          onKeyDown={handleKeyPress}
+          autocomplete="new-password"
+          required
+        />
+        <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
+        {showPassword ? 
+          <img src={visibleImg} alt="hide password" style={{width: '24px', height: '24px'}} /> : 
+          <img src={invisibleImg} alt="show password" style={{width: '24px', height: '24px'}} />
+        }
+        </button>
       </div>
-      <ProgressBar progress={progress} />
-      <div className="loadingStep">
-        {loadingSteps[step]}
+    </div>
+    {error && <p className="error">{error}</p>}
+    <button className="proceedButton" onClick={checkLevelReady}>Proceed</button>
+    <button className="goBackButton" onClick={handleGoBack}>Go Back</button>
+  </div>
+)}
       </div>
     </div>
   );
