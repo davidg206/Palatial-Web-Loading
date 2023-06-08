@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { isDesktop, isIPad13, isTablet, isMobile, osName, browserName } from 'react-device-detect';
-import './App.css';
+import './App.css;'
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
@@ -48,7 +48,6 @@ function App() {
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
-  window.addEventListener('beforeunload', () => { if (delegate.levelReady) sendCommand("disconnectUser"); });
 
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
@@ -144,7 +143,7 @@ function App() {
   // hook for transitioning form from username input to password input
   const handleFormTransition = () => {
     if (formStep === 1) {
-      if (userName !== null) {
+      if (userName !== null && consentAccepted) {
 	setFormStep(2);
         setError('');
       } else {
@@ -183,13 +182,6 @@ function App() {
     setFormStep(1);
   };
 
-/*
-<div className="consentCTA">
-                <p>By proceeding you are agreeing to our terms and conditions</p>
-            </div>
-            {error && <p className="error">{error}</p>}
-*/
-
   return (
     <div className="App">
       <video id="myVideo" style={videoStyle}></video>
@@ -211,6 +203,10 @@ function App() {
                 required
               />
             </div>
+            <div className="consentCTA">
+                <p>By proceeding you are agreeing to our terms and conditions</p>
+            </div>
+            {error && <p className="error">{error}</p>}
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}
@@ -233,8 +229,8 @@ function App() {
         />
         <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
         {showPassword ? 
-          <img src={passwordVisibleImg} alt="hide password" style={{width: '24px', height: '24px'}} /> : 
-          <img src={passwordinvisibleImg} alt="show password" style={{width: '24px', height: '24px'}} />
+          <img src={passwordVisibleImg} alt="hide password" style={{width: '1.2em', height: '1.2em'}} /> : 
+          <img src={passwordinvisibleImg} alt="show password" style={{width: '1.2em', height: '1.2em'}} />
         }
         </button>
       </div>
