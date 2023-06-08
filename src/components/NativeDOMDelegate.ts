@@ -1047,6 +1047,9 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 			case "url":
 				window.open(obj.data.link, '_blank');
 				break;
+			case "ProjectName":
+				this.appName = obj.data.name;
+				break;
 			}
                 });	
 	}

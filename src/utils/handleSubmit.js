@@ -11,6 +11,8 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       epic:       4444,
       demo:       5555,
       prophet:    7777,
+      "45 main":  3333,
+      "PalatialDev": 2222
     };
 
     const data = {
@@ -23,7 +25,7 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       firstTimeUser: firstTimeUser ? "Yes" : "No",
       password: password,
       timestamp: new Date().getTime(), // current time in Epoch time
-      join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]
+      //join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]
     };
 
     const waitForLevelReady = () => {
@@ -39,6 +41,19 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       });
     };
 
+    const waitForProjectName = () => {
+      return new Promise((resolve, reject) => {
+        const checkName = () => {
+          if (delegate.appName) {
+            return resolve(delegate.appName);
+          } else {
+            setTimeout(checkName, 100);
+          }
+        };
+        checkName();
+      });
+    };
+
     const videoElement = document.getElementById("myVideo");
     videoElement.play();
 
@@ -49,17 +64,21 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
 
       setTimeout(() => { loadingStep.textContent = "Starting"; }, 480);
 
-      waitForLevelReady().then(() => {
-        const root = document.getElementById("root");
-        delegate.loadingProgress = 100;
-        root.classList.add("fade-out");
-        setTimeout(() => {
-	  setFormStep(1);
-	  loadingStep.textContent = "Ready";
-	  delegate.levelReady = false;
-        }, 1000);
-      }).catch(e => {
-	console.log(e);
+      waitForProjectName().then(name => {console.log("Project name: " + name);
+        emitUIInteraction({ join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name] });
+      }).then(() => {
+        waitForLevelReady().then(() => {
+          const root = document.getElementById("root");
+          delegate.loadingProgress = 100;
+          root.classList.add("fade-out");
+          setTimeout(() => {
+            setFormStep(1);
+	    loadingStep.textContent = "Ready";
+	    delegate.levelReady = false;
+          }, 1000);
+        }).catch(e => {
+          console.log(e);
+        });
       });
     });
   } else {
