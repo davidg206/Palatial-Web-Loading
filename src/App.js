@@ -135,7 +135,7 @@ function App() {
   // hook for transitioning form from username input to password input
   const handleFormTransition = () => {
     if (formStep === 1) {
-      if (userName !== null && consentAccepted) {
+      if (userName !== null) {
 	setFormStep(2);
         setError('');
       } else {
@@ -202,7 +202,6 @@ function App() {
                 required
               />
             </div>
-            {error && <p className="error">{error}</p>}
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}

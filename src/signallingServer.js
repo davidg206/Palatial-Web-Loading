@@ -7,7 +7,6 @@ let signallingServerProtocol = 'ws:';
 if (window.location.protocol === 'https:') {
   signallingServerProtocol = 'wss:';
 }
->>>>>>> d6cbc96bac98e28ea3fc42733fe07527aecc22ba
 
 application = window.location.hostname.split('.');
 
