@@ -45,7 +45,7 @@ function App() {
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
-  window.addEventListener('beforeunload', () => { if (delegate.streamReady) sendCommand("disconnectUser"); });
+  window.addEventListener('beforeunload', () => { if (delegate.levelReady) sendCommand("disconnectUser"); });
 
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
