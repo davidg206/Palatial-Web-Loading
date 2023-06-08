@@ -32,7 +32,7 @@ function App() {
   const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building', 'Ready']; // Add your loading steps here
   const stepTimeoutRef = useRef();
 
-  const preSubmitCheck = async () => {
+  const checkLevelReady = async () => {
     const proceedButton = document.querySelector('.proceedButton');
     if (!checkPassword(password)) {
       setError("Wrong password. Please try again.");
@@ -41,7 +41,7 @@ function App() {
       setError("");
     }
     proceedButton.disabled = true;
-    handleSubmit(userName, password, true, consentAccepted, device, setFormStep);
+    handleSubmit(userName, password, consentAccepted, device, setFormStep);
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
@@ -49,7 +49,7 @@ function App() {
 
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
-	preSubmitCheck();
+	checkLevelReady();
     }
   };
 
@@ -66,6 +66,7 @@ function App() {
       setUserName('');
       setActiveButton(null);
       setConsentAccepted(false);
+      sendCommand("disconnectUser");
       if (fromDisconnect) {
         delegate.loadingProgress = 0;
 	setProgress(0);
@@ -106,6 +107,7 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+
   useEffect(() => {
     stepTimeoutRef.current && clearTimeout(stepTimeoutRef.current);
     if (progress >= (step + 1) * 20) {
@@ -125,9 +127,6 @@ function App() {
     }
   }, [isInputFocused]);
 
-  const handleClick = isFirstTime => {
-    setActiveButton(isFirstTime ? 'yes' : 'no');
-  };
 
   const handleConsent = () => {
     setConsentAccepted(!consentAccepted);
@@ -136,7 +135,7 @@ function App() {
   // hook for transitioning form from username input to password input
   const handleFormTransition = () => {
     if (formStep === 1) {
-      if (userName !== null /*&& consentAccepted*/) {
+      if (userName !== null && consentAccepted) {
 	setFormStep(2);
         setError('');
       } else {
@@ -158,9 +157,10 @@ function App() {
     left: 0,
     width: '100%',
     height: '100%',
-    zIndex: -1,
-    objectFit: 'cover'
+    zIndex: -1,  
+    objectFit: 'cover' 
   };
+
 
   const handleOnFocus = (e) => {
     const passwordInput = document.querySelector('.passwordInput');
@@ -176,12 +176,9 @@ function App() {
 
 /*
 <div className="consentCTA">
-  <div className="consentCheckBox" onClick={handleConsent}>
-    <input type="checkbox" checked={consentAccepted} readOnly />
-    <p>I agree to the terms and conditions</p>
-  </div>
-</div>
-{error && <p className="error">{error}</p>}
+                <p>By proceeding you are agreeing to our terms and conditions</p>
+            </div>
+            {error && <p className="error">{error}</p>}
 */
 
   return (
@@ -205,8 +202,7 @@ function App() {
                 required
               />
             </div>
-            
-
+            {error && <p className="error">{error}</p>}
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}
@@ -227,7 +223,7 @@ function App() {
               />
             </div>
             {error && <p className="error">{error}</p>}
-            <button className="proceedButton" onClick={preSubmitCheck}>Submit</button>
+            <button className="proceedButton" onClick={checkLevelReady}>Submit</button>
           </div>
         )}
       </div>
