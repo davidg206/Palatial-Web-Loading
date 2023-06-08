@@ -7,8 +7,8 @@ import useDeviceDetect from './hooks/useDeviceDetect';
 import { delegate, sendCommand } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 import checkPassword from './utils/checkPassword';
-import visibleImg from './assets/Images/png/toggle_password_visible.png';
-import invisibleImg from './assets/Images/png/toggle_password_invisible.png';
+import passwordVisibleImg from './assets/Images/svg/toggle_password_visible.svg';
+import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.svg';
 
 function App() {
 
@@ -230,8 +230,8 @@ function App() {
         />
         <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
         {showPassword ? 
-          <img src={visibleImg} alt="hide password" style={{width: '24px', height: '24px'}} /> : 
-          <img src={invisibleImg} alt="show password" style={{width: '24px', height: '24px'}} />
+          <img src={passwordVisibleImg} alt="hide password" style={{width: '24px', height: '24px'}} /> : 
+          <img src={passwordinvisibleImg} alt="show password" style={{width: '24px', height: '24px'}} />
         }
         </button>
       </div>
