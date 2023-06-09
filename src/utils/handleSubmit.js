@@ -41,7 +41,6 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       root.classList.add("fade-out");
       setTimeout(() => {
         setFormStep(1);
-	loadingStep.textContent = "Ready";
 	delegate.levelReady = false;
       }, 1000);
     });

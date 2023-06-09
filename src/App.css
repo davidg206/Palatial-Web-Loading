@@ -190,7 +190,7 @@ html {
   color: #FFFFFF;
 }
 
-.proceedButton {
+.proceedButton, .goBackButton {
   background-image: url('./assets/Images/svg/proceed_Button_Default.svg');
   width: 8em; /* 100px/20px */
   height: 2em; /* 38.38px/20px */
@@ -207,7 +207,7 @@ html {
   margin-top: 1em;
   cursor: pointer;
 }
-.proceedButton:hover {
+.proceedButton:hover, .goBackButton:hover {
   background-image: url('./assets/Images/svg/proceed_Button_Hover.svg');
 }
 

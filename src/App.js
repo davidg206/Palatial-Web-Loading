@@ -258,28 +258,6 @@ function App() {
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}
-        {formStep === 2 && (
-          <div className='PopUpContent fadeIn'>
-            <div className="inputPrompt">
-              <p>Enter Your Password</p>
-	      <input type="text" id="hiddenInput" style={{ display: "none" }} onFocus={handleOnFocus} />
-              <input
-                className="passwordInput"
-                type="password"
-                value={password}
-		onInput={handleOnInput}
-		onKeyPress={handleKeyPress}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-		autoComplete="off"
-              />
-            <div className="consentCTA">
-                <p>By proceeding you are agreeing to our terms and conditions</p>
-            </div>
-            {error && <p className="error">{error}</p>}
-            <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
-          </div>
-        )}
 {formStep === 2 && (
   <div className='PopUpContent fadeIn'>
     <div className="inputPrompt">
@@ -294,7 +272,7 @@ function App() {
           onChange={(e) => setPassword(e.target.value)}
           onInput={handleOnInput}
           onKeyDown={handleKeyPress}
-          autocomplete="new-password"
+          autoComplete="new-password"
           required
         />
         <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
