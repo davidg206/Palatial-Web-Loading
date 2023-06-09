@@ -248,13 +248,19 @@ html {
   width: 100%;
 }
 
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+}
+
+
 .passwordInput {
   display: flex;
-  width: auto;
+  width: 100%;
   justify-content: center; /* Center aligns text horizontally */
   align-items: center; /* Center aligns text vertically */
   padding:  0.5em; /* 8px/20px = 0.4em vertically, 10px/20px = 0.5em horizontally */
-  background: #2D2D2D;
+  background: transparent;
   border: 0.05em solid #9BA185; /* 1px/20px = 0.05em */
   border-radius: 0.1em; /* 2px/20px = 0.1em */
   color: #FFFFFF; /* Sets text color to white */
@@ -265,7 +271,18 @@ html {
   flex: none;
   order: 1;
   flex-shrink: 0;
-  margin-top: 0.5em; /* Add some margin at the top if you want to separate it from the username input field */
+}
+
+.togglePasswordButton {
+  position: absolute;
+  width: 2em;
+  right: 0em; /* Position the button to the right */
+  top: 50%; /* Center the button vertically */
+  transform: translateY(-50%); /* Center the button vertically */
+  border: none;
+  background: none;
+  color: white;
+  cursor: pointer;
 }
 
 .error{

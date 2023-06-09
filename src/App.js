@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { isDesktop, isIPad13, isTablet, isMobile, osName, browserName } from 'react-device-detect';
-import './App.css';
+import './App.css'
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
@@ -8,6 +8,8 @@ import { delegate, sendCommand, emitUIInteraction } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 import checkPassword from './utils/checkPassword';
 import { waitForProjectName, waitForLevelReady } from './utils/awaitMethods';
+import passwordVisibleImg from './assets/Images/svg/toggle_password_visible.svg';
+import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.svg';
 
 function App() {
 
@@ -18,11 +20,12 @@ function App() {
 
   // State management
   const { device } = useDeviceDetect();
+  const [showPassword, setShowPassword] = useState(false);
   const [popUpVisible, setPopUpVisible] = useState(true);
   /*const { serverResponseMessage, popUpVisible, checkPassword } = usePasswordValidation();*/ //password validation result from server
   const [userName, setUserName] = useState('');
   const [activeButton, setActiveButton] = useState(null);
-  const [consentAccepted, setConsentAccepted] = useState(false);
+  const [consentAccepted, setConsentAccepted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [step, setStep] = useState(0);
   const [formStep, setFormStep] = useState(1);
@@ -44,6 +47,8 @@ function App() {
     proceedButton.disabled = true;
     handleSubmit(userName, password, true, consentAccepted, device, setFormStep);
   };
+
+  document.addEventListener('contextmenu', e => { e.preventDefault(); })
 
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
@@ -92,6 +97,11 @@ function App() {
         emitUIInteraction({ orientation: e.currentTarget.type });
     });
   }, []);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
 
   // disconnect events
   useEffect(() => {
@@ -177,9 +187,8 @@ function App() {
   // hook for transitioning form from username input to password input
   const handleFormTransition = () => {
     if (formStep === 1) {
-      if (userName) {
+      if (userName && consentAccepted) {
 	setFormStep(2);
-	//document.querySelector('.passwordInput').focus();
         setError('');
       } else {
         setError('Please complete all fields');
@@ -206,8 +215,8 @@ function App() {
     left: 0,
     width: '100%',
     height: '100%',
-    zIndex: -1,  
-    objectFit: 'cover' 
+    zIndex: -1,
+    objectFit: 'cover'
   };
 
 
@@ -222,13 +231,6 @@ function App() {
   const handleGoBack = () => {
     setFormStep(1);
   };
-
-/*
-<div className="consentCTA">
-                <p>By proceeding you are agreeing to our terms and conditions</p>
-            </div>
-            {error && <p className="error">{error}</p>}
-*/
 
   return (
     <div className="App">
@@ -271,15 +273,43 @@ function App() {
                 required
 		autoComplete="off"
               />
+            <div className="consentCTA">
+                <p>By proceeding you are agreeing to our terms and conditions</p>
             </div>
             {error && <p className="error">{error}</p>}
-            <button className="proceedButton" onClick={checkLevelReady}>Submit</button>
+            <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}
+{formStep === 2 && (
+  <div className='PopUpContent fadeIn'>
+    <div className="inputPrompt">
+      <p>Enter Your Password</p>
+      <div className="passwordWrapper">
+        <input
+          className="passwordInput"
+          type={showPassword ? "text" : "password"}
+          value={password}
+          onFocus={() => setInputFocused(true)}
+          onBlur={() => setInputFocused(false)}
+          onChange={(e) => setPassword(e.target.value)}
+          onInput={handleOnInput}
+          onKeyDown={handleKeyPress}
+          autocomplete="new-password"
+          required
+        />
+        <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
+        {showPassword ?
+          <img src={passwordVisibleImg} alt="hide password" style={{width: '1.2em', height: '1.2em'}} /> :
+          <img src={passwordinvisibleImg} alt="show password" style={{width: '1.2em', height: '1.2em'}} />
+        }
+        </button>
       </div>
-      <ProgressBar progress={progress} />
-      <div className="loadingStep">
-        {loadingSteps[step]}
+    </div>
+    {error && <p className="error">{error}</p>}
+    <button className="proceedButton" onClick={checkLevelReady}>Proceed</button>
+    <button className="goBackButton" onClick={handleGoBack}>Go Back</button>
+  </div>
+)}
       </div>
     </div>
   );
