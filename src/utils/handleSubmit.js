@@ -1,6 +1,7 @@
 import { osName, browserName, isMobile } from 'react-device-detect';
 import { delegate, emitUIInteraction } from '../DOMDelegate';
 import React, { useState, useEffect, useRef } from 'react';
+import { waitForLevelReady } from './awaitMethods';
 
 const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setFormStep) => {
   if (userName && password && firstTimeUser /*&& consentAccepted*/) {
@@ -57,31 +58,19 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
     const videoElement = document.getElementById("myVideo");
     videoElement.play();
 
-    delegate.checkStreamReady(async () => {
+    waitForLevelReady().then(() => {
+      delegate.loadingProgress = 100;
       emitUIInteraction(data);
-
-      const loadingStep = document.querySelector(".loadingStep");
-
-      setTimeout(() => { loadingStep.textContent = "Starting"; }, 480);
-
-      waitForProjectName().then(name => {
-        emitUIInteraction({ join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name] });
-      }).then(() => {
-        waitForLevelReady().then(() => {
-	  console.log('Entering palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]);
-          const root = document.getElementById("root");
-          delegate.loadingProgress = 100;
-          root.classList.add("fade-out");
-          setTimeout(() => {
-            setFormStep(1);
-	    loadingStep.textContent = "Ready";
-	    delegate.levelReady = false;
-          }, 1000);
-        }).catch(e => {
-          console.log(e);
-        });
-      }).catch(e => { console.log(e); });
-    })
+      emitUIInteraction({ join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName] });
+      console.log('Entering palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]);
+      const root = document.getElementById("root");
+      root.classList.add("fade-out");
+      setTimeout(() => {
+        setFormStep(1);
+	loadingStep.textContent = "Ready";
+	delegate.levelReady = false;
+      }, 1000);
+    });
   } else {
     // handle incomplete form
     console.error('Submit check failed');

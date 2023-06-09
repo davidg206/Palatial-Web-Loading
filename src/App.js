@@ -7,6 +7,7 @@ import useDeviceDetect from './hooks/useDeviceDetect';
 import { delegate, sendCommand } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 import checkPassword from './utils/checkPassword';
+import { waitForProjectName, waitForLevelReady } from './utils/awaitMethods';
 
 function App() {
 
@@ -55,6 +56,16 @@ function App() {
       setError('');
     }
   };
+
+  /*useEffect(() => {
+    delegate.checkStreamReady(async () => {
+      waitForProjectName().then(name => {
+        waitForLevelReady().then(() => {
+          delegate.loadingProgress = 100;
+        });
+      });
+    });
+  }, []);*/
 
   useEffect(() => {
     delegate.onDisconnectHook(fromDisconnect => {
