@@ -1,4 +1,4 @@
-    export const waitForLevelReady = () => {
+    export const waitForLevelReady = (delegate) => {
       return new Promise((resolve, reject) => {
         const checkReady = () => {
           if (delegate.levelReady) {
@@ -11,7 +11,7 @@
       });
     };
 
-    export const waitForProjectName = () => {
+    export const waitForProjectName = (delegate) => {
       return new Promise((resolve, reject) => {
         const checkName = () => {
           if (delegate.appName) {

@@ -26,44 +26,18 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       firstTimeUser: firstTimeUser ? "Yes" : "No",
       password: password,
       timestamp: new Date().getTime(), // current time in Epoch time
-      //join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]
     };
 
-    const waitForLevelReady = () => {
-      return new Promise((resolve, reject) => {
-        const checkReady = () => {
-          if (delegate.levelReady) {
-            resolve(true);
-          } else {
-            setTimeout(checkReady, 100);
-          }
-        };
-        checkReady();
-      });
-    };
-
-    const waitForProjectName = () => {
-      return new Promise((resolve, reject) => {
-        const checkName = () => {
-          if (delegate.appName) {
-            resolve(delegate.appName);
-          } else {
-            setTimeout(checkName, 100);
-          }
-        };
-        checkName();
-      });
-    };
-
+    const loadingStep = document.querySelector('.loadingStep');
     const videoElement = document.getElementById("myVideo");
     videoElement.play();
 
-    waitForLevelReady().then(() => {
+    waitForLevelReady(delegate).then(() => { emitUIInteraction(data); }).then(() => {
       delegate.loadingProgress = 100;
-      emitUIInteraction(data);
-      emitUIInteraction({ join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName] });
       console.log('Entering palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]);
       const root = document.getElementById("root");
+      const player = document.getElementById("playerUI");
+      player.classList.remove("no-events");
       root.classList.add("fade-out");
       setTimeout(() => {
         setFormStep(1);

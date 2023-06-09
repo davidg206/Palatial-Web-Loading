@@ -4,7 +4,7 @@ import './App.css';
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
-import { delegate, sendCommand } from './DOMDelegate';
+import { delegate, sendCommand, emitUIInteraction } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 import checkPassword from './utils/checkPassword';
 import { waitForProjectName, waitForLevelReady } from './utils/awaitMethods';
@@ -57,25 +57,52 @@ function App() {
     }
   };
 
-  /*useEffect(() => {
+  // dedicated server ports
+  const port = {
+    "tankhouse":  1111,
+    "dev":        2222,
+    "officedemo": 3333,
+    "epic":       4444,
+    "demo":       5555,
+    "prophet":    7777,
+    "45Main":      3333,
+    "PalatialDev": 2222
+  };
+
+  // join events
+  useEffect(() => {
     delegate.checkStreamReady(async () => {
-      waitForProjectName().then(name => {
-        waitForLevelReady().then(() => {
+      emitUIInteraction({});
+      waitForProjectName(delegate).then(name => {
+        emitUIInteraction({
+	  join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
+	  orientation: screen.orientation.type
+        });
+	delegate.loadingProgress = 90;
+        waitForLevelReady(delegate).then(() => {
           delegate.loadingProgress = 100;
         });
       });
     });
-  }, []);*/
+  }, []);
 
+  // mobile orientation
   useEffect(() => {
-    delegate.onDisconnectHook(fromDisconnect => {
+    screen.orientation.addEventListener('change', (e) => {
+        emitUIInteraction({ orientation: e.currentTarget.type });
+    });
+  }, []);
+
+  // disconnect events
+  useEffect(() => {
+    delegate.onDisconnectHook(isTimeout => {
       setFormStep(1);
       setPassword('');
       setUserName('');
       setActiveButton(null);
       setConsentAccepted(false);
       sendCommand("disconnectUser");
-      if (fromDisconnect) {
+      if (isTimeout) {
         delegate.loadingProgress = 0;
 	setProgress(0);
         setStep(0);

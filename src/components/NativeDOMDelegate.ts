@@ -727,7 +727,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				}
 				break;
 			case libspsfrontend.InstanceState.READY:
-				this.loadingProgress = 100;
 				if (instanceState.details == undefined || instanceState.details == null) {
 					instanceStateMessage = "Instance is Ready";
 					
@@ -1023,7 +1022,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 
 		this.videoStartTime = Date.now();
 		this.readyHook();
-		this.onPlayAction();
 
 		this.iWebRtcController.matchViewportResolution = true;
 		this.iWebRtcController.updateVideoStreamSize();
@@ -1044,6 +1042,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 			case "exitSession":
 				this.disconnectHook(false);
 				document.getElementById("root").classList.remove("fade-out");
+				document.getElementById("player").classList.add("no-events");
 				break;
 			case "url":
 				window.open(obj.data.link, '_blank');
@@ -1052,7 +1051,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				this.appName = obj.data.name;
 				break;
 			}
-                });	
+                });
 	}
 
 	/**
