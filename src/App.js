@@ -236,7 +236,7 @@ function App() {
     <div className="App">
       <video id="myVideo" style={videoStyle}></video>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
-      <div className="Logo">
+        <div className="Logo">
           <img src={logoPng} style={{width:'10em'}} alt='logo'/>
         </div>
         {formStep === 1 && (
@@ -250,44 +250,44 @@ function App() {
                 onFocus={() => setInputFocused(true)}
                 onBlur={() => setInputFocused(false)}
                 onChange={(e) => { setError(""); setUserName(e.target.value) } }
-		onKeyPress={hftHelper}
+                onKeyPress={hftHelper}
                 required
               />
             </div>
-	    {error && <p className="error">{error}</p>}
+            {error && <p className="error">{error}</p>}
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}
-{formStep === 2 && (
-  <div className='PopUpContent fadeIn'>
-    <div className="inputPrompt">
-      <p>Enter Your Password</p>
-      <div className="passwordWrapper">
-        <input
-          className="passwordInput"
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onFocus={() => setInputFocused(true)}
-          onBlur={() => setInputFocused(false)}
-          onChange={(e) => setPassword(e.target.value)}
-          onInput={handleOnInput}
-          onKeyDown={handleKeyPress}
-          autoComplete="new-password"
-          required
-        />
-        <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
-        {showPassword ?
-          <img src={passwordVisibleImg} alt="hide password" style={{width: '1.2em', height: '1.2em'}} /> :
-          <img src={passwordinvisibleImg} alt="show password" style={{width: '1.2em', height: '1.2em'}} />
-        }
-        </button>
-      </div>
-    </div>
-    {error && <p className="error">{error}</p>}
-    <button className="proceedButton" onClick={checkLevelReady}>Proceed</button>
-    <button className="goBackButton" onClick={handleGoBack}>Go Back</button>
-  </div>
-)}
+        {formStep === 2 && (
+          <div className='PopUpContent fadeIn'>
+            <div className="inputPrompt">
+              <p>Enter Your Password</p>
+              <div className="passwordWrapper">
+                <input
+                  className="passwordInput"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onFocus={() => setInputFocused(true)}
+                  onBlur={() => setInputFocused(false)}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onInput={handleOnInput}
+                  onKeyDown={handleKeyPress}
+                  autocomplete="new-password"
+                  required
+                />
+                <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
+                {showPassword ?
+                <img src={passwordVisibleImg} alt="hide password" style={{width: '1.2em', height: '1.2em'}} /> :
+                <img src={passwordinvisibleImg} alt="show password" style={{width: '1.2em', height: '1.2em'}} />
+                }
+                </button>
+              </div>
+            </div>
+            {error && <p className="error">{error}</p>}
+            <button className="proceedButton" onClick={checkLevelReady}>Proceed</button>
+            <button className="goBackButton" onClick={handleGoBack}>Go Back</button>
+          </div>
+        )}
       </div>
     </div>
   );
