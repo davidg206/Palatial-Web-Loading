@@ -28,16 +28,11 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       timestamp: new Date().getTime(), // current time in Epoch time
     };
 
-    const loadingStep = document.querySelector('.loadingStep');
-    const videoElement = document.getElementById("myVideo");
-    videoElement.play();
-
     waitForLevelReady(delegate).then(() => { emitUIInteraction(data); }).then(() => {
       delegate.loadingProgress = 100;
       console.log('Entering palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]);
       const root = document.getElementById("root");
       const player = document.getElementById("playerUI");
-      player.classList.remove("no-events");
       root.classList.add("fade-out");
       setTimeout(() => {
         setFormStep(1);

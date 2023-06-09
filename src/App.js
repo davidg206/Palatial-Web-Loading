@@ -209,17 +209,6 @@ function App() {
     }
   };
 
-  const videoStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: -1,
-    objectFit: 'cover'
-  };
-
-
   const handleOnFocus = (e) => {
     const passwordInput = document.querySelector('.passwordInput');
     const hiddenInput = e.target;
@@ -234,7 +223,6 @@ function App() {
 
   return (
     <div className="App">
-      <video id="myVideo" style={videoStyle}></video>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
         <div className="Logo">
           <img src={logoPng} style={{width:'10em'}} alt='logo'/>
@@ -269,10 +257,10 @@ function App() {
                   value={password}
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setError(""); setPassword(e.target.value); }}
                   onInput={handleOnInput}
                   onKeyDown={handleKeyPress}
-                  autocomplete="new-password"
+                  autoComplete="new-password"
                   required
                 />
                 <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
@@ -288,6 +276,10 @@ function App() {
             <button className="goBackButton" onClick={handleGoBack}>Go Back</button>
           </div>
         )}
+      </div>
+      <ProgressBar progress={progress} />
+      <div className="loadingStep">
+        {loadingSteps[step]}
       </div>
     </div>
   );
