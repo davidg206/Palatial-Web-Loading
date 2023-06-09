@@ -490,11 +490,11 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
             });
 	}
 
-	checkStreamReady( readyHook: () => void ) {
+	checkStreamReady( rH: () => void ) {
 		if (this.streamReady) {
-			readyHook();
+			rH();
 		} else {
-			this.readyHook = readyHook;
+			this.readyHook = rH;
 		}
 	}
 
@@ -1023,6 +1023,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 
 		this.videoStartTime = Date.now();
 		this.readyHook();
+		this.onPlayAction();
 
 		this.iWebRtcController.matchViewportResolution = true;
 		this.iWebRtcController.updateVideoStreamSize();

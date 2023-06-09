@@ -41,11 +41,8 @@ function App() {
       setError("");
     }
     proceedButton.disabled = true;
-    handleSubmit(userName, password, consentAccepted, device, setFormStep);
+    handleSubmit(userName, password, true, consentAccepted, device, setFormStep);
   };
-
-  document.addEventListener('contextmenu', e => { e.preventDefault(); })
-  window.addEventListener('beforeunload', () => { if (delegate.levelReady) sendCommand("disconnectUser"); });
 
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
@@ -79,6 +76,13 @@ function App() {
   useEffect(() => {
     setAppHeight();
     window.addEventListener('resize', setAppHeight);
+    document.addEventListener('contextmenu', e => { e.preventDefault(); })
+    window.addEventListener('beforeunload', () => {
+      if (delegate && delegate.streamReady) {
+        sendCommand("disconnectUser");
+      }
+    });
+
     if (isMobile || isTablet || isIPad13) {
       const updateHeight = () => {
         document.body.style.height = `${window.innerHeight}px`;
@@ -135,8 +139,9 @@ function App() {
   // hook for transitioning form from username input to password input
   const handleFormTransition = () => {
     if (formStep === 1) {
-      if (userName !== null) {
+      if (userName) {
 	setFormStep(2);
+	//document.querySelector('.passwordInput').focus();
         setError('');
       } else {
         setError('Please complete all fields');
@@ -148,6 +153,12 @@ function App() {
       } else {
         setError('Please enter a password');
       }
+    }
+  };
+
+  const hftHelper = (e) => {
+    if (e.key === 'Enter') {
+      handleFormTransition();
     }
   };
 
@@ -198,10 +209,12 @@ function App() {
                 value={userName}
                 onFocus={() => setInputFocused(true)}
                 onBlur={() => setInputFocused(false)}
-                onChange={(e) => setUserName(e.target.value)}
+                onChange={(e) => { setError(""); setUserName(e.target.value) } }
+		onKeyPress={hftHelper}
                 required
               />
             </div>
+	    {error && <p className="error">{error}</p>}
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}

@@ -1,5 +1,5 @@
-import { osName, browserName } from 'react-device-detect';
-import { delegate, emitUIInteraction, config } from '../DOMDelegate';
+import { osName, browserName, isMobile } from 'react-device-detect';
+import { delegate, emitUIInteraction } from '../DOMDelegate';
 import React, { useState, useEffect, useRef } from 'react';
 
 const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setFormStep) => {
@@ -11,15 +11,15 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       epic:       4444,
       demo:       5555,
       prophet:    7777,
-      "45 main":  3333,
-      "PalatialDev": 2222
+      "45Main":  3333,
+      PalatialDev: 2222
     };
 
     const data = {
       deviceType: device,
       osName: osName,
       browserName: browserName,
-      mobileUser: config.isMobile,
+      mobileUser: isMobile,
       userName: userName,
       consentAccepted: consentAccepted,
       firstTimeUser: firstTimeUser ? "Yes" : "No",
@@ -45,7 +45,7 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       return new Promise((resolve, reject) => {
         const checkName = () => {
           if (delegate.appName) {
-            return resolve(delegate.appName);
+            resolve(delegate.appName);
           } else {
             setTimeout(checkName, 100);
           }
@@ -64,10 +64,11 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
 
       setTimeout(() => { loadingStep.textContent = "Starting"; }, 480);
 
-      waitForProjectName().then(name => {console.log("Project name: " + name);
+      waitForProjectName().then(name => {
         emitUIInteraction({ join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name] });
       }).then(() => {
         waitForLevelReady().then(() => {
+	  console.log('Entering palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]);
           const root = document.getElementById("root");
           delegate.loadingProgress = 100;
           root.classList.add("fade-out");
@@ -79,10 +80,11 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
         }).catch(e => {
           console.log(e);
         });
-      });
-    });
+      }).catch(e => { console.log(e); });
+    })
   } else {
     // handle incomplete form
+    console.error('Submit check failed');
   }
 };
 
