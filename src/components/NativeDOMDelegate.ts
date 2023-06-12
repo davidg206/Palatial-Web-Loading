@@ -1045,7 +1045,11 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				document.getElementById("player").classList.add("no-events");
 				break;
 			case "url":
-				window.open(obj.data.link, '_blank');
+				const link = obj.data.link;
+				const a = document.createElement('a');
+				a.href = link;
+				a.target = '_blank';
+				a.click();
 				break;
 			case "ProjectName":
 				this.appName = obj.data.name;

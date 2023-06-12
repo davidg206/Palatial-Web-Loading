@@ -81,7 +81,7 @@ function App() {
       waitForProjectName(delegate).then(name => {
         emitUIInteraction({
 	  join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
-	  orientation: screen.orientation.type
+	  orientation: window.screen.orientation.type
         });
 	delegate.loadingProgress = 90;
         waitForLevelReady(delegate).then(() => {
@@ -93,7 +93,7 @@ function App() {
 
   // mobile orientation
   useEffect(() => {
-    screen.orientation.addEventListener('change', (e) => {
+    window.screen.orientation.addEventListener('change', (e) => {
         emitUIInteraction({ orientation: e.currentTarget.type });
     });
   }, []);
