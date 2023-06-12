@@ -37,7 +37,7 @@ function App() {
   const stepTimeoutRef = useRef();
 
   const checkLevelReady = async () => {
-    const proceedButton = document.querySelector('.proceedButton');
+    const proceedButton = document.querySelector('.submitButton');
     if (!checkPassword(password)) {
       setError("Wrong password. Please try again.");
       return;
@@ -51,7 +51,7 @@ function App() {
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
 
   const handleKeyPress = (e) => {
-    if (e.key == 'Enter' && !document.querySelector('.proceedButton').disabled) {
+    if (e.key == 'Enter' && !document.querySelector('.submitButton').disabled) {
 	checkLevelReady();
     }
   };
