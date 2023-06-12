@@ -320,7 +320,7 @@ html {
 
 .passwordInput {
   display: flex;
-  width: 100%;
+  width: 95%;
   justify-content: center; /* Center aligns text horizontally */
   align-items: center; /* Center aligns text vertically */
   padding:  0.5em; /* 8px/20px = 0.4em vertically, 10px/20px = 0.5em horizontally */
@@ -340,7 +340,7 @@ html {
 .togglePasswordButton {
   position: absolute;
   width: 2em;
-  right: 0em; /* Position the button to the right */
+  right: 1em; /* Position the button to the right */
   top: 50%; /* Center the button vertically */
   transform: translateY(-50%); /* Center the button vertically */
   border: none;
