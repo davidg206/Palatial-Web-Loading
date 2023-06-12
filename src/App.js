@@ -38,6 +38,7 @@ function App() {
 
   const checkLevelReady = async () => {
     const proceedButton = document.querySelector('.submitButton');
+    const passwordInput = document.querySelector('.passwordInput');
     if (!checkPassword(password)) {
       setError("Wrong password. Please try again.");
       return;
@@ -45,6 +46,7 @@ function App() {
       setError("");
     }
     proceedButton.disabled = true;
+    passwordInput.disabled = true;
     handleSubmit(userName, password, true, consentAccepted, device, setFormStep);
   };
 
