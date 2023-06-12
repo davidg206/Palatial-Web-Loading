@@ -44,7 +44,8 @@ html {
   height: 100%; 
   flex-direction: column;
   align-items: left;
-  text-align: center;
+  text-align: left;
+  
 }
 
 .inputPrompt{
@@ -137,7 +138,6 @@ html {
 }
 
 .yesButton {
- 
   background-image: url('./assets/Images/svg/firstTime_Toggle_Yes_Default.svg');
 }
 .yesButton:hover {
@@ -190,10 +190,11 @@ html {
   color: #FFFFFF;
 }
 
+/*proceed button*/
 .proceedButton {
-  background-image: url('./assets/Images/svg/proceed_Button_Default.svg');
-  width: 8em; /* 100px/20px */
-  height: 2em; /* 38.38px/20px */
+  background-image: url('./assets/Images/svg/Button_1_Default.svg');
+  width: auto; /* 100px/20px */
+  height: 2.5em; /* 50px/20px */
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -201,15 +202,78 @@ html {
   border: transparent;
   transition: all 0ms ease-in;
   font-family: 'Lato', sans-serif;
-  font-weight: 300;
+  font-weight: 500;
   font-size: 1em; /* 20px */
   color: #FFFFFF;
   margin-top: 1em;
   cursor: pointer;
 }
 .proceedButton:hover {
-  background-image: url('./assets/Images/svg/proceed_Button_Hover.svg');
+  background-image: url('./assets/Images/svg/Button_1_Hover.svg');
 }
+.proceedButton:active {
+  background-image: url('./assets/Images/svg/Button_1_Click.svg');
+}
+
+.passwordButtons{
+  display: block;
+  width: 100%;
+  
+
+}
+/*BackButton on the password input page*/
+.backButton {
+  background-image: url('./assets/Images/svg/Button_2_Default.svg');
+  background-color: aqua;
+  width: 100%; /* 100px/20px */
+  height: 3em; /* 50px/20px */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-color: transparent;
+  border: transparent;
+  transition: all 0ms ease-in;
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+  font-size: 1em; /* 20px */
+  color: #FFFFFF;
+  cursor: pointer;
+}
+.backButton:hover {
+  background-image: url('./assets/Images/svg/Button_2_Hover.svg');
+}
+.backButton:active {
+  background-image: url('./assets/Images/svg/Button_2_Click.svg');
+}
+
+/*submit button*/
+.submitButton {
+  background-image: url('./assets/Images/svg/Button_3_Default.svg');
+  width: 100%; /* 100px/20px */
+  height: 3em; /* 50px/20px */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-color: transparent;
+  border: transparent;
+  transition: all 0ms ease-in;
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+  font-size: 1em; /* 20px */
+  color: #FFFFFF;
+  cursor: pointer;
+}
+.submitButton:hover {
+  background-image: url('./assets/Images/svg/Button_3_Hover.svg');
+}
+.submitButton:active {
+  background-image: url('./assets/Images/svg/Button_3_Click.svg');
+}
+
+
+
+
+
 
 
 .progressBar {
