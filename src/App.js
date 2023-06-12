@@ -243,7 +243,9 @@ function App() {
               />
             </div>
             {error && <p className="error">{error}</p>}
+            <div className='passwordButtons'>
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
+            </div>
           </div>
         )}
         {formStep === 2 && (

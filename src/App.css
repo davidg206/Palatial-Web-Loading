@@ -193,7 +193,7 @@ html {
 /*proceed button*/
 .proceedButton {
   background-image: url('./assets/Images/svg/Button_1_Default.svg');
-  width: auto; /* 100px/20px */
+  width: 10em; /* 100px/20px */
   height: 2.5em; /* 50px/20px */
   background-repeat: no-repeat;
   background-position: center;
@@ -218,14 +218,15 @@ html {
 .passwordButtons{
   display: block;
   width: 100%;
-  
-
+  flex-direction: row; 
+  justify-content: space-between;
+  justify-items: left;
 }
 /*BackButton on the password input page*/
 .backButton {
   background-image: url('./assets/Images/svg/Button_2_Default.svg');
   background-color: aqua;
-  width: 100%; /* 100px/20px */
+  width: 10em; /* 100px/20px */
   height: 3em; /* 50px/20px */
   background-repeat: no-repeat;
   background-position: center;
@@ -249,7 +250,7 @@ html {
 /*submit button*/
 .submitButton {
   background-image: url('./assets/Images/svg/Button_3_Default.svg');
-  width: 100%; /* 100px/20px */
+  width: 10em; /* 100px/20px */
   height: 3em; /* 50px/20px */
   background-repeat: no-repeat;
   background-position: center;
