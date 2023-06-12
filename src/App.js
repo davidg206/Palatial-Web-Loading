@@ -187,11 +187,11 @@ function App() {
   // hook for transitioning form from username input to password input
   const handleFormTransition = () => {
     if (formStep === 1) {
-      if (userName && consentAccepted) {
-	setFormStep(2);
+      if (userName !== null && userName.trim() !== "" && consentAccepted) {
+	      setFormStep(2);
         setError('');
       } else {
-        setError('Please complete all fields');
+        setError('Please enter a name');
       }
     } else if (formStep === 2) {
       if (password) {
@@ -272,8 +272,10 @@ function App() {
               </div>
             </div>
             {error && <p className="error">{error}</p>}
-            <button className="proceedButton" onClick={checkLevelReady}>Proceed</button>
-            <button className="goBackButton" onClick={handleGoBack}>Go Back</button>
+            <div className="passwordButtons" style={{display:'flex',flexDirection:'row', paddingTop:'1em'}}> 
+              <button className="backButton" onClick={handleGoBack}>Go Back</button>
+              <button className="submitButton" onClick={checkLevelReady}>Proceed</button>
+            </div>
           </div>
         )}
       </div>
