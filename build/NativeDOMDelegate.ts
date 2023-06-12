@@ -1,9 +1,7 @@
-import '../assets/css/player.css';
+import './assets/css/player.css';
+import playButton from './assets/images/Play.png';
 import { EventEmitter } from "events";
-import ProgressBar from './ProgressBar';
-import * as libspsfrontend from "backend-dom-components-1";
-
-Object.defineProperty(exports, "__esModule", { value: true });
+import * as libspsfrontend from 'backend-dom-components'
 
 declare var WEBSOCKET_URL: string;
 
@@ -353,11 +351,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	videoStartTime: number;
 	mobileUser: boolean;
 	streamReady: boolean;
-	levelReady: boolean;
-	readyHook: Function;
-	disconnectHook: Function;
-	loadingProgress: number;
-	passwordResponse: object;
+
 	// instantiate the WebRtcPlayerControllers interface var 
 	iWebRtcController: libspsfrontend.IWebRtcPlayerController;
 
@@ -415,16 +409,10 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 
 	constructor(config: libspsfrontend.Config) {
 		super(config);
-		this.config = config;
 		this.showStats = true;
 		this.videoQpIndicator = new VideoQpIndicator("connectionStrength", "qualityText", "outer", "middle", "inner", "dot");
 		this.fullScreenLogic = new FullScreenLogic();
 		this.streamReady = false;
-		this.levelReady = false;
-		this.readyHook = () => { };
-		this.disconnectHook = (boolean) => { };
-		this.loadingProgress = 0;
-		this.passwordResponse = null;
 
 		// build all of the overlays 
 		this.buildDisconnectOverlay();
@@ -434,73 +422,60 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.buildInfoOverlay();
 		this.buildErrorOverlay();
 
+		this.startNoteTimeout();
+
 		// configure all buttons 
 		this.ConfigureButtons();
-
 	}
 
-	getLoadingProgress() {
-		return this.loadingProgress;
-	}
-
-	getResponseEventListener() {
-		return this.getPlayerController().dataChannelController.responseEventListeners;
-	}
-
-	addResponseEventListener(eventKey: string, listener: (obj: any) => void) {
-		this.getResponseEventListener().set(eventKey, listener);
-	}
-
-	removeResponseEventListener(eventKey: string) {
-		this.getResponseEventListener().delete(eventKey);
-	}
-
-	getPlayerController() {
-		return (<libspsfrontend.webRtcPlayerController>this.iWebRtcController);
+	startNoteTimeout() {
+		setTimeout(function() {
+			let noteText: HTMLDivElement = document.querySelector('.loadingNote');
+			noteText.style.opacity = '1';
+			if (document.getElementById('bubble').innerHTML == "Loading")
+				noteText.innerHTML = 'Please refresh if the experience does not load after 30 seconds.';
+		}, 17000);
+                /*setTimeout(() => {
+			console.log('this.streamReady = ' + this.streamReady);
+                        if (!this.streamReady) {
+				console.log('redirecting');
+				(<libspsfrontend.webRtcPlayerController>this.iWebRtcController).webSocketController.close();
+				(<libspsfrontend.webRtcPlayerController>this.iWebRtcController).webSocketController.address = "wss://216.153.60.65/ws";
+				(<libspsfrontend.webRtcPlayerController>this.iWebRtcController).webSocketController.connect();
+			}
+                }, 2000);*/
 	}
 
 	updateVideoStreamSize(x: number, y: number) {
 		(<libspsfrontend.webRtcPlayerController>this.iWebRtcController).ueDescriptorUi.sendUpdateVideoStreamSize(x, y);
 	}
 
-    write(file: string, message: string) {
-        const data = {
-            filename: file,
-            data: message
-        };
+        write(file: string, message: string) {
+            const data = {
+                filename: file,
+                data: message
+            };
 
-        fetch('https://prophet.palatialxr.com:3001/save', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                console.log(
-                    `statusCode: ${response.status}`
-                    );
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-	}
-
-	checkStreamReady( rH: () => void ) {
-		if (this.streamReady) {
-			rH();
-		} else {
-			this.readyHook = rH;
-		}
-	}
-
-	onDisconnectHook( disconnectHook: (boolean) => void ) {
-		this.disconnectHook = disconnectHook;
-	}
+            fetch('https://prophet.palatialxr.com:3001/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    console.log(
+                        `statusCode: ${response.status}`
+                        );
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
 
 	/**
 	 * Builds the disconnect overlay 
@@ -516,9 +491,21 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		const self = this;
 
 		// add the new event listener 
-		disconnectOverlayHtml.addEventListener('click', function onOverlayClick(event: Event) {			
+		disconnectOverlayHtml.addEventListener('click', function onOverlayClick(event: Event) {
+			let container: HTMLElement = document.querySelector('.textContainer');
+			let video: HTMLElement = document.getElementById('streamingVideo');
+			let playerUI: HTMLElement = document.getElementById('playerUI');
+			
 			disconnectOverlayEvent(event);
-			document.getElementById("root").classList.remove("fade-out");
+			playerUI.style.pointerEvents = 'auto';
+			container.style.display = 'flex';
+			container.style.opacity = '1';
+			video.style.display = 'none';
+			video.style.opacity = '0';
+			video.style.pointerEvents = 'auto';
+			self.startNoteTimeout();
+			document.body.classList.remove('clickableState');
+			//whuzz
 		});
 
 		// build the inner html container 
@@ -719,7 +706,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				break;
 			case libspsfrontend.InstanceState.PENDING:
 				isInstancePending = true;
-				this.loadingProgress = 66;
 				if (instanceState.details == undefined || instanceState.details == null) {
 					instanceStateMessage = "Your application is pending";
 				} else {
@@ -779,8 +765,78 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 			// insert the inner html into the base div
 			this.showTextOverlay(wrapperDiv.outerHTML);
 		} else {
-			// ....
+			let container: HTMLElement = document.querySelector('.textContainer');
+			let bubbleText: HTMLDivElement = document.querySelector('.loadingText');
+			let noteText: HTMLDivElement = document.querySelector('.loadingNote');
+			let bubble: HTMLElement = document.getElementById('bubble');
+
+			bubbleText.innerHTML = "Press to Enter";
+			noteText.innerHTML = '';
+			//%
+			// set the event Listener
+			let playOverlayEvent: EventListener = () => this.onPlayAction();
+			let fadeOutLoader = (event: Event) => {
+				event.stopPropagation();
+				playOverlayEvent(event);
+				if (this.config.isMobile) {
+					//if (document.fullscreenElement == null) this.fullScreenLogic.fullscreen();
+					//setTimeout(function() { screen.orientation.lock("landscape-primary"); }, 1000);
+				}
+
+				// enable dynamic resolution
+				this.iWebRtcController.matchViewportResolution = true;
+				this.iWebRtcController.updateVideoStreamSize();
+				document.body.classList.remove('clickableState');
+                               
+				libspsfrontend.DataChannelController.coordinateConverter.setupNormalizeAndQuantize();
+
+				container.addEventListener('transitionend', () => {
+					container.style.display = 'none';
+					container.style.opacity = '0';
+					bubbleText.innerHTML = "Loading";
+					noteText.style.opacity = '0';
+
+					let video: HTMLElement = document.getElementById('streamingVideo');
+					video.style.display = 'flex';
+					video.style.opacity = "1";
+					video.style.pointerEvents = 'auto';
+					document.getElementById('playerUI').style.pointerEvents = "auto";
+				});
+
+                                if (this.appName == "prophet" && this.config.isMobile) {
+				  let filename = '/mnt/pvc/orientation.txt';
+                                  let currentOrientation = window.orientation;
+				  console.log(currentOrientation);
+				  this.write(filename, (currentOrientation === 90 || currentOrientation === -90) ? "landscape" : "portrait");
+                                  window.addEventListener("orientationchange", () => {
+                                    let newOrientation = window.orientation; console.log(newOrientation);
+                                    if (newOrientation !== currentOrientation) {
+                                      console.log("Orientation has changed: " + newOrientation);
+                                      currentOrientation = newOrientation;
+                                      let orientationString = (newOrientation === 90 || newOrientation === -90) ? "landscape" : "portrait";
+                                      this.write(filename, orientationString);
+                                      console.log(`Orientation saved to file: ${orientationString}`);
+                                    }
+                                  });
+                                }
+
+				container.style.opacity = '0';				
+				document.body.removeEventListener('click', fadeOutLoader);
+			};
+			document.body.classList.add('clickableState');
+			document.body.onclick = fadeOutLoader;
 		}
+
+                function openFullscreen() {
+                        let body = document.documentElement;
+                        if (body.requestFullscreen) {
+                                body.requestFullscreen();
+                        } else if (body.webkitRequestFullscreen) { /* Safari */
+                                body.webkitRequestFullscreen();
+                        } else if (body.msRequestFullscreen) { /* IE11 */
+                                body.msRequestFullscreen();
+                        }
+                }
 	}
 
 	/**
@@ -794,7 +850,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		// get the response type
 		switch (authResponse.outcome) {
 			case libspsfrontend.MessageAuthResponseOutcomeType.AUTHENTICATED:
-				this.loadingProgress = 30;
 				instanceStateMessage = "Authentication has succeeded. Requesting Instance";
 				break;
 			case libspsfrontend.MessageAuthResponseOutcomeType.INVALID_TOKEN:
@@ -971,7 +1026,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				} else {
 					urlParams.delete(urlParameterKey);
 				}
-				window.history.replaceState({}, '', urlParams.toString() !== "" ? `${window.location.pathname}?${urlParams}` : `${window.location.pathname}`);
+				window.history.replaceState({}, '', urlParams.toString() !== "" ? `${location.pathname}?${urlParams}` : `${location.pathname}`);
 			};
 		}
 	}
@@ -1021,37 +1076,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.statsContainer.classList.remove("d-none");
 
 		this.videoStartTime = Date.now();
-		this.readyHook();
-
-		this.iWebRtcController.matchViewportResolution = true;
-		this.iWebRtcController.updateVideoStreamSize();
-		libspsfrontend.DataChannelController.coordinateConverter.setupNormalizeAndQuantize();
-
-		this.addResponseEventListener("delegate_work", (obj: any) => {
-			switch (obj.response) {
-			case "selectedText":
-				navigator.clipboard.writeText(obj.data.text);
-				break;
-			case "levelLoaded":
-				console.log('levelLoaded');
-				this.levelReady = true;
-				break;
-			case "passwordTest":
-				this.passwordResponse = obj.data;
-				break;
-			case "exitSession":
-				this.disconnectHook(false);
-				document.getElementById("root").classList.remove("fade-out");
-				document.getElementById("player").classList.add("no-events");
-				break;
-			case "url":
-				window.open(obj.data.link, '_blank');
-				break;
-			case "ProjectName":
-				this.appName = obj.data.name;
-				break;
-			}
-                });
 	}
 
 	/**
@@ -1080,13 +1104,17 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.commandsContainer.classList.add("d-none");
 		this.streamingSettingsContainer.classList.add("d-none");
 		this.statsContainer.classList.add("d-none");
-
-		this.levelReady = false;
-		this.loadingProgress = 0;
-		this.streamReady = false;
-		this.readyHook = () => void { };
-		this.disconnectHook(true);
+		
+		const video : HTMLElement = document.getElementById('streamingVideo');
+		const bubble : HTMLElement = document.getElementById('bubble');
+		video.style.display = 'none';
+		video.style.opacity = '0';
+		bubble.style.display = 'none';
+		bubble.style.pointerEvents = 'none';
+		document.querySelector('.loadingText').innerHTML = "Loading";
+		document.body.onclick = null;
 	}
+
 	/**
 	 * `Takes the InitialSettings and wired to frontend
 	 * @param settings - Settings sent from the UE Instance`

@@ -1,6 +1,7 @@
-import { osName, browserName } from 'react-device-detect';
-import { delegate, emitUIInteraction, config } from '../DOMDelegate';
+import { osName, browserName, isMobile } from 'react-device-detect';
+import { delegate, emitUIInteraction } from '../DOMDelegate';
 import React, { useState, useEffect, useRef } from 'react';
+import { waitForLevelReady } from './awaitMethods';
 
 const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setFormStep) => {
   if (userName && password && firstTimeUser /*&& consentAccepted*/) {
@@ -11,78 +12,36 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       epic:       4444,
       demo:       5555,
       prophet:    7777,
-      "45 main":  3333,
-      "PalatialDev": 2222
+      "45Main":  3333,
+      PalatialDev: 2222
     };
 
     const data = {
       deviceType: device,
       osName: osName,
       browserName: browserName,
-      mobileUser: config.isMobile,
+      mobileUser: isMobile,
       userName: userName,
       consentAccepted: consentAccepted,
       firstTimeUser: firstTimeUser ? "Yes" : "No",
       password: password,
       timestamp: new Date().getTime(), // current time in Epoch time
-      //join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]
     };
 
-    const waitForLevelReady = () => {
-      return new Promise((resolve, reject) => {
-        const checkReady = () => {
-          if (delegate.levelReady) {
-            resolve(true);
-          } else {
-            setTimeout(checkReady, 100);
-          }
-        };
-        checkReady();
-      });
-    };
-
-    const waitForProjectName = () => {
-      return new Promise((resolve, reject) => {
-        const checkName = () => {
-          if (delegate.appName) {
-            return resolve(delegate.appName);
-          } else {
-            setTimeout(checkName, 100);
-          }
-        };
-        checkName();
-      });
-    };
-
-    const videoElement = document.getElementById("myVideo");
-    videoElement.play();
-
-    delegate.checkStreamReady(async () => {
-      emitUIInteraction(data);
-
-      const loadingStep = document.querySelector(".loadingStep");
-
-      setTimeout(() => { loadingStep.textContent = "Starting"; }, 480);
-
-      waitForProjectName().then(name => {console.log("Project name: " + name);
-        emitUIInteraction({ join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name] });
-      }).then(() => {
-        waitForLevelReady().then(() => {
-          const root = document.getElementById("root");
-          delegate.loadingProgress = 100;
-          root.classList.add("fade-out");
-          setTimeout(() => {
-            setFormStep(1);
-	    loadingStep.textContent = "Ready";
-	    delegate.levelReady = false;
-          }, 1000);
-        }).catch(e => {
-          console.log(e);
-        });
-      });
+    waitForLevelReady(delegate).then(() => { emitUIInteraction(data); }).then(() => {
+      delegate.loadingProgress = 100;
+      console.log('Entering palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]);
+      const root = document.getElementById("root");
+      const player = document.getElementById("playerUI");
+      root.classList.add("fade-out");
+      setTimeout(() => {
+        setFormStep(1);
+	delegate.levelReady = false;
+      }, 1000);
     });
   } else {
     // handle incomplete form
+    console.error('Submit check failed');
   }
 };
 

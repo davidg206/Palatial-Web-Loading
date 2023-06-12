@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, screen } from 'react';
 import { isDesktop, isIPad13, isTablet, isMobile, osName, browserName } from 'react-device-detect';
 import './App.css'
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
-import { delegate, sendCommand } from './DOMDelegate';
+import { delegate, sendCommand, emitUIInteraction } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 import checkPassword from './utils/checkPassword';
+import { waitForProjectName, waitForLevelReady } from './utils/awaitMethods';
 import passwordVisibleImg from './assets/Images/svg/toggle_password_visible.svg';
 import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.svg';
 
@@ -44,7 +45,7 @@ function App() {
       setError("");
     }
     proceedButton.disabled = true;
-    handleSubmit(userName, password, consentAccepted, device, setFormStep);
+    handleSubmit(userName, password, true, consentAccepted, device, setFormStep);
   };
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
@@ -61,21 +62,57 @@ function App() {
     }
   };
 
+  // dedicated server ports
+  const port = {
+    "tankhouse":  1111,
+    "dev":        2222,
+    "officedemo": 3333,
+    "epic":       4444,
+    "demo":       5555,
+    "prophet":    7777,
+    "45Main":      3333,
+    "PalatialDev": 2222
+  };
+
+  // join events
+  useEffect(() => {
+    delegate.checkStreamReady(async () => {
+      emitUIInteraction({});
+      waitForProjectName(delegate).then(name => {
+        emitUIInteraction({
+	  join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
+	  orientation: screen.orientation.type
+        });
+	delegate.loadingProgress = 90;
+        waitForLevelReady(delegate).then(() => {
+          delegate.loadingProgress = 100;
+        });
+      });
+    });
+  }, []);
+
+  // mobile orientation
+  useEffect(() => {
+    screen.orientation.addEventListener('change', (e) => {
+        emitUIInteraction({ orientation: e.currentTarget.type });
+    });
+  }, []);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  
 
+
+  // disconnect events
   useEffect(() => {
-    delegate.onDisconnectHook(fromDisconnect => {
+    delegate.onDisconnectHook(isTimeout => {
       setFormStep(1);
       setPassword('');
       setUserName('');
       setActiveButton(null);
       setConsentAccepted(false);
       sendCommand("disconnectUser");
-      if (fromDisconnect) {
+      if (isTimeout) {
         delegate.loadingProgress = 0;
 	setProgress(0);
         setStep(0);
@@ -87,6 +124,13 @@ function App() {
   useEffect(() => {
     setAppHeight();
     window.addEventListener('resize', setAppHeight);
+    document.addEventListener('contextmenu', e => { e.preventDefault(); })
+    window.addEventListener('beforeunload', () => {
+      if (delegate && delegate.streamReady) {
+        sendCommand("disconnectUser");
+      }
+    });
+
     if (isMobile || isTablet || isIPad13) {
       const updateHeight = () => {
         document.body.style.height = `${window.innerHeight}px`;
@@ -159,16 +203,11 @@ function App() {
     }
   };
 
-  const videoStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: -1,  
-    objectFit: 'cover' 
+  const hftHelper = (e) => {
+    if (e.key === 'Enter') {
+      handleFormTransition();
+    }
   };
-
 
   const handleOnFocus = (e) => {
     const passwordInput = document.querySelector('.passwordInput');
@@ -184,9 +223,8 @@ function App() {
 
   return (
     <div className="App">
-      <video id="myVideo" style={videoStyle}></video>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
-      <div className="Logo">
+        <div className="Logo">
           <img src={logoPng} style={{width:'10em'}} alt='logo'/>
         </div>
         {formStep === 1 && (
@@ -199,51 +237,51 @@ function App() {
                 value={userName}
                 onFocus={() => setInputFocused(true)}
                 onBlur={() => setInputFocused(false)}
-                onChange={(e) => setUserName(e.target.value)}
+                onChange={(e) => { setError(""); setUserName(e.target.value) } }
+                onKeyPress={hftHelper}
                 required
               />
-            </div>
-            <div className="consentCTA">
-                <p>By proceeding you are agreeing to our terms and conditions</p>
             </div>
             {error && <p className="error">{error}</p>}
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
           </div>
         )}
-{formStep === 2 && (
-  <div className='PopUpContent fadeIn'>
-    <div className="inputPrompt">
-      <p>Enter Your Password</p>
-      <div className="passwordWrapper">
-        <input
-          className="passwordInput"
-          type={showPassword ? "text" : "password"}
-          value={password}
-          onFocus={() => setInputFocused(true)}
-          onBlur={() => setInputFocused(false)}
-          onChange={(e) => setPassword(e.target.value)}
-          onInput={handleOnInput}
-          onKeyDown={handleKeyPress}
-          autocomplete="new-password"
-          required
-        />
-        <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
-        {showPassword ? 
-          <img src={passwordVisibleImg} alt="hide password" style={{width: '1.2em', height: '1.2em'}} /> : 
-          <img src={passwordinvisibleImg} alt="show password" style={{width: '1.2em', height: '1.2em'}} />
-        }
-        </button>
+        {formStep === 2 && (
+          <div className='PopUpContent fadeIn'>
+            <div className="inputPrompt">
+              <p>Enter Your Password</p>
+              <div className="passwordWrapper">
+                <input
+                  className="passwordInput"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onFocus={() => setInputFocused(true)}
+                  onBlur={() => setInputFocused(false)}
+                  onChange={(e) => { setError(""); setPassword(e.target.value); }}
+                  onInput={handleOnInput}
+                  onKeyDown={handleKeyPress}
+                  autoComplete="new-password"
+                  required
+                />
+                <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
+                {showPassword ?
+                <img src={passwordVisibleImg} alt="hide password" style={{width: '1.2em', height: '1.2em'}} /> :
+                <img src={passwordinvisibleImg} alt="show password" style={{width: '1.2em', height: '1.2em'}} />
+                }
+                </button>
+              </div>
+            </div>
+            {error && <p className="error">{error}</p>}
+            <div className="passwordButtons" style={{display:'flex',flexDirection:'row', paddingTop:'1em'}}> 
+              <button className="backButton" onClick={handleGoBack}>Go Back</button>
+              <button className="submitButton" onClick={checkLevelReady}>Proceed</button>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
-
-    {error && <p className="error">{error}</p>}
-    <div className="passwordButtons" style={{display:'flex',flexDirection:'row', paddingTop:'1em'}}> 
-      <button className="backButton" onClick={handleGoBack}>Go Back</button>
-      <button className="submitButton" onClick={checkLevelReady}>Proceed</button>
-    </div>
-
-  </div>
-)}
+      <ProgressBar progress={progress} />
+      <div className="loadingStep">
+        {loadingSteps[step]}
       </div>
     </div>
   );

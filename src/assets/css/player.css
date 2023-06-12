@@ -46,8 +46,10 @@ canvas {
 	position: absolute;
 	background-color: black;
 	transition: opacity 0.3s ease-out;
-	/*pointer-events: none;*/
-	/*z-index: 15;*/
+}
+
+.no-events {
+	pointer-events: none;
 }
 
 #streamingVideo {
