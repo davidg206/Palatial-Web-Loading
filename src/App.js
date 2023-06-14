@@ -35,6 +35,8 @@ function App() {
   // add the names of the actual loading steps to the following and change the progress bar step value to 100/# of actual steps at :89 and :96
   const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building', 'Ready']; // Add your loading steps here
   const stepTimeoutRef = useRef();
+  const [shouldFadeOut, setShouldFadeOut] = useState(false);
+
 
   const checkLevelReady = async () => {
     const proceedButton = document.querySelector('.submitButton');
@@ -46,7 +48,12 @@ function App() {
     }
     proceedButton.disabled = true;
     handleSubmit(userName, password, true, consentAccepted, device, setFormStep);
+    setShouldFadeOut(true);
+    setTimeout(() => {
+      setPopUpVisible(false);
+    },100);  // delay in milliseconds equal to the duration of the animation
   };
+  
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
 
@@ -101,7 +108,6 @@ function App() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
 
   // disconnect events
   useEffect(() => {
@@ -243,6 +249,7 @@ function App() {
               />
             </div>
             {error && <p className="error">{error}</p>}
+            <p style={{fontweight:'100'}}>By proceeding you agree to our terms and conditions</p>
             <div className='passwordButtons'>
             <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
             </div>
@@ -276,7 +283,7 @@ function App() {
             {error && <p className="error">{error}</p>}
             <div className="passwordButtons" style={{display:'flex',flexDirection:'row', paddingTop:'1em'}}> 
               <button className="backButton" onClick={handleGoBack}>Go Back</button>
-              <button className="submitButton" onClick={checkLevelReady}>Submit</button>
+              <button className="submitButton" onClick={checkLevelReady}>Start</button>
             </div>
           </div>
         )}
