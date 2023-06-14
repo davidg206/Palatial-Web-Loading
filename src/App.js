@@ -279,7 +279,7 @@ function App() {
             {error && <p className="error">{error}</p>}
             <div className="passwordButtons" style={{display:'flex',flexDirection:'row', paddingTop:'1em'}}> 
               <button className="backButton" onClick={handleGoBack}>Go Back</button>
-              <button className="submitButton" onClick={checkLevelReady}>Proceed</button>
+              <button className="submitButton" onClick={checkLevelReady}>Submit</button>
             </div>
           </div>
         )}
