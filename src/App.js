@@ -83,7 +83,7 @@ function App() {
       waitForProjectName(delegate).then(name => {
         emitUIInteraction({
 	  join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
-	  orientation: window.screen.orientation.type
+	  orientation: isMobile ? window.screen.orientation.type : ""
         });
 	delegate.loadingProgress = 90;
         waitForLevelReady(delegate).then(() => {
@@ -95,9 +95,10 @@ function App() {
 
   // mobile orientation
   useEffect(() => {
-    window.screen.orientation.addEventListener('change', (e) => {
-        emitUIInteraction({ orientation: e.currentTarget.type });
-    });
+    if (isMobile)
+      window.screen.orientation.addEventListener('change', (e) => {
+          emitUIInteraction({ orientation: e.currentTarget.type });
+      });
   }, []);
 
   const togglePasswordVisibility = () => {
