@@ -28,6 +28,9 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
       timestamp: new Date().getTime(), // current time in Epoch time
     };
 
+    const myVideo = document.getElementById("myVideo");
+    myVideo.play();
+
     waitForLevelReady(delegate).then(() => { emitUIInteraction(data); }).then(() => {
       delegate.loadingProgress = 100;
       console.log('Entering palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]);
