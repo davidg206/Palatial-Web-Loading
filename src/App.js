@@ -52,6 +52,24 @@ function App() {
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
 
+  function getScreenOrientation() {
+    let orientation = "";
+
+    if (typeof window.screen.orientation !== 'undefined') {
+      orientation = window.screen.orientation.type;
+    } else if (typeof window.orientation !== 'undefined') {
+      // Deprecated API for older iOS versions
+      if (window.orientation === 0 || window.orientation === 180) {
+        orientation = "portrait";
+      } else {
+        orientation = "landscape";
+      }
+    }
+
+    return orientation;
+  }
+
+
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.submitButton').disabled) {
 	checkLevelReady();
@@ -83,7 +101,7 @@ function App() {
       waitForProjectName(delegate).then(name => {
         emitUIInteraction({
 	  join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
-	  orientation: isMobile ? window.screen.orientation.type : ""
+	  orientation: isMobile ? getScreenOrientation() : ""
         });
 	delegate.loadingProgress = 90;
         waitForLevelReady(delegate).then(() => {
@@ -96,8 +114,8 @@ function App() {
   // mobile orientation
   useEffect(() => {
     if (isMobile)
-      window.screen.orientation.addEventListener('change', (e) => {
-          emitUIInteraction({ orientation: e.currentTarget.type });
+      window.addEventListener('orientationchange', () => {
+          emitUIInteraction({ orientation: getScreenOrientation() });
       });
   }, []);
 
@@ -224,8 +242,19 @@ function App() {
     setFormStep(1);
   };
 
+  const videoStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
+    objectFit: 'cover'
+  };
+
   return (
     <div className="App">
+      <video id="myVideo" style={videoStyle}></video>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
         <div className="Logo">
           <img src={logoPng} style={{width:'10em'}} alt='logo'/>
