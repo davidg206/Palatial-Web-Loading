@@ -127,7 +127,7 @@ function App() {
       setUserName('');
       setActiveButton(null);
       setConsentAccepted(false);
-      sendCommand("disconnectUser");
+      if (delegate.streamReady) sendCommand("disconnectUser");
       if (isTimeout) {
         delegate.loadingProgress = 0;
 	setProgress(0);
