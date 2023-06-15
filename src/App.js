@@ -10,6 +10,7 @@ import checkPassword from './utils/checkPassword';
 import { waitForProjectName, waitForLevelReady } from './utils/awaitMethods';
 import passwordVisibleImg from './assets/Images/svg/toggle_password_visible.svg';
 import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.svg';
+import { port } from './utils/palatial-ports';
 
 function App() {
 
@@ -87,18 +88,6 @@ function App() {
     if (e.target.value == '') {
       setError('');
     }
-  };
-
-  // dedicated server ports
-  const port = {
-    "tankhouse":  1111,
-    "dev":        2222,
-    "officedemo": 3333,
-    "epic":       4444,
-    "demo":       5555,
-    "prophet":    7777,
-    "45Main":      3333,
-    "PalatialDev": 2222
   };
 
   // join events

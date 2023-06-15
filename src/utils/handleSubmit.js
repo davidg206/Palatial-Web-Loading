@@ -2,20 +2,10 @@ import { osName, browserName, isMobile } from 'react-device-detect';
 import { delegate, emitUIInteraction } from '../DOMDelegate';
 import React, { useState, useEffect, useRef } from 'react';
 import { waitForLevelReady } from './awaitMethods';
+import { port } from './palatial-ports';
 
 const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device, setFormStep) => {
   if (userName && password && firstTimeUser /*&& consentAccepted*/) {
-    const port = {
-      tankhouse:  1111,
-      dev:        2222,
-      officedemo: 3333,
-      epic:       4444,
-      demo:       5555,
-      prophet:    7777,
-      "45Main":  3333,
-      PalatialDev: 2222
-    };
-
     const data = {
       deviceType: device,
       osName: osName,
