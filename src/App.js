@@ -168,14 +168,14 @@ function App() {
   //send device tyoe message
   useEffect(() => {
     const detectDeviceType = () => {
-      let deviceType;
+      let mobileUser;
       if (isMobile) {
-        deviceType = true;
+        mobileUser = true;
       } else {
-        deviceType = false;
+        mobileUser = false;
       }
   
-      const deviceTypeMessage = JSON.stringify({ deviceType: deviceType });
+      const deviceTypeMessage = JSON.stringify({ mobileUser: mobileUser });
       console.log(deviceTypeMessage);  // Print out the message for testing
 
       
