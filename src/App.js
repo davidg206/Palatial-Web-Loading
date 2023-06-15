@@ -165,6 +165,28 @@ function App() {
     }
   }, []);
 
+  //send device tyoe message
+  useEffect(() => {
+    const detectDeviceType = () => {
+      let deviceType;
+      if (isMobile) {
+        deviceType = true;
+      } else {
+        deviceType = false;
+      }
+  
+      const deviceTypeMessage = JSON.stringify({ deviceType: deviceType });
+      console.log(deviceTypeMessage);  // Print out the message for testing
+
+      
+      // I'm not sure where you want to send this message, so I'm leaving this part for you to implement.
+    };
+  
+    detectDeviceType();
+    
+  }, []);
+
+
   // progress bar animation
   useEffect(() => {
     let interval = setInterval(() => {
