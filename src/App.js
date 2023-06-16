@@ -11,7 +11,7 @@ import { waitForProjectName, waitForLevelReady } from './utils/awaitMethods';
 import passwordVisibleImg from './assets/Images/svg/toggle_password_visible.svg';
 import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.svg';
 import { port } from './utils/palatial-ports';
-
+// random comment
 function App() {
 
   const setAppHeight = () => {
