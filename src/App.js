@@ -172,9 +172,9 @@ function App() {
       if (isMobile) {
         mobileUser = true;
       } else {
-        mobileUser = false;
+        mobileUser = false;}
     detectDeviceType();
-
+   }
   }, []);
 
 
