@@ -173,15 +173,6 @@ function App() {
         mobileUser = true;
       } else {
         mobileUser = false;
-      }
-
-      const deviceTypeMessage = JSON.stringify({ mobileUser: mobileUser });
-      console.log(deviceTypeMessage);  // Print out the message for testing
-
-
-      // I'm not sure where you want to send this message, so I'm leaving this part for you to implement.
-    };
-
     detectDeviceType();
 
   }, []);
