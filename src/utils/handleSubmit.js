@@ -21,11 +21,10 @@ const handleSubmit = (userName, password, firstTimeUser, consentAccepted, device
     const myVideo = document.getElementById("myVideo");
     myVideo.play();
 
-    waitForLevelReady(delegate).then(() => { emitUIInteraction(data); }).then(() => {
-      delegate.loadingProgress = 100;
-      console.log('Entering palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]);
+    waitForLevelReady().then(() => { emitUIInteraction(data); }).then(() => {
+      delegate.onPlayAction();
+      console.log('Entering on palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]);
       const root = document.getElementById("root");
-      const player = document.getElementById("playerUI");
       root.classList.add("fade-out");
       setTimeout(() => {
         setFormStep(1);

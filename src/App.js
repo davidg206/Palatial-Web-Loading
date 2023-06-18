@@ -11,9 +11,8 @@ import { waitForProjectName, waitForLevelReady } from './utils/awaitMethods';
 import passwordVisibleImg from './assets/Images/svg/toggle_password_visible.svg';
 import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.svg';
 import { port } from './utils/palatial-ports';
-// random comment
-function App() {
 
+function App() {
   const setAppHeight = () => {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -34,7 +33,7 @@ function App() {
   const [error, setError] = useState('');
   const [isInputFocused, setInputFocused] = useState(false);
   // add the names of the actual loading steps to the following and change the progress bar step value to 100/# of actual steps at :89 and :96
-  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building', 'Ready']; // Add your loading steps here
+  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready']; // Add your loading steps here
   const stepTimeoutRef = useRef();
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
 
@@ -56,7 +55,7 @@ function App() {
       setPopUpVisible(false);
     },100);  // delay in milliseconds equal to the duration of the animation
   };
-  
+
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); })
 
@@ -93,14 +92,14 @@ function App() {
   // join events
   useEffect(() => {
     delegate.checkStreamReady(async () => {
-      emitUIInteraction({});
-      waitForProjectName(delegate).then(name => {
+      emitUIInteraction({ mobileUser: isMobile });
+      waitForProjectName().then(name => {
         emitUIInteraction({
 	  join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
 	  orientation: isMobile ? getScreenOrientation() : ""
         });
 	delegate.loadingProgress = 90;
-        waitForLevelReady(delegate).then(() => {
+        waitForLevelReady().then(() => {
           delegate.loadingProgress = 100;
         });
       });
@@ -172,9 +171,10 @@ function App() {
       if (isMobile) {
         mobileUser = true;
       } else {
-        mobileUser = false;}
+        mobileUser = false;
+      }
+    }
     detectDeviceType();
-   }
   }, []);
 
 
