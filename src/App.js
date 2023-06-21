@@ -49,7 +49,7 @@ function App() {
     }
     proceedButton.disabled = true;
     passwordInput.disabled = true;
-    handleSubmit(userName, password, true, consentAccepted, device, setFormStep);
+    handleSubmit(true, setFormStep);
     setShouldFadeOut(true);
     setTimeout(() => {
       setPopUpVisible(false);
@@ -92,7 +92,13 @@ function App() {
   // join events
   useEffect(() => {
     delegate.checkStreamReady(async () => {
-      emitUIInteraction({ mobileUser: isMobile });
+      emitUIInteraction({
+        mobileUser: isMobile,
+        userName: userName,
+        osName: osName,
+        browserName: browserName,
+        deviceType: device
+      });
       waitForProjectName().then(name => {
         emitUIInteraction({
 	  join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
@@ -125,8 +131,7 @@ function App() {
       setPassword('');
       setUserName('');
       setActiveButton(null);
-      setConsentAccepted(false);
-      if (delegate.streamReady) sendCommand("disconnectUser");
+      sendCommand("disconnectUser");
       if (isTimeout) {
         delegate.loadingProgress = 0;
 	setProgress(0);
@@ -141,9 +146,7 @@ function App() {
     window.addEventListener('resize', setAppHeight);
     document.addEventListener('contextmenu', e => { e.preventDefault(); })
     window.addEventListener('beforeunload', () => {
-      if (delegate && delegate.streamReady) {
-        sendCommand("disconnectUser");
-      }
+      sendCommand("disconnectUser");
     });
 
     if (isMobile || isTablet || isIPad13) {
@@ -164,27 +167,13 @@ function App() {
     }
   }, []);
 
-  //send device tyoe message
-  useEffect(() => {
-    const detectDeviceType = () => {
-      let mobileUser;
-      if (isMobile) {
-        mobileUser = true;
-      } else {
-        mobileUser = false;
-      }
-    }
-    detectDeviceType();
-  }, []);
-
-
   // progress bar animation
   useEffect(() => {
     let interval = setInterval(() => {
       setProgress((prevProgress) => {
         return delegate.getLoadingProgress();
       });
-    }, 1000); // increase progress every 1 second
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -217,7 +206,7 @@ function App() {
   const handleFormTransition = () => {
     if (formStep === 1) {
       if (userName !== null && userName.trim() !== "" && consentAccepted) {
-	      setFormStep(2);
+	setFormStep(2);
         setError('');
       } else {
         setError('Please enter a name');

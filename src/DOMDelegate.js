@@ -25,11 +25,14 @@ export function CreateConfig(signalingAddress, playerElement) {
 }
 
 export function emitUIInteraction(msg) {
-	return delegate.getPlayerController().ueDescriptorUi.sendCommand(msg);
+  if (delegate && delegate.streamReady)
+    delegate.getPlayerController().ueDescriptorUi.sendCommand(msg);
+  else
+    console.error("Can't run command " + msg.Console + ". delegate either undefined or stream not ready");
 }
 
 export function sendCommand(cmd) {
-	return emitUIInteraction({ Console: cmd });
+  emitUIInteraction({ Console: cmd });
 }
 
 function isMobile() {

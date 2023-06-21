@@ -1033,7 +1033,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				navigator.clipboard.writeText(obj.data.text);
 				break;
 			case "levelLoaded":
-				console.log('levelLoaded');
 				this.levelReady = true;
 				break;
 			case "passwordTest":
