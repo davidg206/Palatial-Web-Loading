@@ -3,10 +3,6 @@ import { EventEmitter } from "events";
 import ProgressBar from './ProgressBar';
 import * as libspsfrontend from "backend-dom-components-1";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-
-declare var WEBSOCKET_URL: string;
-
 /**
  * Class for the base overlay structure 
  */
@@ -354,7 +350,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	mobileUser: boolean;
 	streamReady: boolean;
 	levelReady: boolean;
-	readyHook: Function;
+	readyListeners: Array<() => void> = new Array();
 	disconnectHook: Function;
 	loadingProgress: number;
 	passwordResponse: object;
@@ -421,7 +417,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.fullScreenLogic = new FullScreenLogic();
 		this.streamReady = false;
 		this.levelReady = false;
-		this.readyHook = () => { };
 		this.disconnectHook = (boolean) => { };
 		this.loadingProgress = 0;
 		this.passwordResponse = null;
@@ -490,11 +485,15 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
             });
 	}
 
-	checkStreamReady( rH: () => void ) {
+        addReadyListener(listener: () => void) {
+          this.readyListeners.push(listener);
+        }
+
+	onStreamReady( rH: () => void ) {
 		if (this.streamReady) {
 			rH();
 		} else {
-			this.readyHook = rH;
+			this.addReadyListener(rH);
 		}
 	}
 
@@ -988,7 +987,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	 * Handle when the Video has been Initialised
 	 */
 	onVideoInitialised() {
-		console.log('ready!');
+		console.log('ready');
 		this.streamReady = true;
 		// starting a latency check
 		document.getElementById("btn-start-latency-test").onclick = () => {
@@ -1021,7 +1020,9 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.statsContainer.classList.remove("d-none");
 
 		this.videoStartTime = Date.now();
-		this.readyHook();
+		this.readyListeners.forEach((event: () => void) => {
+                  event();
+                });
 
 		this.iWebRtcController.matchViewportResolution = true;
 		this.iWebRtcController.updateVideoStreamSize();

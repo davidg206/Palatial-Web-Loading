@@ -13,7 +13,8 @@ const handleSubmit = (firstTimeUser, setFormStep) => {
   const myVideo = document.getElementById("myVideo");
   myVideo.play();
 
-  waitForLevelReady().then(() => { emitUIInteraction(data); }).then(() => {
+  waitForLevelReady().then(() => {
+    emitUIInteraction(data);
     delegate.onPlayAction();
     console.log('Entering on palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]);
     const root = document.getElementById("root");
@@ -22,7 +23,7 @@ const handleSubmit = (firstTimeUser, setFormStep) => {
       setFormStep(1);
       delegate.levelReady = false;
     }, 1000);
-  });
+  }).catch(error => {});
 };
 
 export default handleSubmit;

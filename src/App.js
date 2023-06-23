@@ -7,10 +7,10 @@ import useDeviceDetect from './hooks/useDeviceDetect';
 import { delegate, sendCommand, emitUIInteraction } from './DOMDelegate';
 import handleSubmit from './utils/handleSubmit';
 import checkPassword from './utils/checkPassword';
-import { waitForProjectName, waitForLevelReady } from './utils/awaitMethods';
 import passwordVisibleImg from './assets/Images/svg/toggle_password_visible.svg';
 import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.svg';
 import { port } from './utils/palatial-ports';
+import { application } from './signallingServer';
 
 function App() {
   const setAppHeight = () => {
@@ -36,7 +36,7 @@ function App() {
   const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready']; // Add your loading steps here
   const stepTimeoutRef = useRef();
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
-
+  const [backgroundImage, setBackgroundImage] = useState('');
 
   const checkLevelReady = async () => {
     const proceedButton = document.querySelector('.submitButton');
@@ -89,9 +89,15 @@ function App() {
     }
   };
 
+  // styles
+  useEffect(() => {
+//    if (application == "osloworks")
+//      setBackgroundImage("url('./static/media/Background-Image.423a2524096359f44b62.png.png')");
+  }, []);
+
   // join events
   useEffect(() => {
-    delegate.checkStreamReady(async () => {
+    delegate.onStreamReady(() => {
       emitUIInteraction({
         mobileUser: isMobile,
         userName: userName,
@@ -99,25 +105,16 @@ function App() {
         browserName: browserName,
         deviceType: device
       });
-      waitForProjectName().then(name => {
-        emitUIInteraction({
-	  join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
-	  orientation: isMobile ? getScreenOrientation() : ""
-        });
-	delegate.loadingProgress = 90;
-        waitForLevelReady().then(() => {
-          delegate.loadingProgress = 100;
-        });
-      });
     });
   }, []);
 
   // mobile orientation
   useEffect(() => {
-    if (isMobile)
+    if (isMobile) {
       window.addEventListener('orientationchange', () => {
           emitUIInteraction({ orientation: getScreenOrientation() });
       });
+    }
   }, []);
 
   const togglePasswordVisibility = () => {
@@ -250,7 +247,7 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundImage: backgroundImage }}>
       <video id="myVideo" style={videoStyle}></video>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
         <div className="Logo">

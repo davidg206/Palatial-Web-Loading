@@ -293,7 +293,6 @@ export class DataChannelController {
         let response = new TextDecoder("utf-16").decode(message.slice(1));
         Logger.Log(Logger.GetStackTrace(), response, 6);
         // add to response handlers 
-	console.log(response);
 	this.responseEventListeners.forEach((event: (obj: any) => void) =>{
           event(JSON.parse(response));
         });
