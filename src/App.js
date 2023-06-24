@@ -37,6 +37,7 @@ function App() {
   const stepTimeoutRef = useRef();
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState('');
+  const userNameRef = useRef('');
 
   const checkLevelReady = async () => {
     const proceedButton = document.querySelector('.submitButton');
@@ -89,18 +90,16 @@ function App() {
     }
   };
 
-  // styles
   useEffect(() => {
-//    if (application == "osloworks")
-//      setBackgroundImage("url('./static/media/Background-Image.423a2524096359f44b62.png.png')");
-  }, []);
+    userNameRef.current = userName;
+  }, [userName]);
 
   // join events
   useEffect(() => {
     delegate.onStreamReady(() => {
       emitUIInteraction({
         mobileUser: isMobile,
-        userName: userName,
+        userName: userNameRef.current,
         osName: osName,
         browserName: browserName,
         deviceType: device
