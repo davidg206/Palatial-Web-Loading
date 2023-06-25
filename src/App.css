@@ -6,7 +6,6 @@ html {
 .App {
   display: flex;
   height: calc(var(--vh, 1vh) * 100);
-  background-image: url('./assets/Images/Background-Image-oslo.png');
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;

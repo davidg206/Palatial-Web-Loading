@@ -6,8 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import { delegate, emitUIInteraction, config, playerElement } from './DOMDelegate';
 import { signallingServerAddress, application } from './signallingServer';
 import { isDesktop, isIPad13, isTablet, isMobile, osName, browserName } from 'react-device-detect';
-import { port } from './utils/palatial-ports';
-import { waitForLevelReady, waitForProjectName } from './utils/awaitMethods';
+import { port, waitForLevelReady, waitForProjectName, getScreenOrientation, onPlayAction } from './utils/miscUtils';
+
 var libspsfrontend = require("backend-dom-components-1");
 
 
@@ -23,25 +23,9 @@ console.log(signallingServerAddress);
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-function getScreenOrientation() {
-  let orientation = "";
-
-  if (typeof window.screen.orientation !== 'undefined') {
-    orientation = window.screen.orientation.type;
-  } else if (typeof window.orientation !== 'undefined') {
-    // Deprecated API for older iOS versions
-    if (window.orientation === 0 || window.orientation === 180) {
-      orientation = "portrait";
-    } else {
-      orientation = "landscape";
-    }
-  }
-
-  return orientation;
-}
-
 delegate.onStreamReady(async () => {
   emitUIInteraction({});
+  delegate.onPlayAction();
   waitForProjectName().then(name => {
     emitUIInteraction({
       join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
@@ -50,14 +34,17 @@ delegate.onStreamReady(async () => {
     delegate.loadingProgress = 90;
     waitForLevelReady().then(() => {
       delegate.loadingProgress = 100;
+      if (delegate.wasDisconnected)
+        onPlayAction();
     }).catch(error => {});
   }).catch(error => {});
 });
 
-/*document.addEventListener('DOMContentLoaded', () => {
-  if (application == "osloworks")
-    document.querySelector('.App').style.backgroundImage = "url('./assets/Images/Background-Image-oslo.png')";
-});*/
+if (isMobile) {
+  window.addEventListener('orientationchange', () => {
+    emitUIInteraction({ orientation: getScreenOrientation() });
+  });
+}
 
 // Create and return a new webRtcPlayerController instance
 var RTCPlayer = create(config, delegate);

@@ -350,6 +350,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	mobileUser: boolean;
 	streamReady: boolean;
 	levelReady: boolean;
+	wasDisconnected: boolean;
 	readyListeners: Array<() => void> = new Array();
 	disconnectHook: Function;
 	loadingProgress: number;
@@ -417,6 +418,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.fullScreenLogic = new FullScreenLogic();
 		this.streamReady = false;
 		this.levelReady = false;
+		this.wasDisconnected = false;
 		this.disconnectHook = (boolean) => { };
 		this.loadingProgress = 0;
 		this.passwordResponse = null;
@@ -726,6 +728,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				}
 				break;
 			case libspsfrontend.InstanceState.READY:
+				console.log('InstanceState.READY');
 				if (instanceState.details == undefined || instanceState.details == null) {
 					instanceStateMessage = "Instance is Ready";
 					
@@ -1088,8 +1091,8 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.levelReady = false;
 		this.loadingProgress = 0;
 		this.streamReady = false;
-		this.readyHook = () => void { };
 		this.disconnectHook(true);
+		this.wasDisconnected = true;
 	}
 	/**
 	 * `Takes the InitialSettings and wired to frontend

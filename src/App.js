@@ -5,12 +5,15 @@ import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
 import { delegate, sendCommand, emitUIInteraction } from './DOMDelegate';
-import handleSubmit from './utils/handleSubmit';
+import handleSubmitImpl from './utils/handleSubmit';
 import checkPassword from './utils/checkPassword';
 import passwordVisibleImg from './assets/Images/svg/toggle_password_visible.svg';
 import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.svg';
-import { port } from './utils/palatial-ports';
+import { port } from './utils/miscUtils';
 import { application } from './signallingServer';
+import sample from './Video/sample.mp4';
+import OsloBackground from './assets/Images/Background-Image-oslo.png';
+import DefaultBackground from './assets/Images/Background-Image.png';
 
 function App() {
   const setAppHeight = () => {
@@ -36,10 +39,11 @@ function App() {
   const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready']; // Add your loading steps here
   const stepTimeoutRef = useRef();
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
-  const [backgroundImage, setBackgroundImage] = useState('');
+  const [backgroundImage, setBackgroundImage] = useState(DefaultBackground);
   const userNameRef = useRef('');
+  const videoRef = useRef(null);
 
-  const checkLevelReady = async () => {
+  const handleSubmit = async () => {
     const proceedButton = document.querySelector('.submitButton');
     const passwordInput = document.querySelector('.passwordInput');
     if (!checkPassword(password)) {
@@ -50,37 +54,18 @@ function App() {
     }
     proceedButton.disabled = true;
     passwordInput.disabled = true;
-    handleSubmit(true, setFormStep);
+    // below causes 'Operation was aborted' error on iOS upon rentry
+    //videoRef.current.play();
+    handleSubmitImpl(true);
     setShouldFadeOut(true);
     setTimeout(() => {
       setPopUpVisible(false);
     },100);  // delay in milliseconds equal to the duration of the animation
   };
 
-
-  document.addEventListener('contextmenu', e => { e.preventDefault(); })
-
-  function getScreenOrientation() {
-    let orientation = "";
-
-    if (typeof window.screen.orientation !== 'undefined') {
-      orientation = window.screen.orientation.type;
-    } else if (typeof window.orientation !== 'undefined') {
-      // Deprecated API for older iOS versions
-      if (window.orientation === 0 || window.orientation === 180) {
-        orientation = "portrait";
-      } else {
-        orientation = "landscape";
-      }
-    }
-
-    return orientation;
-  }
-
-
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.submitButton').disabled) {
-	checkLevelReady();
+	handleSubmit();
     }
   };
 
@@ -107,15 +92,6 @@ function App() {
     });
   }, []);
 
-  // mobile orientation
-  useEffect(() => {
-    if (isMobile) {
-      window.addEventListener('orientationchange', () => {
-          emitUIInteraction({ orientation: getScreenOrientation() });
-      });
-    }
-  }, []);
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -127,7 +103,7 @@ function App() {
       setPassword('');
       setUserName('');
       setActiveButton(null);
-      sendCommand("disconnectUser");
+      if (delegate.streamReady) sendCommand("disconnectUser");
       if (isTimeout) {
         delegate.loadingProgress = 0;
 	setProgress(0);
@@ -139,10 +115,10 @@ function App() {
   // Device detection logic
   useEffect(() => {
     setAppHeight();
-    window.addEventListener('resize', setAppHeight);
+    //window.addEventListener('resize', setAppHeight);
     document.addEventListener('contextmenu', e => { e.preventDefault(); })
     window.addEventListener('beforeunload', () => {
-      sendCommand("disconnectUser");
+      //sendCommand("disconnectUser");
     });
 
     if (isMobile || isTablet || isIPad13) {
@@ -194,6 +170,20 @@ function App() {
   }, [isInputFocused]);
 
 
+  // pause video when visibility changes (hack to fix unpromised rejection error)
+  useEffect(() => {
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        // Pause the video playback
+        //videoRef.current.pause();
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (application === "osloworks") setBackgroundImage(OsloBackground);
+  });
+
   const handleConsent = () => {
     setConsentAccepted(!consentAccepted);
   };
@@ -239,15 +229,20 @@ function App() {
     position: 'fixed',
     top: 0,
     left: 0,
-    width: '100%',
-    height: '100%',
+    display: 'none',
+    width: '0%',
+    height: '0%',
     zIndex: -1,
     objectFit: 'cover'
   };
 
   return (
-    <div className="App" style={{ backgroundImage: backgroundImage }}>
-      <video id="myVideo" style={videoStyle}></video>
+    <div className="App" style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <div style={{ display: 'none' }}>
+        <video id="myVideo" ref={videoRef} style={videoStyle} hidden playsInline muted>
+          <source src={sample} type="video/mp4" />
+        </video>
+      </div>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
         <div className="Logo">
           <img src={logoPng} style={{width:'10em'}} alt='logo'/>
@@ -302,7 +297,7 @@ function App() {
             {error && <p className="error">{error}</p>}
             <div className="passwordButtons" style={{display:'flex',flexDirection:'row', paddingTop:'1em'}}> 
               <button className="backButton" onClick={handleGoBack}>Go Back</button>
-              <button className="submitButton" onClick={checkLevelReady}>Start</button>
+              <button className="submitButton" onClick={handleSubmit}>Start</button>
             </div>
           </div>
         )}
