@@ -13,6 +13,7 @@ const handleSubmitImpl = (firstTimeUser) => {
     emitUIInteraction(data);
     console.log('Entering on palatial.tenant-palatial-platform.coreweave.cloud:' + port[delegate.appName]);
     onPlayAction();
+    delegate.formSubmitted = true;
   }).catch(error => {});
 };
 

@@ -26,15 +26,16 @@ reportWebVitals();
 delegate.onStreamReady(async () => {
   emitUIInteraction({});
   delegate.onPlayAction();
-  waitForProjectName().then(name => {
+  waitForProjectName().then(async name => {
+    console.log('project name: ' + name, "Entering palatial.tenant-palatial-platform.coreweave.cloud:" + port[name]);
     emitUIInteraction({
       join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
       orientation: isMobile ? getScreenOrientation() : ""
     });
     delegate.loadingProgress = 90;
-    waitForLevelReady().then(() => {
+    waitForLevelReady().then(async () => {
       delegate.loadingProgress = 100;
-      if (delegate.wasDisconnected)
+      if (delegate.formSubmitted)
         onPlayAction();
     }).catch(error => {});
   }).catch(error => {});
@@ -51,9 +52,7 @@ var RTCPlayer = create(config, delegate);
 
 // create takes in a delegate interface type which our NativeDomDelegate class implements
 function create(config, delegate) {
-	return new libspsfrontend
-		.webRtcPlayerController(config,
-			delegate);
+  return new libspsfrontend.webRtcPlayerController(config, delegate);
 }
 
 // On a touch device we will need special ways to show the on-screen keyboard.

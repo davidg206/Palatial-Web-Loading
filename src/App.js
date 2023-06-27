@@ -9,7 +9,7 @@ import handleSubmitImpl from './utils/handleSubmit';
 import checkPassword from './utils/checkPassword';
 import passwordVisibleImg from './assets/Images/svg/toggle_password_visible.svg';
 import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.svg';
-import { port } from './utils/miscUtils';
+import { port, waitForProjectName, waitForLevelReady, } from './utils/miscUtils';
 import { application } from './signallingServer';
 import sample from './Video/sample.mp4';
 import OsloBackground from './assets/Images/Background-Image-oslo.png';
@@ -115,11 +115,10 @@ function App() {
   // Device detection logic
   useEffect(() => {
     setAppHeight();
-    //window.addEventListener('resize', setAppHeight);
-    document.addEventListener('contextmenu', e => { e.preventDefault(); })
-    window.addEventListener('beforeunload', () => {
-      //sendCommand("disconnectUser");
-    });
+    window.addEventListener('resize', setAppHeight);
+    document.addEventListener('contextmenu', e => { e.preventDefault(); });
+    const disconnectUser = () => { sendCommand("disconnectUser"); };
+    //window.addEventListener('beforeunload', disconnectUser);
 
     if (isMobile || isTablet || isIPad13) {
       const updateHeight = () => {
@@ -137,6 +136,9 @@ function App() {
         window.removeEventListener('touchmove', preventScroll);
       };
     }
+    return () => {
+      //window.removeEventListener('beforeunload', disconnectUser);
+    };
   }, []);
 
   // progress bar animation
@@ -172,17 +174,11 @@ function App() {
 
   // pause video when visibility changes (hack to fix unpromised rejection error)
   useEffect(() => {
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "hidden") {
-        // Pause the video playback
-        //videoRef.current.pause();
-      }
-    });
   }, []);
 
   useEffect(() => {
     if (application === "osloworks") setBackgroundImage(OsloBackground);
-  });
+  }, []);
 
   const handleConsent = () => {
     setConsentAccepted(!consentAccepted);
