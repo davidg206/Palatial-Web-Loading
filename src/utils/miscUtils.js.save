@@ -24,12 +24,12 @@ export const port = {
   "officedemo": 3333,
   "epic":       4444,
   "demo":       5555,
-  "oslo":       6666,
+  "Oslo":       6666,
   "prophet":    7777,
   "45Main":      3333,
   "PalatialDev": 2222,
-  "abnormal": 5555, //8881,
-  "oslodemo": 2222
+  "Abnormal": 5555, //8881,
+  "Oslodemo":8888
 };
 
 export const waitForLevelReady = () => {

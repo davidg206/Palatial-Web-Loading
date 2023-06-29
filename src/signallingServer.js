@@ -17,6 +17,9 @@ else
 if (!/^[a-zA-Z0-9]+$/.test(application))
   application = "dev";
 
+if (application === "oslodemo")
+  application = "dev";
+
 // build the websocket endpoint based on the protocol used to load the frontend
 signallingServerAddress = signallingServerProtocol + '//' +
   'sps.tenant-palatial-platform.lga1.ingress.coreweave.cloud/' + application + '/ws';

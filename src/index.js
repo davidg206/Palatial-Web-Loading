@@ -26,10 +26,9 @@ reportWebVitals();
 delegate.onStreamReady(async () => {
   emitUIInteraction({});
   delegate.onPlayAction();
-  waitForProjectName().then(async name => {
-    console.log('project name: ' + name, "Entering palatial.tenant-palatial-platform.coreweave.cloud:" + port[name]);
+  waitForProjectName().then(async name => {console.log(name,port[name]);
     emitUIInteraction({
-      join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
+      join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[application],
       orientation: isMobile ? getScreenOrientation() : ""
     });
     delegate.loadingProgress = 90;
