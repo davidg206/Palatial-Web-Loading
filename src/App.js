@@ -314,7 +314,7 @@ function App() {
       </div>
       {ToolTipPopupVisible && (
         <div className="ToolTipPopup fadeIn">
-          <img src={ToolTip} alt="Tool Tip Popup" style={{height:'22em', width:'auto'}}/>
+          <img src={ToolTip} alt="Tool Tip Popup" style={{height:'20em', width:'auto'}}/>
         </div>
       )}
       <ProgressBar progress={progress} />
