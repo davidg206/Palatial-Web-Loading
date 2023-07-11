@@ -14,6 +14,7 @@ import { application } from './signallingServer';
 import sample from './Video/sample.mp4';
 import OsloBackground from './assets/Images/Background-Image-oslo.png';
 import DefaultBackground from './assets/Images/Background-Image.png';
+import AbnormalBackground from './assets/Images/abnormal_resized.png';
 
 function App() {
   const setAppHeight = () => {
@@ -39,7 +40,7 @@ function App() {
   const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready']; // Add your loading steps here
   const stepTimeoutRef = useRef();
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
-  const [backgroundImage, setBackgroundImage] = useState(DefaultBackground);
+  const [backgroundImage, setBackgroundImage] = useState('');
   const userNameRef = useRef('');
   const videoRef = useRef(null);
 
@@ -118,7 +119,7 @@ function App() {
     window.addEventListener('resize', setAppHeight);
     document.addEventListener('contextmenu', e => { e.preventDefault(); });
     const disconnectUser = () => { sendCommand("disconnectUser"); };
-    //window.addEventListener('beforeunload', disconnectUser);
+    window.addEventListener('beforeunload', disconnectUser);
 
     if (isMobile || isTablet || isIPad13) {
       const updateHeight = () => {
@@ -137,7 +138,7 @@ function App() {
       };
     }
     return () => {
-      //window.removeEventListener('beforeunload', disconnectUser);
+      window.removeEventListener('beforeunload', disconnectUser);
     };
   }, []);
 
@@ -172,12 +173,12 @@ function App() {
   }, [isInputFocused]);
 
 
-  // pause video when visibility changes (hack to fix unpromised rejection error)
   useEffect(() => {
-  }, []);
-
-  useEffect(() => {
-    if (application === "osloworks") setBackgroundImage(OsloBackground);
+    if (application === "osloworks" || application === "oslodemo") setBackgroundImage(OsloBackground);
+    else if (application === "abnormal") setBackgroundImage(AbnormalBackground);
+    else {
+      setBackgroundImage(DefaultBackground);
+    }
   }, []);
 
   const handleConsent = () => {

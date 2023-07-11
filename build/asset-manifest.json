@@ -1,9 +1,12 @@
 {
   "files": {
-    "main.css": "/static/css/main.274cb2fa.css",
-    "main.js": "/static/js/main.6c765f30.js",
+    "main.css": "/static/css/main.c85dcfe3.css",
+    "main.js": "/static/js/main.e1ac5e25.js",
     "static/js/651.30bdc244.chunk.js": "/static/js/651.30bdc244.chunk.js",
+    "static/media/sample.mp4": "/static/media/sample.9668a976fd6de4763e1b.mp4",
+    "static/media/abnormal_resized.png": "/static/media/abnormal_resized.16cf7a721376b863d4fa.png",
     "static/media/Background-Image.png": "/static/media/Background-Image.423a2524096359f44b62.png",
+    "static/media/Background-Image-oslo.png": "/static/media/Background-Image-oslo.f2b47d65d2a4e1601264.png",
     "index.html": "/index.html",
     "static/media/toggle_password_Invisible.svg": "/static/media/toggle_password_Invisible.b294325122a004fc949987cd993dd6d9.svg",
     "static/media/toggle_password_visible.svg": "/static/media/toggle_password_visible.377878869b0abad55ad5b23c9d63b57e.svg",
@@ -22,12 +25,12 @@
     "static/media/firstTime_Toggle_Yes_Active.svg": "/static/media/firstTime_Toggle_Yes_Active.de8ccf51b1e579289ea6.svg",
     "static/media/firstTime_Toggle_Yes_Default.svg": "/static/media/firstTime_Toggle_Yes_Default.54d1948ab926b26861d0.svg",
     "static/media/firstTime_Toggle_Yes_Hover.svg": "/static/media/firstTime_Toggle_Yes_Hover.de8ccf51b1e579289ea6.svg",
-    "main.274cb2fa.css.map": "/static/css/main.274cb2fa.css.map",
-    "main.6c765f30.js.map": "/static/js/main.6c765f30.js.map",
+    "main.c85dcfe3.css.map": "/static/css/main.c85dcfe3.css.map",
+    "main.e1ac5e25.js.map": "/static/js/main.e1ac5e25.js.map",
     "651.30bdc244.chunk.js.map": "/static/js/651.30bdc244.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.274cb2fa.css",
-    "static/js/main.6c765f30.js"
+    "static/css/main.c85dcfe3.css",
+    "static/js/main.e1ac5e25.js"
   ]
 }

@@ -7,6 +7,9 @@ import { delegate, emitUIInteraction, config, playerElement } from './DOMDelegat
 import { signallingServerAddress, application } from './signallingServer';
 import { isDesktop, isIPad13, isTablet, isMobile, osName, browserName } from 'react-device-detect';
 import { port, waitForLevelReady, waitForProjectName, getScreenOrientation, onPlayAction } from './utils/miscUtils';
+import OsloBackground from './assets/Images/Background-Image-oslo.png';
+import DefaultBackground from './assets/Images/Background-Image.png';
+import AbnormalBackground from './assets/Images/abnormal_resized.png';
 
 var libspsfrontend = require("backend-dom-components-1");
 
@@ -24,19 +27,17 @@ console.log(signallingServerAddress);
 reportWebVitals();
 
 delegate.onStreamReady(async () => {
-  emitUIInteraction({});
   delegate.onPlayAction();
-  waitForProjectName().then(async name => {console.log(name,port[name]);
-    emitUIInteraction({
-      join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[application],
-      orientation: isMobile ? getScreenOrientation() : ""
-    });
-    delegate.loadingProgress = 90;
-    waitForLevelReady().then(async () => {
-      delegate.loadingProgress = 100;
-      if (delegate.formSubmitted)
-        onPlayAction();
-    }).catch(error => {});
+  console.log(application, 'joining palatial.tenant-palatial-platform.coreweave.cloud:' + port[application]);
+  emitUIInteraction({
+    join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[application],
+    orientation: isMobile ? getScreenOrientation() : ""
+  });
+  delegate.loadingProgress = 90;
+  waitForLevelReady().then(async () => {
+    delegate.loadingProgress = 100;
+    if (delegate.formSubmitted)
+      onPlayAction();
   }).catch(error => {});
 });
 
@@ -45,6 +46,13 @@ if (isMobile) {
     emitUIInteraction({ orientation: getScreenOrientation() });
   });
 }
+
+/*let image = DefaultBackground;
+if (application === "osloworks" || application === "oslodemo") image = OsloBackground;
+else if (application === "abnormal") image = AbnormalBackground;
+
+document.body.style.backgroundImage = `url(${image})`;
+*/
 
 // Create and return a new webRtcPlayerController instance
 var RTCPlayer = create(config, delegate);
