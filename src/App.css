@@ -362,6 +362,36 @@ html {
   cursor: pointer;
 }
 
+.ToolTipPopup {
+  position: fixed;
+  width: auto;
+  top: 15em;
+  max-width: 2em;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle; 
+  animation: fadein 1s;
+}
+
+.refreshMsgBox {
+  position: fixed;
+  top: 2em;
+  padding: 20px;
+  width: 18em;
+  border-radius: 10px;
+  justify-content: center;
+  text-align: center;
+  background-color: #444;
+  color: #fff;
+  z-index: 10; 
+  color: #FFFFFF; /* Sets text color to white */
+  font-family: 'Lato', sans-serif;
+  font-weight: 300; /* Thin variant of Lato font */
+  font-size: 1.2em; /* 24px/20px = 1.2em */
+  text-align: center;
+}
+
+
 .error{
   position: inherit;
   color: red;

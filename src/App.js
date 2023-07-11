@@ -14,6 +14,8 @@ import { application } from './signallingServer';
 import sample from './Video/sample.mp4';
 import OsloBackground from './assets/Images/Background-Image-oslo.png';
 import DefaultBackground from './assets/Images/Background-Image.png';
+import ToolTip from './assets/Images/png/ToolTip.png';
+
 
 function App() {
   const setAppHeight = () => {
@@ -42,6 +44,8 @@ function App() {
   const [backgroundImage, setBackgroundImage] = useState(DefaultBackground);
   const userNameRef = useRef('');
   const videoRef = useRef(null);
+  const [ToolTipPopupVisible, setToolTipPopupVisible] = useState(false);
+  const [RefreshMsgBox, setRefreshMsgBox] = useState(false);
 
   const handleSubmit = async () => {
     const proceedButton = document.querySelector('.submitButton');
@@ -58,6 +62,7 @@ function App() {
     //videoRef.current.play();
     handleSubmitImpl(true);
     setShouldFadeOut(true);
+    setToolTipPopupVisible(true);
     setTimeout(() => {
       setPopUpVisible(false);
     },100);  // delay in milliseconds equal to the duration of the animation
@@ -78,6 +83,11 @@ function App() {
   useEffect(() => {
     userNameRef.current = userName;
   }, [userName]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => setRefreshMsgBox(true), 30000);
+    return () => clearTimeout(timeoutId); // Clean up on component unmount
+  }, []);
 
   // join events
   useEffect(() => {
@@ -234,6 +244,10 @@ function App() {
 
   return (
     <div className="App" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        {RefreshMsgBox && (
+        <div className="refreshMsgBox fadeIn">
+          Refresh the page if loading takes longer than 30 seconds </div>
+      )}
       <div style={{ display: 'none' }}>
         <video id="myVideo" ref={videoRef} style={videoStyle} hidden playsInline muted>
           <source src={sample} type="video/mp4" />
@@ -298,6 +312,11 @@ function App() {
           </div>
         )}
       </div>
+      {ToolTipPopupVisible && (
+        <div className="ToolTipPopup fadeIn">
+          <img src={ToolTip} alt="Tool Tip Popup" style={{height:'22em', width:'auto'}}/>
+        </div>
+      )}
       <ProgressBar progress={progress} />
       <div className="loadingStep">
         {loadingSteps[step]}
