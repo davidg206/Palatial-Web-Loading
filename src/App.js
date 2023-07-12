@@ -15,6 +15,7 @@ import sample from './Video/sample.mp4';
 import OsloBackground from './assets/Images/Background-Image-oslo.png';
 import DefaultBackground from './assets/Images/Background-Image.png';
 import ToolTip from './assets/Images/png/ToolTip.png';
+import MobileToolTip from './assets/Images/png/MobileToolTip.png';
 
 
 function App() {
@@ -312,11 +313,15 @@ function App() {
           </div>
         )}
       </div>
-      {ToolTipPopupVisible && (
-        <div className="ToolTipPopup fadeIn">
-          <img src={ToolTip} alt="Tool Tip Popup" style={{height:'20em', width:'auto'}}/>
-        </div>
-      )}
+        {ToolTipPopupVisible && (
+          <div className="ToolTipPopup fadeIn">
+            <img 
+              src={isMobile ? MobileToolTip : ToolTip} 
+              alt="Tool Tip Popup" 
+              style={{height:'20em', width:'auto'}}
+            />
+          </div>
+        )}
       <ProgressBar progress={progress} />
       <div className="loadingStep">
         {loadingSteps[step]}
