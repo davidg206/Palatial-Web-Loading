@@ -373,6 +373,26 @@ html {
   animation: fadein 1s;
 }
 
+.desktop-tooltip {
+  height: 20em;
+  width: auto;
+}
+
+@media only screen and (max-width: 767px) {
+  .mobile-tooltip {
+    height: 10em;  
+    width: auto;
+  }
+}
+
+/* CSS for tooltip image on mobile - landscape */
+@media only screen and (max-width: 1024px) and (orientation: landscape) {
+  .mobile-tooltip {
+    height: 5em;  
+    width: auto;
+  }
+}
+
 .refreshMsgBox {
   position: fixed;
   top: 2em;
