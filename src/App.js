@@ -247,7 +247,7 @@ function App() {
     <div className="App" style={{ backgroundImage: `url(${backgroundImage})` }}>
         {RefreshMsgBox && (
         <div className="refreshMsgBox fadeIn">
-          Refresh the page if loading takes longer than 30 seconds </div>
+          Refresh the page if loading takes longer than 1 minute </div>
       )}
       <div style={{ display: 'none' }}>
         <video id="myVideo" ref={videoRef} style={videoStyle} hidden playsInline muted>
@@ -316,9 +316,9 @@ function App() {
         {ToolTipPopupVisible && (
           <div className="ToolTipPopup fadeIn">
             <img 
+              className={isMobile ? "mobile-tooltip" : "desktop-tooltip"} 
               src={isMobile ? MobileToolTip : ToolTip} 
               alt="Tool Tip Popup" 
-              style={{height:'20em', width:'auto'}}
             />
           </div>
         )}
