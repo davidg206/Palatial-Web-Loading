@@ -86,7 +86,7 @@ function App() {
   }, [userName]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => setRefreshMsgBox(true), 30000);
+    const timeoutId = setTimeout(() => setRefreshMsgBox(true), 60000);
     return () => clearTimeout(timeoutId); // Clean up on component unmount
   }, []);
 
