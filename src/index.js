@@ -7,9 +7,6 @@ import { delegate, emitUIInteraction, config, playerElement } from './DOMDelegat
 import { signallingServerAddress, application } from './signallingServer';
 import { isDesktop, isIPad13, isTablet, isMobile, osName, browserName } from 'react-device-detect';
 import { port, waitForLevelReady, waitForProjectName, getScreenOrientation, onPlayAction } from './utils/miscUtils';
-import OsloBackground from './assets/Images/Background-Image-oslo.png';
-import DefaultBackground from './assets/Images/Background-Image.png';
-import AbnormalBackground from './assets/Images/abnormal_resized.png';
 
 var libspsfrontend = require("backend-dom-components-1");
 
@@ -55,8 +52,6 @@ case "osloworks": case "oslodemo":
 case "abnormal":
   backgroundImage = 'abnormal-background';
   break;
-default:
-  backgroundImage = 'default-background';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
