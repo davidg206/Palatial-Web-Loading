@@ -7,9 +7,6 @@ import { delegate, emitUIInteraction, config, playerElement } from './DOMDelegat
 import { signallingServerAddress, application } from './signallingServer';
 import { isDesktop, isIPad13, isTablet, isMobile, osName, browserName } from 'react-device-detect';
 import { port, waitForLevelReady, waitForProjectName, getScreenOrientation, onPlayAction } from './utils/miscUtils';
-import OsloBackground from './assets/Images/Background-Image-oslo.png';
-import DefaultBackground from './assets/Images/Background-Image.png';
-import AbnormalBackground from './assets/Images/abnormal_resized.png';
 
 var libspsfrontend = require("backend-dom-components-1");
 
@@ -47,20 +44,18 @@ if (isMobile) {
   });
 }
 
-let image = "";
+let backgroundImage = 'default-background';
 switch (application) {
 case "osloworks": case "oslodemo":
-  image = OsloBackground;
+  backgroundImage = 'oslo-background';
   break;
 case "abnormal":
-  image = AbnormalBackground;
+  backgroundImage = 'abnormal-background';
   break;
-default:
-  image = DefaultBackground;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.body.style.backgroundImage = `url(${image})`;
+  document.body.classList.add(backgroundImage);
 });
 
 // Create and return a new webRtcPlayerController instance
