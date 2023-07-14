@@ -47,12 +47,21 @@ if (isMobile) {
   });
 }
 
-/*let image = DefaultBackground;
-if (application === "osloworks" || application === "oslodemo") image = OsloBackground;
-else if (application === "abnormal") image = AbnormalBackground;
+let image = "";
+switch (application) {
+case "osloworks": case "oslodemo":
+  image = OsloBackground;
+  break;
+case "abnormal":
+  image = AbnormalBackground;
+  break;
+default:
+  image = DefaultBackground;
+}
 
-document.body.style.backgroundImage = `url(${image})`;
-*/
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.style.backgroundImage = `url(${image})`;
+});
 
 // Create and return a new webRtcPlayerController instance
 var RTCPlayer = create(config, delegate);

@@ -244,7 +244,7 @@ function App() {
   };
 
   return (
-    <div className="App" style={{ backgroundImage: `url(${backgroundImage})` }}>
+    <div className="App">
         {RefreshMsgBox && (
         <div className="refreshMsgBox fadeIn">
           Refresh the page if loading takes longer than 1 minute </div>

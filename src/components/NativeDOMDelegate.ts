@@ -1031,6 +1031,8 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.iWebRtcController.updateVideoStreamSize();
 		libspsfrontend.DataChannelController.coordinateConverter.setupNormalizeAndQuantize();
 
+		document.getElementById("playerUI").style.display = "block";
+
 		this.addResponseEventListener("delegate_work", (obj: any) => {
 			switch (obj.response) {
 			case "selectedText":
