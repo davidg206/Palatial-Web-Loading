@@ -42,28 +42,36 @@ function App() {
   const userNameRef = useRef('');
   const videoRef = useRef(null);
   const [ToolTipPopupVisible, setToolTipPopupVisible] = useState(false);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [RefreshMsgBox, setRefreshMsgBox] = useState(false);
+  const [isLogoVisible, setIsLogoVisible] = useState(true);
 
-  const handleSubmit = async () => {
-    const proceedButton = document.querySelector('.submitButton');
-    const passwordInput = document.querySelector('.passwordInput');
-    if (!checkPassword(password)) {
-      setError("Wrong password. Please try again.");
-      return;
-    } else {
-      setError("");
-    }
-    proceedButton.disabled = true;
-    passwordInput.disabled = true;
-    // below causes 'Operation was aborted' error on iOS upon rentry
-    //videoRef.current.play();
-    handleSubmitImpl(true);
-    setShouldFadeOut(true);
-    setToolTipPopupVisible(true);
+const handleSubmit = async () => {
+  const proceedButton = document.querySelector('.submitButton');
+  const passwordInput = document.querySelector('.passwordInput');
+  if (!checkPassword(password)) {
+    setError("Wrong password. Please try again.");
+    return;
+  } else {
+    setError("");
+  }
+  proceedButton.disabled = true;
+  passwordInput.disabled = true;
+  // below causes 'Operation was aborted' error on iOS upon rentry
+  //videoRef.current.play();
+  handleSubmitImpl(true);
+  setShouldFadeOut(true);
+  setIsLogoVisible(false); 
+  setToolTipPopupVisible(true);
+  setTimeout(() => {
+    setIsTooltipVisible(false);
     setTimeout(() => {
-      setPopUpVisible(false);
-    },100);  // delay in milliseconds equal to the duration of the animation
-  };
+      setPopUpVisible(true);
+    }); 
+  }, 100);  
+
+  setFormStep(3);
+};
 
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.submitButton').disabled) {
@@ -242,73 +250,76 @@ function App() {
         </video>
       </div>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
-        <div className="Logo">
+        <div className={`Logo ${isLogoVisible ? '' : 'fadeOut'}`}>
           <img src={logoPng} style={{width:'10em'}} alt='logo'/>
         </div>
-        {formStep === 1 && (
-          <div className='PopUpContent fadeIn'>
-            <div className="inputPrompt">
-              <p>Enter Your Name</p>
-              <input
-                className="userNameInput"
-                type="text"
-                value={userName}
-                onFocus={() => setInputFocused(true)}
-                onBlur={() => setInputFocused(false)}
-                onChange={(e) => { setError(""); setUserName(e.target.value) } }
-                onKeyPress={hftHelper}
-                required
-              />
-            </div>
-            {error && <p className="error">{error}</p>}
-            <p style={{fontweight:'100'}}>By proceeding you agree to our terms and conditions</p>
-            <div className='passwordButtons'>
-            <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
-            </div>
-          </div>
-        )}
-        {formStep === 2 && (
-          <div className='PopUpContent fadeIn'>
-            <div className="inputPrompt">
-              <p>Enter Your Password</p>
-              <div className="passwordWrapper">
-                <input
-                  className="passwordInput"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onFocus={() => setInputFocused(true)}
-                  onBlur={() => setInputFocused(false)}
-                  onChange={(e) => { setError(""); setPassword(e.target.value); }}
-                  onInput={handleOnInput}
-                  onKeyDown={handleKeyPress}
-                  autoComplete="new-password"
-                  required
-                />
-                <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
-                {showPassword ?
-                <img src={passwordVisibleImg} alt="hide password" style={{width: '1.2em', height: '1.2em'}} /> :
-                <img src={passwordinvisibleImg} alt="show password" style={{width: '1.2em', height: '1.2em'}} />
-                }
-                </button>
+        <div>
+            {formStep === 1 && (
+              <div className='PopUpContent fadeIn'>
+                <div className="inputPrompt">
+                  <p>Enter Your Name</p>
+                  <input
+                    className="userNameInput"
+                    type="text"
+                    value={userName}
+                    onFocus={() => setInputFocused(true)}
+                    onBlur={() => setInputFocused(false)}
+                    onChange={(e) => { setError(""); setUserName(e.target.value) } }
+                    onKeyPress={hftHelper}
+                    required
+                  />
+                </div>
+                {error && <p className="error">{error}</p>}
+                <p style={{fontweight:'100'}}>By proceeding you agree to our terms and conditions</p>
+                <div className='passwordButtons'>
+                <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
+                </div>
               </div>
-            </div>
-            {error && <p className="error">{error}</p>}
-            <div className="passwordButtons" style={{display:'flex',flexDirection:'row', paddingTop:'1em'}}> 
-              <button className="backButton" onClick={handleGoBack}>Go Back</button>
-              <button className="submitButton" onClick={handleSubmit}>Start</button>
-            </div>
-          </div>
-        )}
+            )}
+            {formStep === 2 && (
+              <div className='PopUpContent fadeIn'>
+                <div className="inputPrompt">
+                  <p>Enter Your Password</p>
+                  <div className="passwordWrapper">
+                    <input
+                      className="passwordInput"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onFocus={() => setInputFocused(true)}
+                      onBlur={() => setInputFocused(false)}
+                      onChange={(e) => { setError(""); setPassword(e.target.value); }}
+                      onInput={handleOnInput}
+                      onKeyDown={handleKeyPress}
+                      autoComplete="new-password"
+                      required
+                    />
+                    <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
+                    {showPassword ?
+                    <img src={passwordVisibleImg} alt="hide password" style={{width: '1.2em', height: '1.2em'}} /> :
+                    <img src={passwordinvisibleImg} alt="show password" style={{width: '1.2em', height: '1.2em'}} />
+                    }
+                    </button>
+                  </div>
+                </div>
+                {error && <p className="error">{error}</p>}
+                <div className="passwordButtons" style={{display:'flex',flexDirection:'row', paddingTop:'1em'}}> 
+                  <button className="backButton" onClick={handleGoBack}>Go Back</button>
+                  <button className="submitButton" onClick={handleSubmit}>Start</button>
+                </div>
+              </div>
+            )}
+        </div>
+            {formStep === 3 && (
+                <div className="ToolTipPopup fadeIn">
+                  <img 
+                    className={isMobile ? "mobile-tooltip" : "desktop-tooltip"} 
+                    src={isMobile ? MobileToolTip : ToolTip} 
+                    alt="Tool Tip Popup" 
+                  />
+                  </div>
+            )} 
       </div>
-        {ToolTipPopupVisible && (
-          <div className="ToolTipPopup fadeIn">
-            <img 
-              className={isMobile ? "mobile-tooltip" : "desktop-tooltip"} 
-              src={isMobile ? MobileToolTip : ToolTip} 
-              alt="Tool Tip Popup" 
-            />
-          </div>
-        )}
+
       <ProgressBar progress={progress} />
       <div className="loadingStep">
         {loadingSteps[step]}
