@@ -12,9 +12,6 @@ import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.
 import { port, waitForProjectName, waitForLevelReady, } from './utils/miscUtils';
 import { application } from './signallingServer';
 import sample from './Video/sample.mp4';
-import OsloBackground from './assets/Images/Background-Image-oslo.png';
-import DefaultBackground from './assets/Images/Background-Image.png';
-import AbnormalBackground from './assets/Images/abnormal_resized.png';
 import ToolTip from './assets/Images/png/ToolTip.png';
 import MobileToolTip from './assets/Images/png/MobileToolTip.png';
 
@@ -42,7 +39,6 @@ function App() {
   const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready']; // Add your loading steps here
   const stepTimeoutRef = useRef();
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
-  const [backgroundImage, setBackgroundImage] = useState('');
   const userNameRef = useRef('');
   const videoRef = useRef(null);
   const [ToolTipPopupVisible, setToolTipPopupVisible] = useState(false);
@@ -181,15 +177,6 @@ function App() {
       document.body.classList.remove('prevent-scroll');
     }
   }, [isInputFocused]);
-
-
-  useEffect(() => {
-    if (application === "osloworks" || application === "oslodemo") setBackgroundImage(OsloBackground);
-    else if (application === "abnormal") setBackgroundImage(AbnormalBackground);
-    else {
-      setBackgroundImage(DefaultBackground);
-    }
-  }, []);
 
   const handleConsent = () => {
     setConsentAccepted(!consentAccepted);
