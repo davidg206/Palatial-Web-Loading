@@ -321,7 +321,7 @@ html {
 
 .prevent-scroll {
   overflow: hidden;
-  position: fixed;
+  /*position: fixed;*/ /* commenting out to prevent background repeat bug */
   width: 100%;
 }
 

@@ -12,6 +12,18 @@ body {
   background-size: cover;
 }
 
+.default-background {
+  background-image: url('./assets/Images/Background-Image.png');
+}
+
+.oslo-background {
+  background-image: url('./assets/Images/Background-Image-oslo.png');
+}
+
+.abnormal-background {
+  background-image: url('./assets/Images/abnormal_resized.png');
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

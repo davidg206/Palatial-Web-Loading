@@ -47,20 +47,20 @@ if (isMobile) {
   });
 }
 
-let image = "";
+let backgroundImage = 'default-background';
 switch (application) {
 case "osloworks": case "oslodemo":
-  image = OsloBackground;
+  backgroundImage = 'oslo-background';
   break;
 case "abnormal":
-  image = AbnormalBackground;
+  backgroundImage = 'abnormal-background';
   break;
 default:
-  image = DefaultBackground;
+  backgroundImage = 'default-background';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.body.style.backgroundImage = `url(${image})`;
+  document.body.classList.add(backgroundImage);
 });
 
 // Create and return a new webRtcPlayerController instance
