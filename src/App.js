@@ -16,18 +16,13 @@ import ToolTip from './assets/Images/png/ToolTip.png';
 import MobileToolTip from './assets/Images/png/MobileToolTip.png';
 
 function App() {
-  const setAppHeight = () => {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-  };
-
-  // State management
   const { device } = useDeviceDetect();
-  const [showPassword, setShowPassword] = useState(false);
+  const userNameRef = useRef('');
+  const videoRef = useRef(null);
+  const stepTimeoutRef = useRef();
+
   const [popUpVisible, setPopUpVisible] = useState(true);
-  /*const { serverResponseMessage, popUpVisible, checkPassword } = usePasswordValidation();*/ //password validation result from server
   const [userName, setUserName] = useState('');
-  const [activeButton, setActiveButton] = useState(null);
   const [consentAccepted, setConsentAccepted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [step, setStep] = useState(0);
@@ -35,18 +30,20 @@ function App() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isInputFocused, setInputFocused] = useState(false);
-  // add the names of the actual loading steps to the following and change the progress bar step value to 100/# of actual steps at :89 and :96
-  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready']; // Add your loading steps here
-  const stepTimeoutRef = useRef();
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
-  const userNameRef = useRef('');
-  const videoRef = useRef(null);
   const [ToolTipPopupVisible, setToolTipPopupVisible] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [RefreshMsgBox, setRefreshMsgBox] = useState(false);
   const [isLogoVisible, setIsLogoVisible] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [activeButton, setActiveButton] = useState(null);
+  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready']; 
 
-const handleSubmit = async () => {
+  const setAppHeight = () => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+  const handleSubmit = async () => {
   const proceedButton = document.querySelector('.submitButton');
   const passwordInput = document.querySelector('.passwordInput');
   if (!checkPassword(password)) {
@@ -71,45 +68,67 @@ const handleSubmit = async () => {
   }, 100);  
 
   setFormStep(3);
-};
-
+  };
   const handleKeyPress = (e) => {
     if (e.key == 'Enter' && !document.querySelector('.submitButton').disabled) {
 	handleSubmit();
     }
   };
-
   const handleOnInput = (e) => {
     if (e.target.value == '') {
       setError('');
     }
   };
-
-  useEffect(() => {
-    userNameRef.current = userName;
-  }, [userName]);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => setRefreshMsgBox(true), 60000);
-    return () => clearTimeout(timeoutId); // Clean up on component unmount
-  }, []);
-
-  // join events
-  useEffect(() => {
-    delegate.onStreamReady(() => {
-      emitUIInteraction({
-        mobileUser: isMobile,
-        userName: userNameRef.current,
-        osName: osName,
-        browserName: browserName,
-        deviceType: device
-      });
-    });
-  }, []);
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const handleConsent = () => {
+    setConsentAccepted(!consentAccepted);
+  };
+  // hook for transitioning form from username input to password input
+  const handleFormTransition = () => {
+    if (formStep === 1) {
+      if (userName !== null && userName.trim() !== "" && consentAccepted) {
+	setFormStep(2);
+        setError('');
+      } else {
+        setError('Please enter a name');
+      }
+    } else if (formStep === 2) {
+      if (password) {
+        setFormStep(3);
+        setError('');
+      } else {
+        setError('Please enter a password');
+      }
+    }
+  };
+  const hftHelper = (e) => {
+    if (e.key === 'Enter') {
+      handleFormTransition();
+    }
+  };
+  const handleOnFocus = (e) => {
+    const passwordInput = document.querySelector('.passwordInput');
+    const hiddenInput = e.target;
+    hiddenInput.setAttribute('type', 'password');
+    hiddenInput.style.display = 'none';
+    passwordInput.focus();
+  }
+  const handleGoBack = () => {
+    setFormStep(1);
+  };
+  const videoStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    display: 'none',
+    width: '0%',
+    height: '0%',
+    zIndex: -1,
+    objectFit: 'cover'
+  };
+
 
   // disconnect events
   useEffect(() => {
@@ -126,7 +145,6 @@ const handleSubmit = async () => {
       }
     });
   }, []);
-
   // Device detection logic
   useEffect(() => {
     const setHeight = () => setAppHeight();
@@ -165,8 +183,18 @@ const handleSubmit = async () => {
       }
     };
   }, []);
-  
-
+  // join events
+  useEffect(() => {
+    delegate.onStreamReady(() => {
+      emitUIInteraction({
+        mobileUser: isMobile,
+        userName: userNameRef.current,
+        osName: osName,
+        browserName: browserName,
+        deviceType: device
+      });
+    });
+  }, []);
   // progress bar animation
   useEffect(() => {
     let interval = setInterval(() => {
@@ -176,8 +204,6 @@ const handleSubmit = async () => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
-
   useEffect(() => {
     stepTimeoutRef.current && clearTimeout(stepTimeoutRef.current);
     if (progress >= (step + 1) * 20) {
@@ -186,10 +212,16 @@ const handleSubmit = async () => {
       }, 100);
     }
   }, [progress, step]);
-
-
+  useEffect(() => {
+    userNameRef.current = userName;
+  }, [userName]);
+  useEffect(() => {
+    const timeoutId = setTimeout(() => setRefreshMsgBox(true), 60000);
+    return () => clearTimeout(timeoutId); // Clean up on component unmount
+  }, []);
   // maintain page after exiting keyboard
-  useEffect(() => {window.goBack = ()=>{setFormStep(1);};
+  useEffect(() => {
+    window.goBack = ()=>{setFormStep(1);};
     if (isInputFocused) {
       document.body.classList.add('prevent-scroll');
     } else {
@@ -197,57 +229,6 @@ const handleSubmit = async () => {
     }
   }, [isInputFocused]);
 
-  const handleConsent = () => {
-    setConsentAccepted(!consentAccepted);
-  };
-
-  // hook for transitioning form from username input to password input
-  const handleFormTransition = () => {
-    if (formStep === 1) {
-      if (userName !== null && userName.trim() !== "" && consentAccepted) {
-	setFormStep(2);
-        setError('');
-      } else {
-        setError('Please enter a name');
-      }
-    } else if (formStep === 2) {
-      if (password) {
-        setFormStep(3);
-        setError('');
-      } else {
-        setError('Please enter a password');
-      }
-    }
-  };
-
-  const hftHelper = (e) => {
-    if (e.key === 'Enter') {
-      handleFormTransition();
-    }
-  };
-
-  const handleOnFocus = (e) => {
-    const passwordInput = document.querySelector('.passwordInput');
-    const hiddenInput = e.target;
-    hiddenInput.setAttribute('type', 'password');
-    hiddenInput.style.display = 'none';
-    passwordInput.focus();
-  }
-
-  const handleGoBack = () => {
-    setFormStep(1);
-  };
-
-  const videoStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    display: 'none',
-    width: '0%',
-    height: '0%',
-    zIndex: -1,
-    objectFit: 'cover'
-  };
 
   return (
     <div className="App">
@@ -340,3 +321,4 @@ const handleSubmit = async () => {
 }
 
 export default App;
+ 
