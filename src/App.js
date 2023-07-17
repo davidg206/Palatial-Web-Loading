@@ -1,123 +1,64 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { isDesktop, isIPad13, isTablet, isMobile, osName, browserName } from 'react-device-detect';
 import './App.css'
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
-import { delegate, sendCommand, emitUIInteraction } from './DOMDelegate';
-import handleSubmitImpl from './utils/handleSubmit';
-import checkPassword from './utils/checkPassword';
+import { delegate } from './DOMDelegate';
+import useFormHandling from './hooks/useFormHandling';  
 import passwordVisibleImg from './assets/Images/svg/toggle_password_visible.svg';
 import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.svg';
-import { port, waitForProjectName, waitForLevelReady, } from './utils/miscUtils';
-import { application } from './signallingServer';
-import sample from './Video/sample.mp4';
-import ToolTip from './assets/Images/png/ToolTip.png';
-import MobileToolTip from './assets/Images/png/MobileToolTip.png';
+import ToolTipPopup from './components/ToolTipPopup';
+import useDisconnectEvent from './hooks/useDisconnectEvent';
+import useJoinEvents from './hooks/useJoinEvents';
+import useSetAppHeight from './hooks/useSetAppHeight';
+import { isMobile } from 'react-device-detect';
+
+const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready']; 
 
 function App() {
-  const { device } = useDeviceDetect();
-  const userNameRef = useRef('');
-  const videoRef = useRef(null);
-  const stepTimeoutRef = useRef();
+  // States
+  const {
+    userName,
+    password,
+    error,
+    formStep,
+    isInputFocused,
+    shouldFadeOut,
+    showPassword,
+    userNameRef,
+    setUserName,
+    setPassword,
+    setInputFocused,
+    setFormStep,
+    handleSubmit,
+    handleKeyPress,
+    handleOnInput,
+    togglePasswordVisibility,
+    handleFormTransition,
+    hftHelper,
+    handleGoBack,
+    setError
+  } = useFormHandling();
 
   const [popUpVisible, setPopUpVisible] = useState(true);
-  const [userName, setUserName] = useState('');
   const [consentAccepted, setConsentAccepted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [step, setStep] = useState(0);
-  const [formStep, setFormStep] = useState(1);
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isInputFocused, setInputFocused] = useState(false);
-  const [shouldFadeOut, setShouldFadeOut] = useState(false);
   const [ToolTipPopupVisible, setToolTipPopupVisible] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [RefreshMsgBox, setRefreshMsgBox] = useState(false);
   const [isLogoVisible, setIsLogoVisible] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
   const [activeButton, setActiveButton] = useState(null);
-  const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready']; 
 
-  const setAppHeight = () => {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-  };
-  const handleSubmit = async () => {
-  const proceedButton = document.querySelector('.submitButton');
-  const passwordInput = document.querySelector('.passwordInput');
-  if (!checkPassword(password)) {
-    setError("Wrong password. Please try again.");
-    return;
-  } else {
-    setError("");
-  }
-  proceedButton.disabled = true;
-  passwordInput.disabled = true;
-  // below causes 'Operation was aborted' error on iOS upon rentry
-  //videoRef.current.play();
-  handleSubmitImpl(true);
-  setShouldFadeOut(true);
-  setIsLogoVisible(false); 
-  setToolTipPopupVisible(true);
-  setTimeout(() => {
-    setIsTooltipVisible(false);
-    setTimeout(() => {
-      setPopUpVisible(true);
-    }); 
-  }, 100);  
+  // Refs
+  const { device } = useDeviceDetect();
+  const videoRef = useRef(null);
+  const stepTimeoutRef = useRef();
 
-  setFormStep(3);
-  };
-  const handleKeyPress = (e) => {
-    if (e.key == 'Enter' && !document.querySelector('.submitButton').disabled) {
-	handleSubmit();
-    }
-  };
-  const handleOnInput = (e) => {
-    if (e.target.value == '') {
-      setError('');
-    }
-  };
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
   const handleConsent = () => {
     setConsentAccepted(!consentAccepted);
   };
-  // hook for transitioning form from username input to password input
-  const handleFormTransition = () => {
-    if (formStep === 1) {
-      if (userName !== null && userName.trim() !== "" && consentAccepted) {
-	setFormStep(2);
-        setError('');
-      } else {
-        setError('Please enter a name');
-      }
-    } else if (formStep === 2) {
-      if (password) {
-        setFormStep(3);
-        setError('');
-      } else {
-        setError('Please enter a password');
-      }
-    }
-  };
-  const hftHelper = (e) => {
-    if (e.key === 'Enter') {
-      handleFormTransition();
-    }
-  };
-  const handleOnFocus = (e) => {
-    const passwordInput = document.querySelector('.passwordInput');
-    const hiddenInput = e.target;
-    hiddenInput.setAttribute('type', 'password');
-    hiddenInput.style.display = 'none';
-    passwordInput.focus();
-  }
-  const handleGoBack = () => {
-    setFormStep(1);
-  };
+
   const videoStyle = {
     position: 'fixed',
     top: 0,
@@ -129,73 +70,7 @@ function App() {
     objectFit: 'cover'
   };
 
-
-  // disconnect events
-  useEffect(() => {
-    delegate.onDisconnectHook(isTimeout => {
-      setFormStep(1);
-      setPassword('');
-      setUserName('');
-      setActiveButton(null);
-      if (delegate.streamReady) sendCommand("disconnectUser");
-      if (isTimeout) {
-        delegate.loadingProgress = 0;
-	setProgress(0);
-        setStep(0);
-      }
-    });
-  }, []);
-  // Device detection logic
-  useEffect(() => {
-    const setHeight = () => setAppHeight();
-    window.addEventListener('resize', setHeight);
-    
-    const preventContext = (e) => { e.preventDefault(); };
-    document.addEventListener('contextmenu', preventContext);
-    
-    const disconnectUser = () => sendCommand('disconnectUser');
-    window.addEventListener('beforeunload', disconnectUser);
-  
-    let updateHeight;
-    let preventScroll;
-  
-    // Resize and touchmove events are added only for mobile or tablet devices
-    if (isMobile || isTablet || isIPad13) {
-      updateHeight = () => {
-        document.body.style.height = `${window.innerHeight}px`;
-      };
-      updateHeight();
-      window.addEventListener('resize', updateHeight);
-  
-      preventScroll = (event) => {
-        event.preventDefault();
-      };
-      window.addEventListener('touchmove', preventScroll, { passive: false });
-    }
-  
-    return () => {
-      window.removeEventListener('resize', setHeight);
-      document.removeEventListener('contextmenu', preventContext);
-      window.removeEventListener('beforeunload', disconnectUser);
-      if (isMobile || isTablet || isIPad13) {
-        window.removeEventListener('resize', updateHeight);
-        window.removeEventListener('touchmove', preventScroll);
-      }
-    };
-  }, []);
-  // join events
-  useEffect(() => {
-    delegate.onStreamReady(() => {
-      emitUIInteraction({
-        mobileUser: isMobile,
-        userName: userNameRef.current,
-        osName: osName,
-        browserName: browserName,
-        deviceType: device
-      });
-    });
-  }, []);
-  // progress bar animation
+  // set progressbar animation interval
   useEffect(() => {
     let interval = setInterval(() => {
       setProgress((prevProgress) => {
@@ -204,6 +79,7 @@ function App() {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
   useEffect(() => {
     stepTimeoutRef.current && clearTimeout(stepTimeoutRef.current);
     if (progress >= (step + 1) * 20) {
@@ -212,13 +88,16 @@ function App() {
       }, 100);
     }
   }, [progress, step]);
+
   useEffect(() => {
     userNameRef.current = userName;
   }, [userName]);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => setRefreshMsgBox(true), 60000);
     return () => clearTimeout(timeoutId); // Clean up on component unmount
   }, []);
+
   // maintain page after exiting keyboard
   useEffect(() => {
     window.goBack = ()=>{setFormStep(1);};
@@ -229,6 +108,10 @@ function App() {
     }
   }, [isInputFocused]);
 
+  useSetAppHeight();
+  useDeviceDetect();
+  useDisconnectEvent(setFormStep, setPassword, setUserName, setActiveButton, setProgress, setStep);
+  useJoinEvents(userNameRef, device);
 
   return (
     <div className="App">
@@ -238,7 +121,7 @@ function App() {
       )}
       <div style={{ display: 'none' }}>
         <video id="myVideo" ref={videoRef} style={videoStyle} hidden playsInline muted>
-          <source src={sample} type="video/mp4" />
+        
         </video>
       </div>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
@@ -301,15 +184,8 @@ function App() {
               </div>
             )}
         </div>
-            {formStep === 3 && (
-                <div className="ToolTipPopup fadeIn">
-                  <img 
-                    className={isMobile ? "mobile-tooltip" : "desktop-tooltip"} 
-                    src={isMobile ? MobileToolTip : ToolTip} 
-                    alt="Tool Tip Popup" 
-                  />
-                  </div>
-            )} 
+        {formStep === 3 && <ToolTipPopup isMobile={isMobile} />}
+             
       </div>
 
       <ProgressBar progress={progress} />
