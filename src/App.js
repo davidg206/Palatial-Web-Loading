@@ -129,32 +129,43 @@ const handleSubmit = async () => {
 
   // Device detection logic
   useEffect(() => {
-    setAppHeight();
-    window.addEventListener('resize', setAppHeight);
-    document.addEventListener('contextmenu', e => { e.preventDefault(); });
-    const disconnectUser = () => { sendCommand("disconnectUser"); };
+    const setHeight = () => setAppHeight();
+    window.addEventListener('resize', setHeight);
+    
+    const preventContext = (e) => { e.preventDefault(); };
+    document.addEventListener('contextmenu', preventContext);
+    
+    const disconnectUser = () => sendCommand('disconnectUser');
     window.addEventListener('beforeunload', disconnectUser);
-
+  
+    let updateHeight;
+    let preventScroll;
+  
+    // Resize and touchmove events are added only for mobile or tablet devices
     if (isMobile || isTablet || isIPad13) {
-      const updateHeight = () => {
+      updateHeight = () => {
         document.body.style.height = `${window.innerHeight}px`;
       };
       updateHeight();
       window.addEventListener('resize', updateHeight);
-      const preventScroll = event => {
+  
+      preventScroll = (event) => {
         event.preventDefault();
       };
       window.addEventListener('touchmove', preventScroll, { passive: false });
-      return () => {
-        window.removeEventListener('resize', setAppHeight);
+    }
+  
+    return () => {
+      window.removeEventListener('resize', setHeight);
+      document.removeEventListener('contextmenu', preventContext);
+      window.removeEventListener('beforeunload', disconnectUser);
+      if (isMobile || isTablet || isIPad13) {
         window.removeEventListener('resize', updateHeight);
         window.removeEventListener('touchmove', preventScroll);
-      };
-    }
-    return () => {
-      window.removeEventListener('beforeunload', disconnectUser);
+      }
     };
   }, []);
+  
 
   // progress bar animation
   useEffect(() => {
@@ -250,9 +261,9 @@ const handleSubmit = async () => {
         </video>
       </div>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
-        <div className={`Logo ${isLogoVisible ? '' : 'fadeOut'}`}>
-          <img src={logoPng} style={{width:'10em'}} alt='logo'/>
-        </div>
+      <div className={`Logo ${isLogoVisible ? '' : 'fadeOut'}`}>
+        <img src={logoPng} style={{width:'10em'}} alt='logo'/>
+      </div>
         <div>
             {formStep === 1 && (
               <div className='PopUpContent fadeIn'>
