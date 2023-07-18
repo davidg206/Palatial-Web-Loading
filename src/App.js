@@ -19,6 +19,7 @@ import ToolTips from './components/FormSteps/ToolTips';
 import DefaultBackground from './assets/Images/Background-Image.png';
 import OsloBackground from './assets/Images/Background-Image-oslo.png';
 import AbnormalBackground from './assets/Images/Background-Image-abnormal.png';
+import OfficeDemoBackground from './assets/Images/Background-Image-officedemo.png';
 import { application } from './signallingServer';
 
 const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready'];
@@ -102,6 +103,7 @@ function App() {
     switch (application) {
     case "abnormal":                   setBackgroundImage(AbnormalBackground); break;
     case "osloworks": case "oslodemo": setBackgroundImage(OsloBackground); break;
+    case "officedemo":                 setBackgroundImage(OfficeDemoBackground); break;
     default:                           setBackgroundImage(DefaultBackground); break;
     }
   }, []);
