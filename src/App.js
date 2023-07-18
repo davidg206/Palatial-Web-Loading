@@ -89,9 +89,7 @@ function App() {
     }
   }, [progress, step]);
 
-  useEffect(() => {
-    userNameRef.current = userName;
-  }, [userName]);
+
 
   useEffect(() => {
     const timeoutId = setTimeout(() => setRefreshMsgBox(true), 60000);
@@ -99,14 +97,6 @@ function App() {
   }, []);
 
   // maintain page after exiting keyboard
-  useEffect(() => {
-    window.goBack = ()=>{setFormStep(1);};
-    if (isInputFocused) {
-      document.body.classList.add('prevent-scroll');
-    } else {
-      document.body.classList.remove('prevent-scroll');
-    }
-  }, [isInputFocused]);
 
   useSetAppHeight();
   useDeviceDetect();
