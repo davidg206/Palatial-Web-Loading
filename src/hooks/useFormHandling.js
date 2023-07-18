@@ -1,5 +1,5 @@
 // ./hooks/useFormHandling.js
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import checkPassword from '../utils/checkPassword';
 import handleSubmitImpl from '../utils/handleSubmit';
 
@@ -11,8 +11,18 @@ const useFormHandling = () => {
   const [isInputFocused, setInputFocused] = useState(false);
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLogoVisible, setIsLogoVisible] = useState[true];
 
   const userNameRef = useRef('');
+
+
+  useEffect(() => {
+    if (formStep === 3) {
+      setIsLogoVisible(false);
+    } else {
+      setIsLogoVisible(true);
+    }
+  }, [formStep]);
 
   const handleSubmit = async () => {
     if (!checkPassword(password)) {
@@ -90,7 +100,8 @@ const useFormHandling = () => {
     handleFormTransition,
     hftHelper,
     handleGoBack,
-    setError
+    setError,
+    isLogoVisible
   };
 };
 

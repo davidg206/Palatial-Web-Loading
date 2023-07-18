@@ -45,7 +45,8 @@ function App() {
     handleFormTransition,
     hftHelper,
     handleGoBack,
-    setError
+    setError,
+    isLogoVisible
   } = useFormHandling();
 
   const [popUpVisible, setPopUpVisible] = useState(true);
@@ -55,7 +56,6 @@ function App() {
   const [ToolTipPopupVisible, setToolTipPopupVisible] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [RefreshMsgBox, setRefreshMsgBox] = useState(false);
-  const [isLogoVisible, setIsLogoVisible] = useState(true);
   const [activeButton, setActiveButton] = useState(null);
   const [backgroundImg, setBackgroundImage] = useState(null);
 
