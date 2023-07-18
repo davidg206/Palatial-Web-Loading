@@ -12,6 +12,10 @@ import useDisconnectEvent from './hooks/useDisconnectEvent';
 import useJoinEvents from './hooks/useJoinEvents';
 import useSetAppHeight from './hooks/useSetAppHeight';
 import { isMobile } from 'react-device-detect';
+import RefreshMessageBox from './components/RefreshMessageBox';
+import UserNameInput from './components/FormSteps/UserNameInput';
+import PasswordInput from './components/FormSteps/PasswordInput';
+import ToolTips from './components/FormSteps/ToolTips';
 
 const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready']; 
 
@@ -89,13 +93,6 @@ function App() {
     }
   }, [progress, step]);
 
-
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => setRefreshMsgBox(true), 60000);
-    return () => clearTimeout(timeoutId); // Clean up on component unmount
-  }, []);
-
   // maintain page after exiting keyboard
 
   useSetAppHeight();
@@ -105,10 +102,7 @@ function App() {
 
   return (
     <div className="App">
-        {RefreshMsgBox && (
-        <div className="refreshMsgBox fadeIn">
-          Refresh the page if loading takes longer than 1 minute </div>
-      )}
+        <RefreshMessageBox />
       <div style={{ display: 'none' }}>
         <video id="myVideo" ref={videoRef} style={videoStyle} hidden playsInline muted>
         
@@ -118,63 +112,35 @@ function App() {
       <div className={`Logo ${isLogoVisible ? '' : 'fadeOut'}`}>
         <img src={logoPng} style={{width:'10em'}} alt='logo'/>
       </div>
-        <div>
-            {formStep === 1 && (
-              <div className='PopUpContent fadeIn'>
-                <div className="inputPrompt">
-                  <p>Enter Your Name</p>
-                  <input
-                    className="userNameInput"
-                    type="text"
-                    value={userName}
-                    onFocus={() => setInputFocused(true)}
-                    onBlur={() => setInputFocused(false)}
-                    onChange={(e) => { setError(""); setUserName(e.target.value) } }
-                    onKeyPress={hftHelper}
-                    required
-                  />
-                </div>
-                {error && <p className="error">{error}</p>}
-                <p style={{fontweight:'100'}}>By proceeding you agree to our terms and conditions</p>
-                <div className='passwordButtons'>
-                <button className="proceedButton" onClick={handleFormTransition}>Proceed</button>
-                </div>
-              </div>
-            )}
-            {formStep === 2 && (
-              <div className='PopUpContent fadeIn'>
-                <div className="inputPrompt">
-                  <p>Enter Your Password</p>
-                  <div className="passwordWrapper">
-                    <input
-                      className="passwordInput"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onFocus={() => setInputFocused(true)}
-                      onBlur={() => setInputFocused(false)}
-                      onChange={(e) => { setError(""); setPassword(e.target.value); }}
-                      onInput={handleOnInput}
-                      onKeyDown={handleKeyPress}
-                      autoComplete="new-password"
-                      required
-                    />
-                    <button className="togglePasswordButton" onClick={togglePasswordVisibility}>
-                    {showPassword ?
-                    <img src={passwordVisibleImg} alt="hide password" style={{width: '1.2em', height: '1.2em'}} /> :
-                    <img src={passwordinvisibleImg} alt="show password" style={{width: '1.2em', height: '1.2em'}} />
-                    }
-                    </button>
-                  </div>
-                </div>
-                {error && <p className="error">{error}</p>}
-                <div className="passwordButtons" style={{display:'flex',flexDirection:'row', paddingTop:'1em'}}> 
-                  <button className="backButton" onClick={handleGoBack}>Go Back</button>
-                  <button className="submitButton" onClick={handleSubmit}>Start</button>
-                </div>
-              </div>
-            )}
-        </div>
-        {formStep === 3 && <ToolTipPopup isMobile={isMobile} />}
+      <div>
+        {formStep === 1 && (
+          <UserNameInput
+            userName={userName}
+            setInputFocused={setInputFocused}
+            setError={setError}
+            setUserName={setUserName}
+            hftHelper={hftHelper}
+            handleFormTransition={handleFormTransition}
+          />
+        )}
+        {formStep === 2 && (
+          <PasswordInput
+            password={password}
+            showPassword={showPassword}
+            setInputFocused={setInputFocused}
+            setError={setError}
+            setPassword={setPassword}
+            handleOnInput={handleOnInput}
+            handleKeyPress={handleKeyPress}
+            togglePasswordVisibility={togglePasswordVisibility}
+            handleGoBack={handleGoBack}
+            handleSubmit={handleSubmit}
+          />
+        )}
+        {formStep === 3 && (
+          <ToolTips />
+        )}
+      </div>
              
       </div>
 
