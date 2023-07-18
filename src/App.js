@@ -14,6 +14,9 @@ import { application } from './signallingServer';
 import sample from './Video/sample.mp4';
 import ToolTip from './assets/Images/png/ToolTip.png';
 import MobileToolTip from './assets/Images/png/MobileToolTip.png';
+import DefaultBackground from './assets/Images/Background-Image.png';
+import OsloBackground from './assets/Images/Background-Image-oslo.png';
+import AbnormalBackground from './assets/Images/Background-Image-abnormal.png';
 
 function App() {
   const setAppHeight = () => {
@@ -45,6 +48,7 @@ function App() {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [RefreshMsgBox, setRefreshMsgBox] = useState(false);
   const [isLogoVisible, setIsLogoVisible] = useState(true);
+  const [backgroundImg, setBackgroundImage] = useState(DefaultBackground);
 
 const handleSubmit = async () => {
   const proceedButton = document.querySelector('.submitButton');
@@ -197,6 +201,14 @@ const handleSubmit = async () => {
     }
   }, [isInputFocused]);
 
+  useEffect(() => {
+    switch (application) {
+    case "abnormal":                   setBackgroundImage(AbnormalBackground); break;
+    case "osloworks": case "oslodemo": setBackgroundImage(OsloBackground); break;
+    default:                           setBackgroundImage(DefaultBackground); break;
+    }
+  }, []);
+
   const handleConsent = () => {
     setConsentAccepted(!consentAccepted);
   };
@@ -250,7 +262,7 @@ const handleSubmit = async () => {
   };
 
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundImage: `url(${backgroundImg})` }}>
         {RefreshMsgBox && (
         <div className="refreshMsgBox fadeIn">
           Refresh the page if loading takes longer than 1 minute </div>

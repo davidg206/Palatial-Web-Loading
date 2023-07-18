@@ -44,7 +44,7 @@ if (isMobile) {
   });
 }
 
-let backgroundImage = 'default-background';
+/*let backgroundImage = 'default-background';
 switch (application) {
 case "osloworks": case "oslodemo":
   backgroundImage = 'oslo-background';
@@ -56,7 +56,7 @@ case "abnormal":
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add(backgroundImage);
-});
+});*/
 
 // Create and return a new webRtcPlayerController instance
 var RTCPlayer = create(config, delegate);
