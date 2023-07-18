@@ -11,7 +11,7 @@ const useFormHandling = () => {
   const [isInputFocused, setInputFocused] = useState(false);
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [isLogoVisible, setIsLogoVisible] = useState[true];
+  const [isLogoVisible, setIsLogoVisible] = useState(true);
 
   const userNameRef = useRef('');
 
