@@ -8,14 +8,32 @@ if (window.location.protocol === 'https:') {
   signallingServerProtocol = 'wss:';
 }
 
-application = window.location.hostname.split('.');
+function getUrlPart(url) {
+  url = url.startsWith('https://')
+    ? url.slice('https://'.length)
+    : url;
 
-if (application.length < 2)
+  url = url.startsWith('http://')
+    ? url.slice('http://'.length)
+    : url;
+
+  const baseUrlRegex = /(.+)\.palatialxr\.com/;
+  const projectUrlRegex = /(.+)\.palatialxr\.com\/projects\/(.+)/;
+
+  if (url.match(projectUrlRegex)) {
+    return url.match(projectUrlRegex)[2];
+  } else if (url.match(baseUrlRegex)) {
+    return url.match(baseUrlRegex)[1];
+  } else {
+    return null;
+  }
+}
+
+application = getUrlPart(window.location.href);
+
+if (application === null) {
   application = "dev";
-else
-  application = application[0];
-if (!/^[a-zA-Z0-9]+$/.test(application))
-  application = "dev";
+}
 
 // build the websocket endpoint based on the protocol used to load the frontend
 signallingServerAddress = signallingServerProtocol + '//' +

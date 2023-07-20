@@ -23,7 +23,6 @@ html {
   align-items: center;
   max-width: 24em;
   height: auto; 
-  display: flex;
   padding: 2em 2.175em 2em 2.175em; /* 20px / 20px for top and bottom, 63.5px / 20px for left and right */
   margin-left: 1em;
   margin-right: 1em;
@@ -44,7 +43,7 @@ html {
   width: 100%; 
   height: 100%; 
   flex-direction: column;
-  align-items: left;
+  align-items: center;
   text-align: left;
   
 }
@@ -77,6 +76,10 @@ html {
   text-align: center;
   width: 100%; /* 202px / 20px */
   height: auto;
+  transition: opacity 0.1s ease-out;
+}
+.Logo.fadeOut {
+  opacity: 0;
 }
 
 .inputPrompt {
@@ -321,7 +324,7 @@ html {
 
 .prevent-scroll {
   overflow: hidden;
-  position: fixed;
+  /*position: fixed;*/ /* commenting out to prevent background repeat bug */
   width: 100%;
 }
 
@@ -361,6 +364,52 @@ html {
   color: white;
   cursor: pointer;
 }
+
+.ToolTipPopup {
+  position:relative;
+  width: 100%;
+  animation: fadein 1s;
+}
+
+.desktop-tooltip {
+  height: auto;
+  width: 100%;
+}
+
+@media only screen and (max-width: 767px) {
+  .mobile-tooltip {
+    height: auto;  
+    width: 100%;
+  }
+}
+
+/* CSS for tooltip image on mobile - landscape */
+@media only screen and (max-width: 1024px) and (orientation: landscape) {
+  .mobile-tooltip {
+    position: relative;
+    height: auto;  
+    width: 100%;
+  }
+}
+
+.refreshMsgBox {
+  position: fixed;
+  top: 2em;
+  padding: 20px;
+  width: 18em;
+  border-radius: 10px;
+  justify-content: center;
+  text-align: center;
+  background-color: #444;
+  color: #fff;
+  z-index: 10; 
+  color: #FFFFFF; /* Sets text color to white */
+  font-family: 'Lato', sans-serif;
+  font-weight: 300; /* Thin variant of Lato font */
+  font-size: 1.2em; /* 24px/20px = 1.2em */
+  text-align: center;
+}
+
 
 .error{
   position: inherit;

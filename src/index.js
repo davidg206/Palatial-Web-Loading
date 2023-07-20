@@ -24,20 +24,17 @@ console.log(signallingServerAddress);
 reportWebVitals();
 
 delegate.onStreamReady(async () => {
-  emitUIInteraction({});
   delegate.onPlayAction();
-  waitForProjectName().then(async name => {
-    console.log('project name: ' + name, "Entering palatial.tenant-palatial-platform.coreweave.cloud:" + port[name]);
-    emitUIInteraction({
-      join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[name],
-      orientation: isMobile ? getScreenOrientation() : ""
-    });
-    delegate.loadingProgress = 90;
-    waitForLevelReady().then(async () => {
-      delegate.loadingProgress = 100;
-      if (delegate.formSubmitted)
-        onPlayAction();
-    }).catch(error => {});
+  console.log(application, 'joining palatial.tenant-palatial-platform.coreweave.cloud:' + port[application]);
+  emitUIInteraction({
+    join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[application],
+    orientation: isMobile ? getScreenOrientation() : ""
+  });
+  delegate.loadingProgress = 90;
+  waitForLevelReady().then(async () => {
+    delegate.loadingProgress = 100;
+    if (delegate.formSubmitted)
+      onPlayAction();
   }).catch(error => {});
 });
 
@@ -46,6 +43,20 @@ if (isMobile) {
     emitUIInteraction({ orientation: getScreenOrientation() });
   });
 }
+
+/*let backgroundImage = 'default-background';
+switch (application) {
+case "osloworks": case "oslodemo":
+  backgroundImage = 'oslo-background';
+  break;
+case "abnormal":
+  backgroundImage = 'abnormal-background';
+  break;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add(backgroundImage);
+});*/
 
 // Create and return a new webRtcPlayerController instance
 var RTCPlayer = create(config, delegate);

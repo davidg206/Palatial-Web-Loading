@@ -1,0 +1,365 @@
+/*! ../Afk/AfkLogic */
+
+/*! ../Config/Config */
+
+/*! ../DataChannel/DataChannelController */
+
+/*! ../DataChannel/LatencyTestResults */
+
+/*! ../FreezeFrame/FreezeFrameController */
+
+/*! ../Inputs/InputController */
+
+/*! ../Logger/Logger */
+
+/*! ../MicPlayer/MicController */
+
+/*! ../PeerConnectionController/PeerConnectionController */
+
+/*! ../UeInstanceMessage/UeControlMessage */
+
+/*! ../UeInstanceMessage/UeDescriptorUi */
+
+/*! ../UeInstanceMessage/UeInputGamePadMessage */
+
+/*! ../UeInstanceMessage/UeInputKeyboardMessage */
+
+/*! ../UeInstanceMessage/UeInputMouseMessage */
+
+/*! ../UeInstanceMessage/UeInputTouchMessage */
+
+/*! ../Ui/UiController */
+
+/*! ../VideoPlayer/StreamController */
+
+/*! ../VideoPlayer/VideoPlayer */
+
+/*! ../VideoPlayer/VideoPlayerMouseHoverEvents */
+
+/*! ../VideoPlayer/VideoPlayerMouseLockedEvents */
+
+/*! ../WebSockets/WebSocketController */
+
+/*! ./Afk/AfkLogic */
+
+/*! ./AggregatedStats */
+
+/*! ./CandidatePairStats */
+
+/*! ./CandidateStat */
+
+/*! ./Config/Config */
+
+/*! ./DataChannel/DataChannelController */
+
+/*! ./DataChannel/InitialSettings */
+
+/*! ./DataChannel/LatencyTestResults */
+
+/*! ./DataChannelReceiveMessageType */
+
+/*! ./DataChannelStats */
+
+/*! ./Delegate/DelegateBase */
+
+/*! ./FakeTouchController */
+
+/*! ./FreezeFrame */
+
+/*! ./GamepadController */
+
+/*! ./GyroController */
+
+/*! ./InboundAudioStats */
+
+/*! ./InboundVideoStats */
+
+/*! ./InitialSettings */
+
+/*! ./KeyboardController */
+
+/*! ./Logger/Logger */
+
+/*! ./MessageReceive */
+
+/*! ./MessageSend */
+
+/*! ./MouseButtons */
+
+/*! ./MouseController */
+
+/*! ./OutBoundVideoStats */
+
+/*! ./PeerConnectionController/AggregatedStats */
+
+/*! ./SpecialKeyCodes */
+
+/*! ./StreamStats */
+
+/*! ./TouchController */
+
+/*! ./UeDataMessage */
+
+/*! ./UeDescriptor */
+
+/*! ./UeMessageTypes */
+
+/*! ./WebRtcPlayer/WebRtcPlayerController */
+
+/*! ./WebSockets/MessageReceive */
+
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
+
+/*!**********************!*\
+          !*** ./src/index.ts ***!
+          \**********************/
+
+/*!*****************************!*\
+          !*** ./src/Afk/AfkLogic.ts ***!
+          \*****************************/
+
+/*!******************************!*\
+          !*** ./src/Config/Config.ts ***!
+          \******************************/
+
+/*!******************************!*\
+          !*** ./src/Logger/Logger.ts ***!
+          \******************************/
+
+/*!********************************!*\
+          !*** ./src/Ui/UiController.ts ***!
+          \********************************/
+
+/*!************************************!*\
+          !*** ./src/Inputs/MouseButtons.ts ***!
+          \************************************/
+
+/*!**************************************!*\
+          !*** ./src/Delegate/DelegateBase.ts ***!
+          \**************************************/
+
+/*!**************************************!*\
+          !*** ./src/Inputs/GyroController.ts ***!
+          \**************************************/
+
+/*!***************************************!*\
+          !*** ./src/Inputs/InputController.ts ***!
+          \***************************************/
+
+/*!***************************************!*\
+          !*** ./src/Inputs/MouseController.ts ***!
+          \***************************************/
+
+/*!***************************************!*\
+          !*** ./src/Inputs/SpecialKeyCodes.ts ***!
+          \***************************************/
+
+/*!***************************************!*\
+          !*** ./src/Inputs/TouchController.ts ***!
+          \***************************************/
+
+/*!***************************************!*\
+          !*** ./src/WebSockets/MessageSend.ts ***!
+          \***************************************/
+
+/*!****************************************!*\
+          !*** ./src/FreezeFrame/FreezeFrame.ts ***!
+          \****************************************/
+
+/*!****************************************!*\
+          !*** ./src/MicPlayer/MicController.ts ***!
+          \****************************************/
+
+/*!****************************************!*\
+          !*** ./src/VideoPlayer/VideoPlayer.ts ***!
+          \****************************************/
+
+/*!*****************************************!*\
+          !*** ./src/Inputs/GamepadController.ts ***!
+          \*****************************************/
+
+/*!******************************************!*\
+          !*** ./src/Inputs/KeyboardController.ts ***!
+          \******************************************/
+
+/*!******************************************!*\
+          !*** ./src/WebSockets/MessageReceive.ts ***!
+          \******************************************/
+
+/*!*******************************************!*\
+          !*** ./src/Inputs/FakeTouchController.ts ***!
+          \*******************************************/
+
+/*!********************************************!*\
+          !*** ./src/DataChannel/InitialSettings.ts ***!
+          \********************************************/
+
+/*!*********************************************!*\
+          !*** ./src/VideoPlayer/StreamController.ts ***!
+          \*********************************************/
+
+/*!***********************************************!*\
+          !*** ./src/DataChannel/LatencyTestResults.ts ***!
+          \***********************************************/
+
+/*!***********************************************!*\
+          !*** ./src/UeInstanceMessage/UeDescriptor.ts ***!
+          \***********************************************/
+
+/*!***********************************************!*\
+          !*** ./src/WebSockets/WebSocketController.ts ***!
+          \***********************************************/
+
+/*!************************************************!*\
+          !*** ./src/UeInstanceMessage/UeDataMessage.ts ***!
+          \************************************************/
+
+/*!*************************************************!*\
+          !*** ./src/UeInstanceMessage/UeDescriptorUi.ts ***!
+          \*************************************************/
+
+/*!*************************************************!*\
+          !*** ./src/UeInstanceMessage/UeMessageTypes.ts ***!
+          \*************************************************/
+
+/*!**************************************************!*\
+          !*** ./src/DataChannel/DataChannelController.ts ***!
+          \**************************************************/
+
+/*!**************************************************!*\
+          !*** ./src/FreezeFrame/FreezeFrameController.ts ***!
+          \**************************************************/
+
+/*!***************************************************!*\
+          !*** ./src/UeInstanceMessage/UeControlMessage.ts ***!
+          \***************************************************/
+
+/*!****************************************************!*\
+          !*** ./src/WebRtcPlayer/WebRtcPlayerController.ts ***!
+          \****************************************************/
+
+/*!*****************************************************!*\
+          !*** ./src/PeerConnectionController/StreamStats.ts ***!
+          \*****************************************************/
+
+/*!******************************************************!*\
+          !*** ./src/UeInstanceMessage/UeInputMouseMessage.ts ***!
+          \******************************************************/
+
+/*!******************************************************!*\
+          !*** ./src/UeInstanceMessage/UeInputTouchMessage.ts ***!
+          \******************************************************/
+
+/*!*******************************************************!*\
+          !*** ./src/PeerConnectionController/CandidateStat.ts ***!
+          \*******************************************************/
+
+/*!********************************************************!*\
+          !*** ./src/UeInstanceMessage/UeInputGamePadMessage.ts ***!
+          \********************************************************/
+
+/*!********************************************************!*\
+          !*** ./src/VideoPlayer/VideoPlayerMouseHoverEvents.ts ***!
+          \********************************************************/
+
+/*!*********************************************************!*\
+          !*** ./src/PeerConnectionController/AggregatedStats.ts ***!
+          \*********************************************************/
+
+/*!*********************************************************!*\
+          !*** ./src/UeInstanceMessage/UeInputKeyboardMessage.ts ***!
+          \*********************************************************/
+
+/*!*********************************************************!*\
+          !*** ./src/VideoPlayer/VideoPlayerMouseLockedEvents.ts ***!
+          \*********************************************************/
+
+/*!**********************************************************!*\
+          !*** ./src/DataChannel/DataChannelReceiveMessageType.ts ***!
+          \**********************************************************/
+
+/*!**********************************************************!*\
+          !*** ./src/PeerConnectionController/DataChannelStats.ts ***!
+          \**********************************************************/
+
+/*!***********************************************************!*\
+          !*** ./src/PeerConnectionController/InboundAudioStats.ts ***!
+          \***********************************************************/
+
+/*!***********************************************************!*\
+          !*** ./src/PeerConnectionController/InboundVideoStats.ts ***!
+          \***********************************************************/
+
+/*!************************************************************!*\
+          !*** ./src/PeerConnectionController/CandidatePairStats.ts ***!
+          \************************************************************/
+
+/*!************************************************************!*\
+          !*** ./src/PeerConnectionController/OutBoundVideoStats.ts ***!
+          \************************************************************/
+
+/*!******************************************************************!*\
+          !*** ./src/PeerConnectionController/PeerConnectionController.ts ***!
+          \******************************************************************/
+
+/**
+ * @license React
+ * react-dom.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * @license React
+ * react-jsx-runtime.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * @license React
+ * react.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * @license React
+ * scheduler.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * @remix-run/router v1.7.1
+ *
+ * Copyright (c) Remix Software Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.md file in the root directory of this source tree.
+ *
+ * @license MIT
+ */
+
+/**
+ * React Router v6.14.1
+ *
+ * Copyright (c) Remix Software Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.md file in the root directory of this source tree.
+ *
+ * @license MIT
+ */
