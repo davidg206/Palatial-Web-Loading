@@ -120,7 +120,7 @@ export const waitForProjectName = () => {
   });
 };
 
-export const onPlayAction = () => {
+export const onPlayAction = () => {console.log('onPlayAction()');
   delegate.onPlayAction();
   const root = document.getElementById("root");
   root.classList.add("fade-out");

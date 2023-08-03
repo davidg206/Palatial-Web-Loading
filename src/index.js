@@ -25,16 +25,14 @@ reportWebVitals();
 
 delegate.onStreamReady(async () => {
   delegate.onPlayAction();
-  console.log(application, 'joining palatial.tenant-palatial-platform.coreweave.cloud:' + port[application]);
+  console.log(application, `joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:` + process.env.REACT_APP_DEDICATED_SERVER_PORT);
   emitUIInteraction({
-    join: 'palatial.tenant-palatial-platform.coreweave.cloud:' + port[application],
+    join: `${process.env.REACT_APP_VIRT_DNS_ADDRESS}:` + process.env.REACT_APP_DEDICATED_SERVER_PORT,
     orientation: isMobile ? getScreenOrientation() : ""
   });
   delegate.loadingProgress = 90;
   waitForLevelReady().then(async () => {
     delegate.loadingProgress = 100;
-    if (delegate.formSubmitted)
-      onPlayAction();
   }).catch(error => {});
 });
 

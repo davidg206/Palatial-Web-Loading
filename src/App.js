@@ -69,17 +69,6 @@ function App() {
     setConsentAccepted(!consentAccepted);
   };
 
-  const videoStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    display: 'none',
-    width: '0%',
-    height: '0%',
-    zIndex: -1,
-    objectFit: 'cover'
-  };
-
   // set progressbar animation interval
   useEffect(() => {
     let interval = setInterval(() => {
@@ -116,10 +105,6 @@ function App() {
   return (
     <div className="App" style={{ backgroundImage: `url(${backgroundImg})` }}>
         <RefreshMessageBox />
-      <div style={{ display: 'none' }}>
-        <video id="myVideo" ref={videoRef} style={videoStyle} hidden playsInline muted>
-        </video>
-      </div>
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
       <div className={`Logo ${isLogoVisible ? '' : 'fadeOut'}`}>
         <img src={logoPng} style={{width:'10em'}} alt='logo'/>

@@ -433,6 +433,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 
 		// configure all buttons 
 		this.ConfigureButtons();
+		window.changeSize = (width, height) => { this.updateVideoStreamSize(width, height); };
 
 	}
 
@@ -457,6 +458,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	}
 
 	updateVideoStreamSize(x: number, y: number) {
+		console.log(`calling ueDescriptor with ${x},${y}`);
 		(<libspsfrontend.webRtcPlayerController>this.iWebRtcController).ueDescriptorUi.sendUpdateVideoStreamSize(x, y);
 	}
 
@@ -1028,7 +1030,8 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
                 });
 
 		this.iWebRtcController.matchViewportResolution = true;
-		this.iWebRtcController.updateVideoStreamSize();
+		console.log(`innerWidth=${window.innerWidth} innerHeight=${window.innerHeight}`);
+		this.updateVideoStreamSize(window.innerWidth, window.innerHeight);
 		libspsfrontend.DataChannelController.coordinateConverter.setupNormalizeAndQuantize();
 
 		document.getElementById("playerUI").style.display = "block";
