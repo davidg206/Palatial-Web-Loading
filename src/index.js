@@ -25,9 +25,10 @@ reportWebVitals();
 
 delegate.onStreamReady(async () => {
   delegate.onPlayAction();
-  console.log(application, `joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:` + process.env.REACT_APP_DEDICATED_SERVER_PORT);
+  const port = process.env['REACT_APP_DEDICATED_SERVER_PORT_' + application.toUpperCase()];
+  console.log(application, `joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:` + port);
   emitUIInteraction({
-    join: `${process.env.REACT_APP_VIRT_DNS_ADDRESS}:` + process.env.REACT_APP_DEDICATED_SERVER_PORT,
+    join: `${process.env.REACT_APP_VIRT_DNS_ADDRESS}:` + port,
     orientation: isMobile ? getScreenOrientation() : ""
   });
   delegate.loadingProgress = 90;
