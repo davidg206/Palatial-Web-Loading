@@ -3,6 +3,7 @@ import { DataChannelController } from "../DataChannel/DataChannelController";
 import { UeInputKeyboardMessage } from "../UeInstanceMessage/UeInputKeyboardMessage";
 import { UeDescriptorUi } from "../UeInstanceMessage/UeDescriptorUi";
 import { Logger } from "../Logger/Logger";
+import { delegate } from "../../../src/DOMDelegate"
 
 /**
  * Handles the Keyboard Inputs for the document
@@ -39,6 +40,11 @@ export class KeyboardController {
      * @param keyboardEvent - Keyboard event 
      */
     handleOnKeyDown(keyboardEvent: KeyboardEvent) {
+        if (document.getElementById('playerUI').style.display === 'none') {
+		keyboardEvent.preventDefault();
+		return;
+	}
+
 	if (keyboardEvent.ctrlKey) {
 		if (keyboardEvent.key == 'v') {
 			const self = this;

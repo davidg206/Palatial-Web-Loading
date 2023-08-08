@@ -150,7 +150,9 @@ export declare class NativeDOMDelegate extends libspsfrontend.DelegateBase {
     mobileUser: boolean;
     streamReady: boolean;
     levelReady: boolean;
-    readyHook: Function;
+    wasDisconnected: boolean;
+    readyListeners: Array<() => void>;
+    disconnectHook: Function;
     loadingProgress: number;
     passwordResponse: object;
     iWebRtcController: libspsfrontend.IWebRtcPlayerController;
@@ -192,7 +194,9 @@ export declare class NativeDOMDelegate extends libspsfrontend.DelegateBase {
     getPlayerController(): libspsfrontend.webRtcPlayerController;
     updateVideoStreamSize(x: number, y: number): void;
     write(file: string, message: string): void;
-    checkStreamReady(readyHook: () => void): void;
+    addReadyListener(listener: () => void): void;
+    onStreamReady(rH: () => void): void;
+    onDisconnectHook(disconnectHook: (val: boolean) => void): void;
     /**
      * Builds the disconnect overlay
      */

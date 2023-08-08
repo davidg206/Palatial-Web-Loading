@@ -11,31 +11,22 @@ body {
   height: 100vh;
   background-size: 100vw 100vh;
   background-repeat: no-repeat;
-  /*position: fixed;*/
 }
 
-.default-background {
+#root.default-background {
   background-image: url('./assets/Images/Background-Image.png');
 }
 
-.oslo-background {
+#root.oslodemo-background, #root.osloworks-background {
   background-image: url('./assets/Images/Background-Image-oslo.png');
 }
 
-.abnormal-background {
+#root.abnormal-background {
   background-image: url('./assets/Images/abnormal_resized.png');
 }
 
-.default-background {
-  background-image: url('./assets/Images/Background-Image.png');
-}
-
-.oslo-background {
-  background-image: url('./assets/Images/Background-Image-oslo.png');
-}
-
-.abnormal-background {
-  background-image: url('./assets/Images/abnormal_resized.png');
+#root.officedemo-background {
+  background-image: url('./assets/Images/Background-Image-officedemo.png');
 }
 
 code {
@@ -49,6 +40,7 @@ code {
     position: absolute;
     width: 100%;
     height: 100%;
+    background-image: url('./assets/Images/Background-Image.png');
 }
 
 .fade-in {

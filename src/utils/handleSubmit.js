@@ -11,11 +11,8 @@ const handleSubmitImpl = (firstTimeUser) => {
   };
 
   waitForLevelReady().then(async () => {
-    emitUIInteraction(data);
-    delegate.loadingProgress = 100;
-    console.log(`Entering on ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:` + process.env.REACT_APP_DEDICATED_SERVER_PORT);
-    onPlayAction();
     delegate.formSubmitted = true;
+    onPlayAction();
   }).catch(error => {});
 };
 

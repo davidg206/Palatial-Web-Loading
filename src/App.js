@@ -88,22 +88,13 @@ function App() {
     }
   }, [progress, step]);
 
-  useEffect(() => {
-    switch (application) {
-    case "abnormal":                   setBackgroundImage(AbnormalBackground); break;
-    case "osloworks": case "oslodemo": setBackgroundImage(OsloBackground); break;
-    case "officedemo":                 setBackgroundImage(OfficeDemoBackground); break;
-    default:                           setBackgroundImage(DefaultBackground); break;
-    }
-  }, []);
-
   useSetAppHeight();
   useDeviceDetect();
   useDisconnectEvent(setFormStep, setPassword, setUserName, setActiveButton, setProgress, setStep);
   useJoinEvents(userNameRef, device);
 
   return (
-    <div className="App" style={{ backgroundImage: `url(${backgroundImg})` }}>
+    <div className="App">
         <RefreshMessageBox />
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
       <div className={`Logo ${isLogoVisible ? '' : 'fadeOut'}`}>

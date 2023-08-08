@@ -120,9 +120,10 @@ export const waitForProjectName = () => {
   });
 };
 
-export const onPlayAction = () => {console.log('onPlayAction()');
+export const onPlayAction = () => {
   delegate.onPlayAction();
   const root = document.getElementById("root");
   root.classList.add("fade-out");
+  document.getElementById('playerUI').style.display = 'block';
   delegate.levelReady = false;
 };

@@ -419,7 +419,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.streamReady = false;
 		this.levelReady = false;
 		this.wasDisconnected = false;
-		this.disconnectHook = (boolean) => { };
+		this.disconnectHook = (value : boolean) => { };
 		this.loadingProgress = 0;
 		this.passwordResponse = null;
 
@@ -433,7 +433,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 
 		// configure all buttons 
 		this.ConfigureButtons();
-		window.changeSize = (width, height) => { this.updateVideoStreamSize(width, height); };
 
 	}
 
@@ -501,7 +500,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		}
 	}
 
-	onDisconnectHook( disconnectHook: (boolean) => void ) {
+	onDisconnectHook( disconnectHook: (val: boolean) => void ) {
 		this.disconnectHook = disconnectHook;
 	}
 
@@ -1034,8 +1033,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.updateVideoStreamSize(window.innerWidth, window.innerHeight);
 		libspsfrontend.DataChannelController.coordinateConverter.setupNormalizeAndQuantize();
 
-		document.getElementById("playerUI").style.display = "block";
-
 		this.addResponseEventListener("delegate_work", (obj: any) => {
 			switch (obj.response) {
 			case "selectedText":
@@ -1098,6 +1095,8 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.streamReady = false;
 		this.disconnectHook(true);
 		this.wasDisconnected = true;
+
+		document.getElementById('playerUI').style.pointerEvents = 'none';
 	}
 	/**
 	 * `Takes the InitialSettings and wired to frontend

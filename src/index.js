@@ -34,6 +34,9 @@ delegate.onStreamReady(async () => {
   delegate.loadingProgress = 90;
   waitForLevelReady().then(async () => {
     delegate.loadingProgress = 100;
+    if (delegate.formSubmitted) {
+      onPlayAction();
+    }
   }).catch(error => {});
 });
 
@@ -43,19 +46,7 @@ if (isMobile) {
   });
 }
 
-/*let backgroundImage = 'default-background';
-switch (application) {
-case "osloworks": case "oslodemo":
-  backgroundImage = 'oslo-background';
-  break;
-case "abnormal":
-  backgroundImage = 'abnormal-background';
-  break;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.body.classList.add(backgroundImage);
-});*/
+document.getElementById('root').classList.add(`${application}-background`);
 
 // Create and return a new webRtcPlayerController instance
 var RTCPlayer = create(config, delegate);
