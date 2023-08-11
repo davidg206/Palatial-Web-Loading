@@ -20,7 +20,7 @@ import DefaultBackground from './assets/Images/Background-Image.png';
 import OsloBackground from './assets/Images/Background-Image-oslo.png';
 import AbnormalBackground from './assets/Images/Background-Image-abnormal.png';
 import OfficeDemoBackground from './assets/Images/Background-Image-officedemo.png';
-import { application } from './signallingServer';
+import { branch, application } from './signallingServer';
 
 const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready'];
 
@@ -96,6 +96,27 @@ function App() {
   return (
     <div className="App">
         <RefreshMessageBox />
+
+      { branch === "dev" && (
+        <div id="mydiv">
+          <div id="mydivheader">Click here to move</div>
+          <textarea
+            id="txtbx"
+            defaultValue="This is a textarea. If keyboard focus gets stuck in this box, click iframe and press Tab until focus goes back to iframe"
+          ></textarea>
+        </div>
+      )}
+
+      { branch === "dev" && (
+        <div className="holder">
+          <button type="button" id="bt1">
+            <img
+              src="https://orig00.deviantart.net/4c1b/f/2009/060/d/f/round_glossy_green_button_by_fbouly.png"
+            />
+          </button>
+        </div>
+      )}
+
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
       <div className={`Logo ${isLogoVisible ? '' : 'fadeOut'}`}>
         <img src={logoPng} style={{width:'10em'}} alt='logo'/>

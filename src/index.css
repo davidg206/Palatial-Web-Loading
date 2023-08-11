@@ -41,6 +41,8 @@ code {
     width: 100%;
     height: 100%;
     background-image: url('./assets/Images/Background-Image.png');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .fade-in {
