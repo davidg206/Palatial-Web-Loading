@@ -13,6 +13,7 @@ import { IVideoPlayer } from "../VideoPlayer/IVideoPlayer";
 import { IVideoPlayerMouseInterface } from "../VideoPlayer/VideoPlayerMouseInterface";
 import { Logger } from "../Logger/Logger";
 import { UeDescriptorUi } from "../UeInstanceMessage/UeDescriptorUi";
+import { IDelegate } from "../Delegate/IDelegate"
 
 /**
  * Class for handling inputs for mouse and keyboard   
@@ -28,15 +29,17 @@ export class InputController {
     gamePadController: GamePadController;
     gyroController: GyroController;
     ueDescriptorUi: UeDescriptorUi;
+    delegate: IDelegate;
 
     /**
      * 
      * @param dataChannelController - the data channel controller
      */
-    constructor(dataChannelController: DataChannelController, ueDescriptorUi: UeDescriptorUi, videoElementProvider: IVideoPlayer) {
+    constructor(dataChannelController: DataChannelController, ueDescriptorUi: UeDescriptorUi, videoElementProvider: IVideoPlayer, delegate: IDelegate) {
         this.dataChannelController = dataChannelController;
         this.videoElementProvider = videoElementProvider;
 	this.ueDescriptorUi = ueDescriptorUi;
+	this.delegate = delegate;
     }
 
     /**
@@ -45,7 +48,7 @@ export class InputController {
      */
     registerKeyBoard(suppressBrowserKeys: boolean) {
         Logger.Log(Logger.GetStackTrace(), "Register Keyboard Events", 7);
-        this.keyboardController = new KeyboardController(this.dataChannelController, this.ueDescriptorUi, suppressBrowserKeys);
+        this.keyboardController = new KeyboardController(this.dataChannelController, this.ueDescriptorUi, suppressBrowserKeys, this.delegate);
         this.keyboardController.registerKeyBoardEvents();
     }
 

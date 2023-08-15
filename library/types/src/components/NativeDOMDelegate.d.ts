@@ -154,6 +154,7 @@ export declare class NativeDOMDelegate extends libspsfrontend.DelegateBase {
     readyListeners: Array<() => void>;
     disconnectHook: Function;
     loadingProgress: number;
+    inGame: boolean;
     passwordResponse: object;
     iWebRtcController: libspsfrontend.IWebRtcPlayerController;
     showStats: boolean;
@@ -194,6 +195,7 @@ export declare class NativeDOMDelegate extends libspsfrontend.DelegateBase {
     getPlayerController(): libspsfrontend.webRtcPlayerController;
     updateVideoStreamSize(x: number, y: number): void;
     write(file: string, message: string): void;
+    isInGame(): boolean;
     addReadyListener(listener: () => void): void;
     onStreamReady(rH: () => void): void;
     onDisconnectHook(disconnectHook: (val: boolean) => void): void;

@@ -124,6 +124,7 @@ export const onPlayAction = () => {
   delegate.onPlayAction();
   const root = document.getElementById("root");
   root.classList.add("fade-out");
-  document.getElementById('playerUI').style.display = 'block';
+  delegate.inGame = true;
   delegate.levelReady = false;
+  console.log('inGame');
 };

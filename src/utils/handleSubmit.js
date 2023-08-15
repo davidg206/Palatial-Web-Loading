@@ -1,14 +1,11 @@
-import { osName, browserName, isMobile } from 'react-device-detect';
-import { delegate, emitUIInteraction } from '../DOMDelegate';
-import React, { useState, useEffect, useRef } from 'react';
-import { port, waitForLevelReady, onPlayAction } from './miscUtils';
-import { application } from '../signallingServer';
+import { delegate } from '../DOMDelegate';
+import { waitForLevelReady, onPlayAction } from './miscUtils';
 
 const handleSubmitImpl = (firstTimeUser) => {
-  const data = {
+  /*const data = {
     firstTimeUser: firstTimeUser ? "Yes" : "No",
     timestamp: new Date().getTime(), // current time in Epoch time
-  };
+  };*/
 
   waitForLevelReady().then(async () => {
     delegate.formSubmitted = true;

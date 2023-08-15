@@ -8,6 +8,7 @@ import { ControlSchemeType } from "../Config/Config";
 import { GyroController } from "./GyroController";
 import { IVideoPlayer } from "../VideoPlayer/IVideoPlayer";
 import { UeDescriptorUi } from "../UeInstanceMessage/UeDescriptorUi";
+import { IDelegate } from "../Delegate/IDelegate";
 /**
  * Class for handling inputs for mouse and keyboard
  */
@@ -21,11 +22,12 @@ export declare class InputController {
     gamePadController: GamePadController;
     gyroController: GyroController;
     ueDescriptorUi: UeDescriptorUi;
+    delegate: IDelegate;
     /**
      *
      * @param dataChannelController - the data channel controller
      */
-    constructor(dataChannelController: DataChannelController, ueDescriptorUi: UeDescriptorUi, videoElementProvider: IVideoPlayer);
+    constructor(dataChannelController: DataChannelController, ueDescriptorUi: UeDescriptorUi, videoElementProvider: IVideoPlayer, delegate: IDelegate);
     /**
      * registers browser key events
      * @param suppressBrowserKeys - option to suppress browser keys

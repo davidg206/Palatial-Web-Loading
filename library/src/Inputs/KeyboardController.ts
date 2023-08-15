@@ -3,7 +3,8 @@ import { DataChannelController } from "../DataChannel/DataChannelController";
 import { UeInputKeyboardMessage } from "../UeInstanceMessage/UeInputKeyboardMessage";
 import { UeDescriptorUi } from "../UeInstanceMessage/UeDescriptorUi";
 import { Logger } from "../Logger/Logger";
-import { delegate } from "../../../src/DOMDelegate"
+import { IDelegate } from "../Delegate/IDelegate"
+import { NativeDOMDelegate } from "../../../src/components/NativeDOMDelegate"
 
 /**
  * Handles the Keyboard Inputs for the document
@@ -11,17 +12,20 @@ import { delegate } from "../../../src/DOMDelegate"
 export class KeyboardController {
     ueInputKeyBoardMessage: UeInputKeyboardMessage;
     ueDescriptorUi: UeDescriptorUi;
+    keyboardController: KeyboardController;
     suppressBrowserKeys: boolean;
+    delegate: IDelegate;
 
     /**
      * 
      * @param dataChannelController - Data Channel Controller
      * @param suppressBrowserKeys - Suppress Browser Keys
      */
-    constructor(dataChannelController: DataChannelController, ueDescriptorUi: UeDescriptorUi, suppressBrowserKeys: boolean) {
+    constructor(dataChannelController: DataChannelController, ueDescriptorUi: UeDescriptorUi, suppressBrowserKeys: boolean, delegate: IDelegate) {
         this.ueInputKeyBoardMessage = new UeInputKeyboardMessage(dataChannelController);
 	this.ueDescriptorUi = ueDescriptorUi;
         this.suppressBrowserKeys = suppressBrowserKeys;
+	this.delegate = delegate;
     }
 
     /**
@@ -40,8 +44,7 @@ export class KeyboardController {
      * @param keyboardEvent - Keyboard event 
      */
     handleOnKeyDown(keyboardEvent: KeyboardEvent) {
-        if (document.getElementById('playerUI').style.display === 'none') {
-		keyboardEvent.preventDefault();
+	if (!(<NativeDOMDelegate>this.delegate).isInGame()) {
 		return;
 	}
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import { isMobile } from 'react-device-detect';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { delegate, emitUIInteraction, config, playerElement } from './DOMDelegate';
 import { signallingServerAddress, application } from './signallingServer';
-import { isDesktop, isIPad13, isTablet, isMobile, osName, browserName } from 'react-device-detect';
-import { port, waitForLevelReady, waitForProjectName, getScreenOrientation, onPlayAction } from './utils/miscUtils';
+import { waitForLevelReady, getScreenOrientation, onPlayAction } from './utils/miscUtils';
 
 var libspsfrontend = require("backend-dom-components-1");
 
@@ -18,6 +18,7 @@ root.render(
   </React.StrictMode>
 );
 console.log(signallingServerAddress);
+
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
@@ -26,12 +27,19 @@ reportWebVitals();
 delegate.onStreamReady(async () => {
   delegate.onPlayAction();
   const port = process.env['REACT_APP_DEDICATED_SERVER_PORT_' + application.toUpperCase()];
+  console.log(process.env.REACT_APP_DEDICATED_SERVER_PORT_GXI3HEYUQ);
   console.log(application, `joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:` + port);
   emitUIInteraction({
     join: `${process.env.REACT_APP_VIRT_DNS_ADDRESS}:` + port,
     orientation: isMobile ? getScreenOrientation() : ""
   });
   delegate.loadingProgress = 90;
+  const dropdown = document.getElementById('dropdown');
+  if (dropdown) {
+    console.log('Sending { UserMode: ' + dropdown.value + ' }');
+    emitUIInteraction({ UserMode: document.getElementById("dropdown").value });
+    dropdown.disabled = true;
+  }
   waitForLevelReady().then(async () => {
     delegate.loadingProgress = 100;
     if (delegate.formSubmitted) {
@@ -47,6 +55,29 @@ if (isMobile) {
 }
 
 document.getElementById('root').classList.add(`${application}-background`);
+
+// Get the current URL
+const currentURL = window.location.href;
+// Check if the current URL matches the desired URL
+if (currentURL === "https://dev.palatialxr.com/" || currentURL === "http://dev.palatialxr.com/") {
+  // Create the new HTML element
+  const newElement = document.createElement("div");
+  newElement.className = "holder";
+
+  const buttonElement = document.createElement("button");
+  buttonElement.type = "button";
+  buttonElement.id = "bt1";
+
+  const imgElement = document.createElement("img");
+  imgElement.src = "https://orig00.deviantart.net/4c1b/f/2009/060/d/f/round_glossy_green_button_by_fbouly.png";
+
+  buttonElement.appendChild(imgElement);
+  newElement.appendChild(buttonElement);
+
+  buttonElement.addEventListener('click', () => { emitUIInteraction({ print: "str" }); console.log('printed'); });
+  // Add the new element to the body
+  document.body.appendChild(newElement);
+}
 
 // Create and return a new webRtcPlayerController instance
 var RTCPlayer = create(config, delegate);
@@ -83,7 +114,7 @@ function createOnScreenKeyboardHelpers(
                 hiddenInput.value = hiddenInput.value.slice(1);
             }
             var lastChar = hiddenInput.value[0];
-            if (!config.isIOS && event.inputType != 'deleteContentBackward')
+            if (!config.isIOS && event.inputType !== 'deleteContentBackward')
                 document.onkeypress(new KeyboardEvent("keypress", {
                     charCode: lastChar.charCodeAt(0)
                 }));

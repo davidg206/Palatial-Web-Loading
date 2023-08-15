@@ -1,19 +1,22 @@
 import { DataChannelController } from "../DataChannel/DataChannelController";
 import { UeInputKeyboardMessage } from "../UeInstanceMessage/UeInputKeyboardMessage";
 import { UeDescriptorUi } from "../UeInstanceMessage/UeDescriptorUi";
+import { IDelegate } from "../Delegate/IDelegate";
 /**
  * Handles the Keyboard Inputs for the document
  */
 export declare class KeyboardController {
     ueInputKeyBoardMessage: UeInputKeyboardMessage;
     ueDescriptorUi: UeDescriptorUi;
+    keyboardController: KeyboardController;
     suppressBrowserKeys: boolean;
+    delegate: IDelegate;
     /**
      *
      * @param dataChannelController - Data Channel Controller
      * @param suppressBrowserKeys - Suppress Browser Keys
      */
-    constructor(dataChannelController: DataChannelController, ueDescriptorUi: UeDescriptorUi, suppressBrowserKeys: boolean);
+    constructor(dataChannelController: DataChannelController, ueDescriptorUi: UeDescriptorUi, suppressBrowserKeys: boolean, delegate: IDelegate);
     /**
      * Registers document keyboard events with the controller
      */

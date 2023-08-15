@@ -26,12 +26,10 @@ export class UeDescriptorUi extends UeDescriptor {
      * @param height - Height of res
      */
     sendUpdateVideoStreamSize(width: number, height: number) {
-        console.log(`called with ${width}, ${height}`);
 	if (this.config.isMobile) {
 		width *= 2;
 		height *= 2;
 	}
-	console.log(`updating size to: ${width},${height}`)
 	const s = JSON.stringify({
 		"Resolution.Width": width,
 		"Resolution.Height": height

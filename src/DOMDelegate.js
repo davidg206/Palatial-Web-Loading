@@ -1,6 +1,6 @@
 import { NativeDOMDelegate } from "./components/NativeDOMDelegate";
 import { isMobile } from 'react-device-detect';
-import { signallingServerAddress, application } from "./signallingServer";
+import { signallingServerAddress } from "./signallingServer";
 import * as libspsfrontend from 'backend-dom-components-1';
 
 // prep the player div element

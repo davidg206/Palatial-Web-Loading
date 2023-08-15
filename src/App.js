@@ -3,7 +3,7 @@ import './App.css'
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
 import useDeviceDetect from './hooks/useDeviceDetect';
-import { delegate } from './DOMDelegate';
+import { emitUIInteraction, delegate } from './DOMDelegate';
 import useFormHandling from './hooks/useFormHandling';
 import passwordVisibleImg from './assets/Images/svg/toggle_password_visible.svg';
 import passwordinvisibleImg from './assets/Images/svg/toggle_password_Invisible.svg';
@@ -16,10 +16,6 @@ import RefreshMessageBox from './components/RefreshMessageBox';
 import UserNameInput from './components/FormSteps/UserNameInput';
 import PasswordInput from './components/FormSteps/PasswordInput';
 import ToolTips from './components/FormSteps/ToolTips';
-import DefaultBackground from './assets/Images/Background-Image.png';
-import OsloBackground from './assets/Images/Background-Image-oslo.png';
-import AbnormalBackground from './assets/Images/Background-Image-abnormal.png';
-import OfficeDemoBackground from './assets/Images/Background-Image-officedemo.png';
 import { branch, application } from './signallingServer';
 
 const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready'];
@@ -58,7 +54,6 @@ function App() {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [RefreshMsgBox, setRefreshMsgBox] = useState(false);
   const [activeButton, setActiveButton] = useState(null);
-  const [backgroundImg, setBackgroundImage] = useState(null);
 
   // Refs
   const { device } = useDeviceDetect();
@@ -93,34 +88,28 @@ function App() {
   useDisconnectEvent(setFormStep, setPassword, setUserName, setActiveButton, setProgress, setStep);
   useJoinEvents(userNameRef, device);
 
+  const [ selectedOption, setSelectedOption ] = useState("View")
+
+  const handleOptionChange = (e) => {
+    setSelectedOption(e.target.value);
+    emitUIInteraction({ UserMode: e.target.value });
+  };
+
   return (
     <div className="App">
         <RefreshMessageBox />
 
-      { branch === "dev" && (
-        <div id="mydiv">
-          <div id="mydivheader">Click here to move</div>
-          <textarea
-            id="txtbx"
-            defaultValue="This is a textarea. If keyboard focus gets stuck in this box, click iframe and press Tab until focus goes back to iframe"
-          ></textarea>
-        </div>
-      )}
-
-      { branch === "dev" && (
-        <div className="holder">
-          <button type="button" id="bt1">
-            <img
-              src="https://orig00.deviantart.net/4c1b/f/2009/060/d/f/round_glossy_green_button_by_fbouly.png"
-            />
-          </button>
-        </div>
-      )}
-
+        { branch === "test" && (
+        <select id="dropdown" value={selectedOption} onChange={handleOptionChange}>
+          <option value="View">View</option>
+          <option value="Edit">Edit</option>
+        </select>
+        )}
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
       <div className={`Logo ${isLogoVisible ? '' : 'fadeOut'}`}>
         <img src={logoPng} style={{width:'10em'}} alt='logo'/>
       </div>
+
       <div>
         {formStep === 1 && (
           <UserNameInput

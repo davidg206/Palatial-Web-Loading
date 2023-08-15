@@ -1,6 +1,5 @@
 import '../assets/css/player.css';
 import { EventEmitter } from "events";
-import ProgressBar from './ProgressBar';
 import * as libspsfrontend from "backend-dom-components-1";
 
 /**
@@ -351,9 +350,10 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	streamReady: boolean;
 	levelReady: boolean;
 	wasDisconnected: boolean;
-	readyListeners: Array<() => void> = new Array();
+	readyListeners: Array<() => void> = [];
 	disconnectHook: Function;
 	loadingProgress: number;
+	inGame: boolean;
 	passwordResponse: object;
 	// instantiate the WebRtcPlayerControllers interface var 
 	iWebRtcController: libspsfrontend.IWebRtcPlayerController;
@@ -422,6 +422,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.disconnectHook = (value : boolean) => { };
 		this.loadingProgress = 0;
 		this.passwordResponse = null;
+		this.inGame = false;
 
 		// build all of the overlays 
 		this.buildDisconnectOverlay();
@@ -488,6 +489,8 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
             });
 	}
 
+        isInGame() { return this.inGame; }
+
         addReadyListener(listener: () => void) {
           this.readyListeners.push(listener);
         }
@@ -515,7 +518,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 
 		// set the event Listener
 		let disconnectOverlayEvent: EventListener = () => this.onDisconnectionAction();
-		const self = this;
 
 		// add the new event listener 
 		disconnectOverlayHtml.addEventListener('click', function onOverlayClick(event: Event) {			
@@ -597,7 +599,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		//playOverlayHtml.classList.add("clickableState", "loadingText");
 
 		// set the event Listener
-                let playOverlayEvent: EventListener = () => this.onPlayAction();	
+                //let playOverlayEvent: EventListener = () => this.onPlayAction();	
 
                 // add the new event listener
                 /*playOverlayHtml.addEventListener('click', function onOverlayClick(event: Event) {
@@ -722,7 +724,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 			case libspsfrontend.InstanceState.PENDING:
 				isInstancePending = true;
 				this.loadingProgress = 66;
-				if (instanceState.details == undefined || instanceState.details == null) {
+				if (instanceState.details === undefined || instanceState.details === null) {
 					instanceStateMessage = "Your application is pending";
 				} else {
 					instanceStateMessage = instanceState.details;
@@ -730,7 +732,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 				break;
 			case libspsfrontend.InstanceState.READY:
 				console.log('InstanceState.READY');
-				if (instanceState.details == undefined || instanceState.details == null) {
+				if (instanceState.details === undefined || instanceState.details === null) {
 					instanceStateMessage = "Instance is Ready";
 					
 				} else {
@@ -1029,7 +1031,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
                 });
 
 		this.iWebRtcController.matchViewportResolution = true;
-		console.log(`innerWidth=${window.innerWidth} innerHeight=${window.innerHeight}`);
+
 		this.updateVideoStreamSize(window.innerWidth, window.innerHeight);
 		libspsfrontend.DataChannelController.coordinateConverter.setupNormalizeAndQuantize();
 
@@ -1096,7 +1098,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.disconnectHook(true);
 		this.wasDisconnected = true;
 
-		document.getElementById('playerUI').style.pointerEvents = 'none';
+		this.inGame = false;
 	}
 	/**
 	 * `Takes the InitialSettings and wired to frontend

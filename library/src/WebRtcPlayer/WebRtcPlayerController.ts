@@ -21,6 +21,7 @@ import { InputController } from "../Inputs/InputController";
 import { MicController } from "../MicPlayer/MicController";
 import { VideoPlayer } from "../VideoPlayer/VideoPlayer";
 import * as MessageReceive from "../WebSockets/MessageReceive";
+
 /**
  * Entry point for the Web RTC Player
  */
@@ -429,7 +430,7 @@ export class webRtcPlayerController implements IWebRtcPlayerController {
 		// show the connected overlay 
 		this.delegate.onWebRtcConnected();
 
-		this.inputController = new InputController(this.dataChannelController, null, this.videoPlayer);
+		this.inputController = new InputController(this.dataChannelController, null, this.videoPlayer, this.delegate);
 
 		this.ueControlMessage = new UeControlMessage(this.dataChannelController);
 		this.ueDescriptorUi = new UeDescriptorUi(this.dataChannelController, this.config);
