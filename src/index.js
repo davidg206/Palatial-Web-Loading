@@ -5,11 +5,10 @@ import { isMobile } from 'react-device-detect';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { delegate, emitUIInteraction, config, playerElement } from './DOMDelegate';
-import { signallingServerAddress, application } from './signallingServer';
+import { signallingServerAddress, branch, application } from './signallingServer';
 import { waitForLevelReady, getScreenOrientation, onPlayAction } from './utils/miscUtils';
 
 var libspsfrontend = require("backend-dom-components-1");
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -26,20 +25,21 @@ reportWebVitals();
 
 delegate.onStreamReady(async () => {
   delegate.onPlayAction();
+  const dropdown = document.getElementById('dropdown');
+  if (dropdown) {
+    const userMode = dropdown.value;
+    console.log('Sending { UserMode: ' + userMode + ' }');
+    emitUIInteraction({ UserMode: userMode });
+    dropdown.disabled = true;
+  }
+
   const port = process.env['REACT_APP_DEDICATED_SERVER_PORT_' + application.toUpperCase()];
-  console.log(process.env.REACT_APP_DEDICATED_SERVER_PORT_GXI3HEYUQ);
-  console.log(application, `joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:` + port);
+  console.log(application, `joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`);
   emitUIInteraction({
-    join: `${process.env.REACT_APP_VIRT_DNS_ADDRESS}:` + port,
+    join: `${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`,
     orientation: isMobile ? getScreenOrientation() : ""
   });
   delegate.loadingProgress = 90;
-  const dropdown = document.getElementById('dropdown');
-  if (dropdown) {
-    console.log('Sending { UserMode: ' + dropdown.value + ' }');
-    emitUIInteraction({ UserMode: document.getElementById("dropdown").value });
-    dropdown.disabled = true;
-  }
   waitForLevelReady().then(async () => {
     delegate.loadingProgress = 100;
     if (delegate.formSubmitted) {

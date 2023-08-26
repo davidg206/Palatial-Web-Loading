@@ -91,8 +91,8 @@ function App() {
   const [ selectedOption, setSelectedOption ] = useState("View")
 
   const handleOptionChange = (e) => {
+    console.log(e.target.value);
     setSelectedOption(e.target.value);
-    emitUIInteraction({ UserMode: e.target.value });
   };
 
   return (
