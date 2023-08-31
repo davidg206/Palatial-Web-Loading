@@ -126,5 +126,4 @@ export const onPlayAction = () => {
   root.classList.add("fade-out");
   delegate.inGame = true;
   delegate.levelReady = false;
-  console.log('inGame');
 };
