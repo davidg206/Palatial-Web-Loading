@@ -23,6 +23,8 @@ console.log(signallingServerAddress);
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
+console.log("innerWidth = " + window.innerWidth + ", innerHeight = " + window.innerHeight);
+
 delegate.onStreamReady(async () => {
   delegate.onPlayAction();
   const dropdown = document.getElementById('dropdown');
@@ -56,10 +58,8 @@ if (isMobile) {
 
 document.getElementById('root').classList.add(`${application}-background`);
 
-// Get the current URL
-const currentURL = window.location.href;
 // Check if the current URL matches the desired URL
-if (currentURL === "https://dev.palatialxr.com/" || currentURL === "http://dev.palatialxr.com/") {
+if (branch === "dev") {
   // Create the new HTML element
   const newElement = document.createElement("div");
   newElement.className = "holder";
