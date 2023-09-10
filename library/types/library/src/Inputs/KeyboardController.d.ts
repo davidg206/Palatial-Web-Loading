@@ -11,6 +11,7 @@ export declare class KeyboardController {
     keyboardController: KeyboardController;
     suppressBrowserKeys: boolean;
     delegate: IDelegate;
+    events: KeyboardEvent[];
     /**
      *
      * @param dataChannelController - Data Channel Controller

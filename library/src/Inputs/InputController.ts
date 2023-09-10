@@ -30,6 +30,7 @@ export class InputController {
     gyroController: GyroController;
     ueDescriptorUi: UeDescriptorUi;
     delegate: IDelegate;
+    events: MouseEvent[];
 
     /**
      * 
@@ -40,6 +41,7 @@ export class InputController {
         this.videoElementProvider = videoElementProvider;
 	this.ueDescriptorUi = ueDescriptorUi;
 	this.delegate = delegate;
+	this.events = [];
     }
 
     /**
@@ -50,6 +52,19 @@ export class InputController {
         Logger.Log(Logger.GetStackTrace(), "Register Keyboard Events", 7);
         this.keyboardController = new KeyboardController(this.dataChannelController, this.ueDescriptorUi, suppressBrowserKeys, this.delegate);
         this.keyboardController.registerKeyBoardEvents();
+    }
+
+    unloadEvents(videoElement: any) {
+      for (let i = 0; i < this.events.length; i++) {
+        let event = this.events[i];
+        let newEvent = new MouseEvent('mouseup', {
+          bubbles: event.bubbles,
+          cancelable: event.cancelable,
+          button: event.button,
+        });
+        videoElement.dispatchEvent(newEvent);
+      }
+      this.events = [];
     }
 
     /**
@@ -85,8 +100,23 @@ export class InputController {
                 document.addEventListener("mousemove", (mouseEvent) => videoInputBindings.handleMouseMove(mouseEvent), { passive: false });
                 document.addEventListener("wheel", (mouseEvent) => videoInputBindings.handleMouseWheel(mouseEvent), { passive : false });
 
-                videoElement.onmousedown = (mouseEvent: MouseEvent) => videoInputBindings.handleMouseDown(mouseEvent);
+                videoElement.onmousedown = (mouseEvent: MouseEvent) => { this.events.push(mouseEvent); videoInputBindings.handleMouseDown(mouseEvent); };
                 videoElement.onmouseup = (mouseEvent: MouseEvent) => videoInputBindings.handleMouseUp(mouseEvent);
+
+		window.addEventListener('blur', () => {
+		  for (let i = 0; i < this.events.length; i++) {
+		    let event = this.events[i];
+		    let newEvent = new MouseEvent('mouseup', {
+		      bubbles: event.bubbles,
+		      cancelable: event.cancelable,
+		      button: event.button,
+		    });
+		    videoElement.dispatchEvent(newEvent);
+		  }
+		  this.events = [];
+		});
+
+		videoElement.addEventListener('mouseout', () => { this.unloadEvents(videoElement); });
 
                 break
             default:

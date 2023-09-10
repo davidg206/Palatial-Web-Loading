@@ -1,6 +1,6 @@
 {
   "name": "backend-dom-components-1",
-  "version": "1.5.9",
+  "version": "1.7.6",
   "description": "backend library",
   "main": "dist/libspsfrontend.min.js",
   "types": "types/index.d.ts",

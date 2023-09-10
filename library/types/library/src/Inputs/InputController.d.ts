@@ -23,6 +23,7 @@ export declare class InputController {
     gyroController: GyroController;
     ueDescriptorUi: UeDescriptorUi;
     delegate: IDelegate;
+    events: MouseEvent[];
     /**
      *
      * @param dataChannelController - the data channel controller
@@ -33,6 +34,7 @@ export declare class InputController {
      * @param suppressBrowserKeys - option to suppress browser keys
      */
     registerKeyBoard(suppressBrowserKeys: boolean): void;
+    unloadEvents(videoElement: any): void;
     /**
      * register mouse events based on a control type
      * @param controlScheme - if the mouse is either hovering or locked

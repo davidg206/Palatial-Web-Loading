@@ -15,6 +15,7 @@ export class KeyboardController {
     keyboardController: KeyboardController;
     suppressBrowserKeys: boolean;
     delegate: IDelegate;
+    events: KeyboardEvent[];
 
     /**
      * 
@@ -26,17 +27,37 @@ export class KeyboardController {
 	this.ueDescriptorUi = ueDescriptorUi;
         this.suppressBrowserKeys = suppressBrowserKeys;
 	this.delegate = delegate;
+        this.events = [];
     }
 
     /**
      * Registers document keyboard events with the controller
      */
     registerKeyBoardEvents() {
-        document.onkeydown = (ev: KeyboardEvent) => this.handleOnKeyDown(ev);
+        document.onkeydown = (ev: KeyboardEvent) => { this.events.push(ev); this.handleOnKeyDown(ev); }
         document.onkeyup = (ev: KeyboardEvent) => this.handleOnKeyUp(ev);
 
         //This has been deprecated as at Jun 13 2021
         document.onkeypress = (ev: KeyboardEvent) => this.handleOnKeyPress(ev);
+
+        window.addEventListener('blur', () => {
+          for (let i = 0; i < this.events.length; i++) {
+            let event = this.events[i];
+            let newEvent = new KeyboardEvent('keyup', {
+              bubbles: event.bubbles,
+              cancelable: event.cancelable,
+              key: event.key,
+	      keyCode: event.keyCode,
+	      which: event.which,
+	      shiftKey: event.shiftKey,
+	      ctrlKey: event.ctrlKey,
+	      altKey: event.altKey,
+	      metaKey: event.metaKey
+            });
+	    document.dispatchEvent(newEvent);
+          }
+          this.events = [];
+        });
     }
 
     /**
