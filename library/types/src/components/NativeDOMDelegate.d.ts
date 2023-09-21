@@ -157,6 +157,7 @@ export declare class NativeDOMDelegate extends libspsfrontend.DelegateBase {
     inGame: boolean;
     passwordResponse: object;
     iWebRtcController: libspsfrontend.IWebRtcPlayerController;
+    id: string;
     showStats: boolean;
     videoQpIndicator: VideoQpIndicator;
     fullScreenLogic: FullScreenLogic;

@@ -1,5 +1,6 @@
 import { AggregatedStats } from "../PeerConnectionController/AggregatedStats";
 import * as MessageReceive from "./MessageReceive";
+import { IDelegate } from "../Delegate/IDelegate";
 declare global {
     interface WebSocket {
         onmessagebinary?(event?: MessageEvent): void;
@@ -12,10 +13,11 @@ export declare class WebSocketController {
     WS_OPEN_STATE: number;
     address: string;
     webSocket: WebSocket;
+    delegate: IDelegate;
     /**
      * @param Address - The Address of the signaling server
      */
-    constructor(Address: string);
+    constructor(Address: string, delegate: IDelegate);
     /**
      * Connect to the signaling server
      * @returns - If there is a connection

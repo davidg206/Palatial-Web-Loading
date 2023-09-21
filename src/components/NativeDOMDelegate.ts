@@ -357,6 +357,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	passwordResponse: object;
 	// instantiate the WebRtcPlayerControllers interface var 
 	iWebRtcController: libspsfrontend.IWebRtcPlayerController;
+	id: string;
 
 	showStats: boolean;
 
@@ -423,6 +424,7 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 		this.loadingProgress = 0;
 		this.passwordResponse = null;
 		this.inGame = false;
+		this.id = null;
 
 		// build all of the overlays 
 		this.buildDisconnectOverlay();
@@ -458,7 +460,6 @@ export class NativeDOMDelegate extends libspsfrontend.DelegateBase {
 	}
 
 	updateVideoStreamSize(x: number, y: number) {
-		console.log(`calling ueDescriptor with ${x},${y}`);
 		(<libspsfrontend.webRtcPlayerController>this.iWebRtcController).ueDescriptorUi.sendUpdateVideoStreamSize(x, y);
 	}
 

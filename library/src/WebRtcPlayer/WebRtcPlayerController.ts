@@ -94,7 +94,7 @@ export class webRtcPlayerController implements IWebRtcPlayerController {
 		this.dataChannelController.resetAfkWarningTimerOnDataSend = () => this.afkLogic.resetAfkWarningTimer();
 
 		// set up websocket methods
-		this.webSocketController = new WebSocketController(this.config.signallingServerAddress);
+		this.webSocketController = new WebSocketController(this.config.signallingServerAddress, this.delegate);
 		this.webSocketController.onConfig = (messageConfig: MessageReceive.MessageConfig) => this.handleOnConfigMessage(messageConfig);
 		this.webSocketController.onInstanceStateChange = (instanceState: MessageReceive.MessageInstanceState) => this.handleInstanceStateChange(instanceState);
 		this.webSocketController.onAuthenticationResponse = (authResponse: MessageReceive.MessageAuthResponse) => this.handleAuthenticationResponse(authResponse);

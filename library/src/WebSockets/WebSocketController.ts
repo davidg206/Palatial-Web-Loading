@@ -2,6 +2,8 @@ import { Logger } from "../Logger/Logger";
 import { AggregatedStats } from "../PeerConnectionController/AggregatedStats";
 import * as MessageReceive from "./MessageReceive";
 import * as MessageSend from "./MessageSend";
+import { IDelegate } from "../Delegate/IDelegate"
+import { NativeDOMDelegate } from "../../../src/components/NativeDOMDelegate"
 
 // declare the new method for the websocket interface
 declare global {
@@ -17,12 +19,14 @@ export class WebSocketController {
     WS_OPEN_STATE = 1;
     address: string;
     webSocket: WebSocket;
+    delegate: IDelegate;
 
     /**
      * @param Address - The Address of the signaling server
      */
-    constructor(Address: string) {
+    constructor(Address: string, delegate: IDelegate) {
         this.address = Address;
+	this.delegate = delegate;
     }
 
     /**
@@ -84,6 +88,12 @@ export class WebSocketController {
         }
 
         let message: MessageReceive.MessageRecv = JSON.parse(event.data);
+	let domDelegate : NativeDOMDelegate = (<NativeDOMDelegate>this.delegate);
+        if (message.id && !domDelegate.id) {
+            console.log("PixelStreamingID: " + message.id);
+	    domDelegate.id = message.id;
+	}
+
         Logger.Log(Logger.GetStackTrace(), "received => \n" + JSON.stringify(JSON.parse(event.data), undefined, 1), 6);
 
         switch (message.type) {

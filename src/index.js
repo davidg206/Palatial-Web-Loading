@@ -23,7 +23,6 @@ console.log(signallingServerAddress);
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-console.log("innerWidth = " + window.innerWidth + ", innerHeight = " + window.innerHeight);
 
 delegate.onStreamReady(async () => {
   delegate.onPlayAction();
@@ -36,7 +35,7 @@ delegate.onStreamReady(async () => {
   }
 
   const port = process.env['REACT_APP_DEDICATED_SERVER_PORT_' + application.toUpperCase()];
-  console.log(application, `joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`);
+  console.log(`joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`);
   emitUIInteraction({
     join: `${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`,
     orientation: isMobile ? getScreenOrientation() : ""
