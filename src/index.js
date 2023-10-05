@@ -23,8 +23,32 @@ console.log(signallingServerAddress);
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-
 delegate.onStreamReady(async () => {
+  const response = await fetch('https://prophet.palatialxr.com:3005/send-message', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      event: "log instance",
+      createdAt: new Date(),
+      subjectId: application,
+      subjectType: "projects",
+      payload: {
+        podName: delegate.id,
+        streamURL: window.location.href
+      }
+    }),
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    console.log('Message sent successfully');
+    console.log('PixelStreamingID: ' + data.podName);
+  } else {
+    console.error('Error sending message');
+  }
+
   delegate.onPlayAction();
   const dropdown = document.getElementById('dropdown');
   if (dropdown) {

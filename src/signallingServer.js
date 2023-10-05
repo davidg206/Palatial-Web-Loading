@@ -1,6 +1,7 @@
 export let signallingServerAddress = '';
 export let application = '';
 export let branch = '';
+export let userMode = 'View';
 
 // define our signallingServerProtocol to be used based on whether
 // or not we're accessing our frontend via a tls
@@ -18,11 +19,15 @@ function getUrlPart(url) {
     ? url.slice('http://'.length)
     : url;
 
-  const baseUrlRegex = /(.+)\.palatialxr\.com/;
-  const projectUrlRegex = /(.+)\.palatialxr\.com\/(.+)/;
+  const baseUrlRegex = /(.+)\.palatialxr\.com(\/edit)?/;
+  const projectUrlRegex = /(.+)\.com\/(?:edit\/)?(.+)$/;
 
   if (url.match(baseUrlRegex)) {
     branch = url.match(baseUrlRegex)[1];
+  }
+
+  if (url.includes("/edit")) {
+    userMode = 'Edit';
   }
 
   if (url.match(projectUrlRegex)) {

@@ -90,7 +90,7 @@ export class WebSocketController {
         let message: MessageReceive.MessageRecv = JSON.parse(event.data);
 	let domDelegate : NativeDOMDelegate = (<NativeDOMDelegate>this.delegate);
         if (message.id && !domDelegate.id) {
-            console.log("PixelStreamingID: " + message.id);
+            //console.log("PixelStreamingID: " + message.id);
 	    domDelegate.id = message.id;
 	}
 

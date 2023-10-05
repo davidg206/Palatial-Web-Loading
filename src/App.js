@@ -16,7 +16,7 @@ import RefreshMessageBox from './components/RefreshMessageBox';
 import UserNameInput from './components/FormSteps/UserNameInput';
 import PasswordInput from './components/FormSteps/PasswordInput';
 import ToolTips from './components/FormSteps/ToolTips';
-import { branch, application } from './signallingServer';
+import { branch, application, userMode } from './signallingServer';
 
 const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready'];
 
@@ -88,7 +88,7 @@ function App() {
   useDisconnectEvent(setFormStep, setPassword, setUserName, setActiveButton, setProgress, setStep);
   useJoinEvents(userNameRef, device);
 
-  const [ selectedOption, setSelectedOption ] = useState("View")
+  const [ selectedOption, setSelectedOption ] = useState(userMode)
 
   const handleOptionChange = (e) => {
     console.log(e.target.value);
