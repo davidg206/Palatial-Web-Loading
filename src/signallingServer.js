@@ -20,7 +20,7 @@ function getUrlPart(url) {
     : url;
 
   const baseUrlRegex = /(.+)\.palatialxr\.com(\/edit)?/;
-  const projectUrlRegex = /(.+)\.com\/(?:edit\/)?(.+)$/;
+  const projectUrlRegex = /^(.+)\.palatialxr\.com(?:\/(?:edit\/)?)?(\w+)$/;
 
   if (url.match(baseUrlRegex)) {
     branch = url.match(baseUrlRegex)[1];
