@@ -10,6 +10,19 @@ if (window.location.protocol === 'https:') {
   signallingServerProtocol = 'wss:';
 }
 
+function extractAppName(url) {
+  const urlParts = url.split('/');
+
+  if (urlParts.length > 1) {
+    if (urlParts[1] === 'edit')
+      return urlParts.length > 2 ? urlParts[2] : urlParts[0].split('.')[0];
+    else
+      return urlParts[1];
+  } else {
+    return urlParts[0].split('.')[0];
+  }
+}
+
 function getUrlPart(url) {
   url = url.startsWith('https://')
     ? url.slice('https://'.length)
@@ -19,24 +32,21 @@ function getUrlPart(url) {
     ? url.slice('http://'.length)
     : url;
 
-  const baseUrlRegex = /(.+)\.palatialxr\.com(\/edit)?/;
-  const projectUrlRegex = /^(.+)\.palatialxr\.com(?:\/(?:edit\/)?)?(\w+)$/;
+  url = url.replace(/\/$/g, '');
 
-  if (url.match(baseUrlRegex)) {
-    branch = url.match(baseUrlRegex)[1];
+  const baseUrlRegex = /(.+)\.palatialxr\.com(\/edit)?/;
+
+  if (!url.match(baseUrlRegex)) {
+    return null;
   }
+
+  branch = url.match(baseUrlRegex)[1];
 
   if (url.includes("/edit")) {
     userMode = 'Edit';
   }
 
-  if (url.match(projectUrlRegex)) {
-    return url.match(projectUrlRegex)[2];
-  } else if (url.match(baseUrlRegex)) {
-    return url.match(baseUrlRegex)[1];
-  } else {
-    return null;
-  }
+  return extractAppName(url);
 }
 
 application = getUrlPart(window.location.href);

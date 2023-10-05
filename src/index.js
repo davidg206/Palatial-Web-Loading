@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { delegate, emitUIInteraction, config, playerElement } from './DOMDelegate';
-import { signallingServerAddress, branch, application } from './signallingServer';
+import { signallingServerAddress, branch, application, userMode } from './signallingServer';
 import { waitForLevelReady, getScreenOrientation, onPlayAction } from './utils/miscUtils';
 
 var libspsfrontend = require("backend-dom-components-1");
@@ -52,11 +52,12 @@ delegate.onStreamReady(async () => {
   delegate.onPlayAction();
   const dropdown = document.getElementById('dropdown');
   if (dropdown) {
-    const userMode = dropdown.value;
+    userMode = dropdown.value;
     console.log('Sending { UserMode: ' + userMode + ' }');
-    emitUIInteraction({ UserMode: userMode });
     dropdown.disabled = true;
   }
+
+  emitUIInteraction({ UserMode: userMode });
 
   const port = process.env['REACT_APP_DEDICATED_SERVER_PORT_' + application.toUpperCase()];
   console.log(`joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`);

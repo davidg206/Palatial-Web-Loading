@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 const fs = require("fs");
@@ -6,7 +7,8 @@ const { KubeConfig, CoreV1Api } = require('@kubernetes/client-node');
 
 const app = express();
 const port = 3005;
-const mongoURL = 'mongodb://palatial:0UDUiKxwj7fI0@mongodb.mithyalabs.com:27017/palatial?directConnection=true&authSource=staging_db';
+const mongoURI = 'mongodb://palatial:0UDUiKxwj7fI0@mongodb.mithyalabs.com:27017/palatial?directConnection=true&authSource=staging_db';
+console.log(process.env);
 const dbName = 'palatial';
 
 app.use(function(req, res, next) {
@@ -48,7 +50,7 @@ async function findPodByNamePrefix(namePrefix) {
 
 app.post('/send-message', async (req, res) => {
   try {
-    const client = await MongoClient.connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true });
+    const client = await MongoClient.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db(dbName);
     const collection = db.collection('changelogs');
 
