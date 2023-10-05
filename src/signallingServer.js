@@ -52,6 +52,7 @@ function getUrlPart(url) {
 application = getUrlPart(window.location.href);
 
 if (application === null) {
+  console.log("Could not find application in URL. Defaulting to dev");
   application = "dev";
 }
 
