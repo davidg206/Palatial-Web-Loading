@@ -53,10 +53,10 @@ delegate.onStreamReady(async () => {
   const dropdown = document.getElementById('dropdown');
   if (dropdown) {
     userMode = dropdown.value;
-    console.log('Sending { UserMode: ' + userMode + ' }');
     dropdown.disabled = true;
   }
 
+  console.log('Sending { UserMode: ' + userMode + ' }');
   emitUIInteraction({ UserMode: userMode });
 
   const port = process.env['REACT_APP_DEDICATED_SERVER_PORT_' + application.toUpperCase()];
@@ -74,11 +74,9 @@ delegate.onStreamReady(async () => {
   }).catch(error => {});
 });
 
-if (isMobile) {
-  window.addEventListener('orientationchange', () => {
-    emitUIInteraction({ orientation: getScreenOrientation() });
-  });
-}
+window.addEventListener('orientationchange', () => {
+  emitUIInteraction({ orientation: getScreenOrientation() });
+});
 
 document.getElementById('root').classList.add(`${application}-background`);
 
