@@ -10,6 +10,14 @@ if (window.location.protocol === 'https:') {
   signallingServerProtocol = 'wss:';
 }
 
+export function getUserMode() {
+  return userMode;
+}
+
+export function setUserMode(newMode) {
+  userMode = newMode;
+}
+
 function extractAppName(url) {
   const urlParts = url.split('/');
 
@@ -49,11 +57,39 @@ function getUrlPart(url) {
   return extractAppName(url);
 }
 
+const lookupProjectId = async (data) => {
+  try {
+    const response = await fetch('https://api.palatialxr.com/v1/lookup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      console.log('ok');
+      const data = await response.json();
+      console.log(data);
+      if (data.length === 1) {
+        application = data[0].projectId;
+        console.log('Editing ' + application);
+      }
+    } else {
+      console.error('Lookup request failed');
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 application = getUrlPart(window.location.href);
 
 if (application === null) {
-  console.log("Could not find application in URL. Defaulting to dev");
+  console.log("Could not parse URL for application. Defaulting to dev");
   application = "dev";
+}
+
+if (userMode === 'Edit') {
+  await lookupProjectId({ name: `edit/${application}` });
 }
 
 // build the websocket endpoint based on the protocol used to load the frontend
