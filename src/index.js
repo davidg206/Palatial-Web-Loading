@@ -1,14 +1,20 @@
+import 'react-app-polyfill/ie11';
+import 'core-js/features/array/find';
+import 'core-js/features/array/includes';
+import 'core-js/features/number/is-nan';
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { isMobile } from 'react-device-detect';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { delegate, emitUIInteraction, config, playerElement } from './DOMDelegate';
-import { signallingServerAddress, branch, application, getUserMode, setUserMode } from './signallingServer';
+import { delegate, sendCommand, emitUIInteraction, config, playerElement } from './DOMDelegate';
+import { signallingServerAddress, branch, application, getUserMode, setUserMode, projectId } from './signallingServer';
 import { waitForLevelReady, getScreenOrientation, onPlayAction } from './utils/miscUtils';
 
-var libspsfrontend = require("backend-dom-components-1");
+const libspsfrontend = require("backend-dom-components-1");
+//const jwt = require('jsonwebtoken');
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -23,23 +29,68 @@ console.log(signallingServerAddress);
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-delegate.onStreamReady(async () => {
-  const response = await fetch('https://prophet.palatialxr.com:3005/send-message', {
+const deleteInstance = async (instanceId) => {
+  await fetch('https://api.palatialxr.com/v1/remove-instance', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      podName: instanceId
+    })
+  });
+};
+
+const urlParams = new URLSearchParams(window.location.search);
+
+const token = urlParams.get('access_token');
+
+if (token) {
+  const response = await fetch('https://api.palatialxr.com/v1/mythia-jwt', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      token: token,
+      secret: process.env.REACT_APP_MYTHIA_JWT_SECRET
+    })
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    if (getUserMode() === "Edit" && !data.editAllowed) {
+      console.error('Not allowed to edit');
+      delegate.onStreamReady(async () => {
+        //sendCommand("disconnectUser");
+        //deleteInstance(delegate.id);
+      });
+    }
+  }
+} else {
+  // redirect to https://palatial.mithyalabs.com/project/${projectId}/share?redirect=true
+   delegate.onStreamReady(async () => {
+     //sendCommand("disconnectUser");
+     console.log('deleting');
+     //await deleteInstance(delegate.id)
+   });
+}
+
+delegate.onStreamReady(async () => {
+  const response = await fetch('https://api.palatialxr.com/v1/send-message', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       event: "log instance",
       createdAt: new Date(),
-      subjectId: application,
+      subjectId: projectId,
       subjectType: "projects",
       payload: {
         podName: delegate.id,
-        streamURL: window.location.href
+        streamURL: window.location.href,
+	pixelStreamingId: delegate.id,
+        isRequestingEdit: getUserMode() === 'Edit'
       }
     }),
   });
+
+  console.log('Project ID: ' + projectId);
 
   if (response.ok) {
     const data = await response.json();

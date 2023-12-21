@@ -2,6 +2,7 @@ export let signallingServerAddress = '';
 export let application = '';
 export let branch = '';
 export let userMode = 'View';
+export let projectId = '';
 
 // define our signallingServerProtocol to be used based on whether
 // or not we're accessing our frontend via a tls
@@ -66,11 +67,11 @@ const lookupProjectId = async (data) => {
     });
 
     if (response.ok) {
-      console.log('ok');
       const data = await response.json();
       console.log(data);
       if (data.length === 1) {
-        application = data[0].projectId;
+        projectId = data[0].projectId;
+        application = (branch === "demo" || application === "1KH0FX669DEHgE".toLowerCase()) ? branch : projectId;
         console.log('Editing ' + application);
       }
     } else {
@@ -81,17 +82,26 @@ const lookupProjectId = async (data) => {
   }
 };
 
-application = getUrlPart(window.location.href);
-
+application = getUrlPart(window.location.hostname + window.location.pathname);
 if (application === null) {
   console.log("Could not parse URL for application. Defaulting to dev");
   application = "dev";
 }
 
-if (userMode === 'Edit') {
-  await lookupProjectId({ name: `edit/${application}` });
+async function initialize() {
+  if (userMode === 'Edit') {
+    //await lookupProjectId({ name: `edit/${application}` });
+    application = 'demo'
+  }
+
+  projectId = (application === "demo") ? "651db46818d4d8017e1e77ee" : application;
+  projectId = (application === "1KH0FX669DEHgE".toLowerCase()) ? "6552564246a923cc5d8e5af7" : projectId;
+
+
+  console.log('ProjectId: ' + projectId);
+  // build the websocket endpoint based on the protocol used to load the frontend
+  signallingServerAddress = signallingServerProtocol + '//' +
+    'sps.tenant-palatial-platform.lga1.ingress.coreweave.cloud/' + application + '/ws';
 }
 
-// build the websocket endpoint based on the protocol used to load the frontend
-signallingServerAddress = signallingServerProtocol + '//' +
-  'sps.tenant-palatial-platform.lga1.ingress.coreweave.cloud/' + application + '/ws';
+await initialize();
