@@ -14,7 +14,6 @@ import { signallingServerAddress, branch, application, getUserMode, setUserMode,
 import { waitForLevelReady, getScreenOrientation, onPlayAction } from './utils/miscUtils';
 
 const libspsfrontend = require("backend-dom-components-1");
-//const jwt = require('jsonwebtoken');
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -42,6 +41,8 @@ const deleteInstance = async (instanceId) => {
 const urlParams = new URLSearchParams(window.location.search);
 
 const token = urlParams.get('access_token');
+console.log("token = " + token);
+console.log("secret = " + process.env.REACT_APP_MYTHIA_JWT_SECRET);
 
 if (token) {
   const response = await fetch('https://api.palatialxr.com/v1/mythia-jwt', {
@@ -55,6 +56,7 @@ if (token) {
 
   if (response.ok) {
     const data = await response.json();
+    console.log(data);
     if (getUserMode() === "Edit" && !data.editAllowed) {
       console.error('Not allowed to edit');
       delegate.onStreamReady(async () => {
@@ -62,14 +64,14 @@ if (token) {
         //deleteInstance(delegate.id);
       });
     }
+  } else {
+    // redirect to https://palatial.mithyalabs.com/project/${projectId}/share?redirect=true
+    delegate.onStreamReady(async () => {
+      //sendCommand("disconnectUser");
+      console.log('deleting');
+      //await deleteInstance(delegate.id)
+    });
   }
-} else {
-  // redirect to https://palatial.mithyalabs.com/project/${projectId}/share?redirect=true
-   delegate.onStreamReady(async () => {
-     //sendCommand("disconnectUser");
-     console.log('deleting');
-     //await deleteInstance(delegate.id)
-   });
 }
 
 delegate.onStreamReady(async () => {
@@ -112,11 +114,15 @@ delegate.onStreamReady(async () => {
   emitUIInteraction({ UserMode: getUserMode() });
 
   const port = process.env['REACT_APP_DEDICATED_SERVER_PORT_' + application.toUpperCase()];
-  console.log(`joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`);
-  emitUIInteraction({
-    join: `${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`,
-    orientation: isMobile ? getScreenOrientation() : ""
-  });
+  if (port) {
+    console.log(`joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`);
+    emitUIInteraction({
+      join: `${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`,
+    });
+  }
+
+  emitUIInteraction({ orientation: isMobile ? getScreenOrientation() : "" });
+
   delegate.loadingProgress = 90;
   waitForLevelReady().then(async () => {
     delegate.loadingProgress = 100;

@@ -31,6 +31,7 @@ const useFormHandling = () => {
     } else {
       setError("");
     }
+
     handleSubmitImpl(true);
     setShouldFadeOut(true);
     setFormStep(3);

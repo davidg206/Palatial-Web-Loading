@@ -17,6 +17,7 @@ import UserNameInput from './components/FormSteps/UserNameInput';
 import PasswordInput from './components/FormSteps/PasswordInput';
 import ToolTips from './components/FormSteps/ToolTips';
 import { branch, application, userMode } from './signallingServer';
+import { fetchProjectInfo, fetchUserInfo, fetchProjectMembers } from './hooks/useRequests';
 
 const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready'];
 
@@ -55,6 +56,9 @@ function App() {
   const [RefreshMsgBox, setRefreshMsgBox] = useState(false);
   const [activeButton, setActiveButton] = useState(null);
 
+  const [canEdit, setCanEdit] = useState(false);
+  const [token, setToken] = useState(null);
+
   // Refs
   const { device } = useDeviceDetect();
   const videoRef = useRef(null);
@@ -83,6 +87,74 @@ function App() {
     }
   }, [progress, step]);
 
+
+ useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlToken = urlParams.get('access_token');
+
+    if (!urlToken)
+      return;
+
+    setToken(urlToken);
+    console.log("my token " + token);
+
+    fetch('https://api.palatialxr.com/v1/mythia-jwt', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: urlToken,
+        secret: process.env.REACT_APP_MYTHIA_JWT_SECRET
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log(response.json());
+      return response.json();
+    })
+  }, []);
+
+/*
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('access_token');
+
+    fetch('https://api.palatialxr.com/v1/mythia-jwt', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: token,
+        secret: process.env.REACT_APP_MYTHIA_JWT_SECRET
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      const projectId = data.projectId;
+      // Handle the response data here
+      fetchProjectInfo({ projectId: data.projectId, authToken: token }, data => {
+        console.log(data);
+        let email = null;
+        fetchUserInfo(token, data => { console.log("User: ", data); email = data.email; });
+        fetchProjectMembers({ authToken: token, projectId: projectId, email: email }, data => console.log("Members: ", data));
+      });
+    })
+    .catch(error => {
+      // Handle any errors that occurred during the fetch
+      console.error('There was a problem with the fetch operation:', error);
+    });
+  }, []);
+*/
+
   useSetAppHeight();
   useDeviceDetect();
   useDisconnectEvent(setFormStep, setPassword, setUserName, setActiveButton, setProgress, setStep);
@@ -98,13 +170,15 @@ function App() {
   return (
     <div className="App">
         <RefreshMessageBox />
-
+{/*
         { branch === "test" && (
         <select id="dropdown" value={selectedOption} onChange={handleOptionChange}>
           <option value="View">View</option>
           <option value="Edit">Edit</option>
         </select>
         )}
+*/}
+
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
       <div className={`Logo ${isLogoVisible ? '' : 'fadeOut'}`}>
         <img src={logoPng} style={{width:'10em'}} alt='logo'/>
@@ -121,7 +195,7 @@ function App() {
             handleFormTransition={handleFormTransition}
           />
         )}
-        {formStep === 2 && (
+        {false && formStep === 2 && (
           <PasswordInput
             password={password}
             showPassword={showPassword}
@@ -141,6 +215,7 @@ function App() {
       </div>
 
       </div>
+
 
       <ProgressBar progress={progress} />
       <div className="loadingStep">
