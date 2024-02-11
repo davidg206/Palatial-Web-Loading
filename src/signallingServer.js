@@ -81,15 +81,18 @@ if (application === null) {
 }
 
 async function initialize() {
-  if (userMode === 'Edit') {
-    console.log(`edit/${application}`);
+  if (branch === 'workspace1') { application = 'officedemo'; }
 
+  if (application !== 'officedemo' && userMode === 'Edit') {
+    console.log(`edit/${application}`);
     const p1 = await lookup({ "payload.application": `edit/${application}` });
+    console.log(p1.subjectId);
     const p2 = await lookup({ event: "import complete", subjectId: p1.subjectId });
 
     projectId = p1.subjectId;
     application = p2.application;
   } else {
+    console.log('helllooo');
     const p = await lookup({ application: application });
     console.log("result = ", p);
     if (p) {

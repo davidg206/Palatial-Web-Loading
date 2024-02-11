@@ -6,6 +6,7 @@ import handleSubmitImpl from '../utils/handleSubmit';
 const useFormHandling = () => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [memberPassword, setMemberPassword] = useState(null);
   const [error, setError] = useState('');
   const [formStep, setFormStep] = useState(1);
   const [isInputFocused, setInputFocused] = useState(false);
@@ -25,7 +26,7 @@ const useFormHandling = () => {
   }, [formStep]);
 
   const handleSubmit = async () => {
-    if (!checkPassword(password)) {
+    if (password !== memberPassword) {
       setError("Wrong password. Please try again.");
       return;
     } else {
@@ -57,10 +58,13 @@ const useFormHandling = () => {
     if (formStep === 1) {
       if (userName && userName.trim() !== "") {
         setError('');
-        handleSubmit(); //setFormStep(2);
-        handleSubmitImpl(true);
-        setShouldFadeOut(true);
-        setFormStep(3);
+        if (memberPassword) {
+          setFormStep(2);
+        } else {
+          handleSubmitImpl(true);
+          setShouldFadeOut(true);
+          setFormStep(3);
+        }
       } else {
         setError('Please enter a name');
       }

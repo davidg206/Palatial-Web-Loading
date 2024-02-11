@@ -58,7 +58,7 @@ if (token) {
     const data = await response.json();
     console.log(data);
     if (getUserMode() === "Edit" && !data.editAllowed) {
-      console.error('Not allowed to edit');
+      //console.error('Not allowed to edit');
       delegate.onStreamReady(async () => {
         //sendCommand("disconnectUser");
         //deleteInstance(delegate.id);
