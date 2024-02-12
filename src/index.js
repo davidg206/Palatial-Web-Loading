@@ -43,7 +43,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const token = urlParams.get('access_token');
 console.log("token = " + token);
 console.log("secret = " + process.env.REACT_APP_MYTHIA_JWT_SECRET);
-
+/*
 if (token) {
   const response = await fetch('https://api.palatialxr.com/v1/mythia-jwt', {
     method: 'POST',
@@ -72,7 +72,7 @@ if (token) {
       //await deleteInstance(delegate.id)
     });
   }
-}
+}*/
 
 delegate.onStreamReady(async () => {
   const response = await fetch('https://api.palatialxr.com/v1/send-message', {
