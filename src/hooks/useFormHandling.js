@@ -55,7 +55,10 @@ const useFormHandling = () => {
   const handleFormTransition = () => {
     if (formStep === 1) {
       if (userName && userName.trim() !== "") {
-        setFormStep(2);
+        //setFormStep(2);
+        handleSubmitImpl(true); // <--
+        setShouldFadeOut(true); // <--
+        setFormStep(3); // <--
         setError('');
       } else {
         setError('Please enter a name');
