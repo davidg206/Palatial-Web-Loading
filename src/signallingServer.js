@@ -23,7 +23,7 @@ function extractAppName(url) {
   const urlParts = url.split('/');
 
   if (urlParts.length > 1) {
-    if (urlParts[1] === 'edit')
+    if (urlParts[1] === 'edit' || urlParts[1] === "view")
       return urlParts.length > 2 ? urlParts[2] : urlParts[0].split('.')[0];
     else
       return urlParts[1];
@@ -58,7 +58,7 @@ function getUrlPart(url) {
   return extractAppName(url);
 }
 
-const lookupProjectId = async (data) => {
+const lookup = async (data) => {
   try {
     const response = await fetch('https://api.palatialxr.com/v1/lookup', {
       method: 'POST',
@@ -66,21 +66,13 @@ const lookupProjectId = async (data) => {
       body: JSON.stringify(data)
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      console.log(data);
-      if (data.length === 1) {
-        projectId = data[0].projectId;
-        application = (branch === "demo" || application === "1KH0FX669DEHgE".toLowerCase()) ? branch : projectId;
-        console.log('Editing ' + application);
-      }
-    } else {
-      console.error('Lookup request failed');
-    }
+    if (response.ok)
+      return await response.json();
+    console.error('Lookup request failed');
   } catch (error) {
     console.error(error);
   }
-};
+}
 
 application = getUrlPart(window.location.hostname + window.location.pathname);
 if (application === null) {
@@ -89,16 +81,25 @@ if (application === null) {
 }
 
 async function initialize() {
-  if (userMode === 'Edit') {
-    //await lookupProjectId({ name: `edit/${application}` });
-    application = 'demo'
+  if (userMode === 'Edit' || window.location.pathname.includes("view")) {
+    console.log(`${userMode.toLowerCase()}/${application}`);
+    const p1 = await lookup({ "payload.application": `${userMode.toLowerCase()}/${application}` });
+    const p2 = await lookup({ event: "import complete", subjectId: p1.subjectId });
+
+    projectId = p1.subjectId;
+    application = p2.application;
+  } else {
+    const p = await lookup({ application: application });
+    if (p) {
+      projectId = p.subjectId;
+    }
   }
 
-  projectId = (application === "demo") ? "651db46818d4d8017e1e77ee" : application;
-  projectId = (application === "1KH0FX669DEHgE".toLowerCase()) ? "6552564246a923cc5d8e5af7" : projectId;
-
+  application = application.toLowerCase();
 
   console.log('ProjectId: ' + projectId);
+  console.log('application = ' + application);
+
   // build the websocket endpoint based on the protocol used to load the frontend
   signallingServerAddress = signallingServerProtocol + '//' +
     'sps.tenant-palatial-platform.lga1.ingress.coreweave.cloud/' + application + '/ws';
