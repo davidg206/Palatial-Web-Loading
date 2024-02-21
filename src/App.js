@@ -98,13 +98,14 @@ function App() {
   return (
     <div className="App">
         <RefreshMessageBox />
-
+{/*
         { branch === "test" && (
         <select id="dropdown" value={selectedOption} onChange={handleOptionChange}>
           <option value="View">View</option>
           <option value="Edit">Edit</option>
         </select>
         )}
+*/}
       <div className={popUpVisible ? "PopUp" : "PopUp hidden"}>
       <div className={`Logo ${isLogoVisible ? '' : 'fadeOut'}`}>
         <img src={logoPng} style={{width:'10em'}} alt='logo'/>
@@ -121,7 +122,7 @@ function App() {
             handleFormTransition={handleFormTransition}
           />
         )}
-        {formStep === 2 && (
+        {false && formStep === 2 && (
           <PasswordInput
             password={password}
             showPassword={showPassword}
