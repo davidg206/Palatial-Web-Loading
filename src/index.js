@@ -112,7 +112,7 @@ delegate.onStreamReady(async () => {
   emitUIInteraction({ UserMode: getUserMode() });
 
   const port = process.env['REACT_APP_DEDICATED_SERVER_PORT_' + application.toUpperCase()];
-  console.log(`joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`);
+  if (port) console.log(`joining ${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`);
   emitUIInteraction({
     join: `${process.env.REACT_APP_VIRT_DNS_ADDRESS}:${port}`,
     orientation: isMobile ? getScreenOrientation() : ""
