@@ -41,7 +41,7 @@ const deleteInstance = async (instanceId) => {
 
 const urlParams = new URLSearchParams(window.location.search);
 
-const token = urlParams.get('access_token');
+let token = urlParams.get('access_token');
 
 if (application === "bwpgfyw8ri") {
   token = process.env.REACT_APP_DEFAULT_ACCESS_TOKEN;

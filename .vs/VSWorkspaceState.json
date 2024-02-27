@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\build\\static",
+    "\\build\\static\\js",
+    "\\public",
+    "\\src",
+    "\\src\\assets",
+    "\\src\\assets\\css",
+    "\\src\\components",
+    "\\src\\utils"
+  ],
+  "SelectedNode": "\\src\\assets\\css\\player.css",
+  "PreviewInSolutionExplorer": false
+}
