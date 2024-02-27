@@ -12,6 +12,8 @@ const useFormHandling = () => {
   const [shouldFadeOut, setShouldFadeOut] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLogoVisible, setIsLogoVisible] = useState(true);
+  const [userId, setUserId] = useState(null);
+  const [memberPassword, setMemberPassword] = useState('');
 
   const userNameRef = useRef('');
 
@@ -25,7 +27,8 @@ const useFormHandling = () => {
   }, [formStep]);
 
   const handleSubmit = async () => {
-    if (!checkPassword(password)) {
+    console.log("Checking " + memberPassword);
+    if (!checkPassword(memberPassword, userId)) {
       setError("Wrong password. Please try again.");
       return;
     } else {
@@ -55,11 +58,12 @@ const useFormHandling = () => {
   const handleFormTransition = () => {
     if (formStep === 1) {
       if (userName && userName.trim() !== "") {
-        //setFormStep(2);
-        handleSubmitImpl(true); // <--
-        setShouldFadeOut(true); // <--
-        setFormStep(3); // <--
+        setFormStep(2);
         setError('');
+        /*handleSubmitImpl(true); // <--
+        setShouldFadeOut(true); // <--
+        setFormStep(3); // <--*/
+
       } else {
         setError('Please enter a name');
       }
@@ -104,7 +108,11 @@ const useFormHandling = () => {
     hftHelper,
     handleGoBack,
     setError,
-    isLogoVisible
+    isLogoVisible,
+    userId,
+    setUserId,
+    memberPassword,
+    setMemberPassword
   };
 };
 

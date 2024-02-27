@@ -47,27 +47,7 @@ if (application === "bwpgfyw8ri") {
   token = process.env.REACT_APP_DEFAULT_ACCESS_TOKEN;
 }
 
-if (token) {
-  const response = await fetch('https://api.palatialxr.com/v1/mythia-jwt', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      token: token,
-      secret: process.env.REACT_APP_MYTHIA_JWT_SECRET
-    })
-  });
-
-  if (response.ok) {
-    const data = await response.json();
-    if (getUserMode() === "Edit" && !data.editAllowed) {
-      //console.error('Not allowed to edit');
-      delegate.onStreamReady(async () => {
-        //sendCommand("disconnectUser");
-        //deleteInstance(delegate.id);
-      });
-    }
-  }
-} else {
+if (!token) {
   // redirect to https://palatial.mithyalabs.com/project/${projectId}/share?redirect=true
    delegate.onStreamReady(async () => {
      //sendCommand("disconnectUser");
@@ -76,8 +56,10 @@ if (token) {
    });
 }
 
+console.log(token);
+
 delegate.onStreamReady(async () => {
-  const response = await fetch('https://api.palatialxr.com/v1/send-message', {
+  /*const response = await fetch('https://api.palatialxr.com/v1/send-message', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -102,7 +84,7 @@ delegate.onStreamReady(async () => {
     console.log('PixelStreamingID: ' + data.podName);
   } else {
     console.error('Error sending message');
-  }
+  }*/
 
   delegate.onPlayAction();
   const dropdown = document.getElementById('dropdown');

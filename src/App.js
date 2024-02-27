@@ -16,7 +16,7 @@ import RefreshMessageBox from './components/RefreshMessageBox';
 import UserNameInput from './components/FormSteps/UserNameInput';
 import PasswordInput from './components/FormSteps/PasswordInput';
 import ToolTips from './components/FormSteps/ToolTips';
-import { branch, application, userMode } from './signallingServer';
+import { branch, application, userMode, getUserMode, projectId } from './signallingServer';
 
 const loadingSteps = ['Authenticating', 'Setting up', 'Connecting to server', 'Requesting Instance', 'Building Level', 'Ready'];
 
@@ -43,7 +43,11 @@ function App() {
     hftHelper,
     handleGoBack,
     setError,
-    isLogoVisible
+    isLogoVisible,
+    userId,
+    setUserId,
+    memberPassword,
+    setMemberPassword
   } = useFormHandling();
 
   const [popUpVisible, setPopUpVisible] = useState(true);
@@ -54,6 +58,7 @@ function App() {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [RefreshMsgBox, setRefreshMsgBox] = useState(false);
   const [activeButton, setActiveButton] = useState(null);
+  const [token, setToken] = useState(null);
 
   // Refs
   const { device } = useDeviceDetect();
@@ -82,6 +87,87 @@ function App() {
       }, 100);
     }
   }, [progress, step]);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (application === "bwpgfyw8ri") {
+      setToken(process.env.REACT_APP_DEFAULT_ACCESS_TOKEN);
+    } else {
+      setToken(urlParams.get('access_token'));
+    }
+
+    if (!token)
+      return;
+
+    console.log("TOKEN = " + token);
+
+    const response = fetch('https://api.palatialxr.com/v1/mythia-jwt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: token,
+        secret: process.env.REACT_APP_MYTHIA_JWT_SECRET
+      })
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json(); // Parse JSON response
+    }).then(data => {
+      if (getUserMode() === "Edit" && !data.editAllowed) {
+        console.error('Not allowed to edit');
+        delegate.onStreamReady(async () => {
+          //sendCommand("disconnectUser");
+          //deleteInstance(delegate.id);
+        });
+      }
+    });
+  }, []);
+
+
+  useEffect(() => {
+    if (!token)
+      return;
+    fetch('https://palatial-api.palatialxr.com/users/me', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json(); // Parse JSON response
+    })
+    .then(data => {
+      console.log('User data:', data); // Handle the response data
+      const userData = data;
+      setUserId(userData.id);
+
+      fetch(`https://palatial-api.palatialxr.com/projects/${projectId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }).then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      }).then(data => {
+        console.log('Project data: ', data);
+        if (data.createdBy !== userData.id && data.members) {
+          setMemberPassword(data.members[0].password);
+        }
+      }).catch(error => { console.error(error); });
+    })
+    .catch(error => {
+      console.error('There was a problem with the user fetch operation:', error);
+    });
+  }, [token, memberPassword]);
+
+
 
   useSetAppHeight();
   useDeviceDetect();
@@ -122,7 +208,7 @@ function App() {
             handleFormTransition={handleFormTransition}
           />
         )}
-        {false && formStep === 2 && (
+        {memberPassword && formStep === 2 && (
           <PasswordInput
             password={password}
             showPassword={showPassword}
