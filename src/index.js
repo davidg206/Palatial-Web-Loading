@@ -43,6 +43,10 @@ const urlParams = new URLSearchParams(window.location.search);
 
 const token = urlParams.get('access_token');
 
+if (application === "bwpgfyw8ri") {
+  token = process.env.REACT_APP_DEFAULT_ACCESS_TOKEN;
+}
+
 if (token) {
   const response = await fetch('https://api.palatialxr.com/v1/mythia-jwt', {
     method: 'POST',

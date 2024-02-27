@@ -76,8 +76,9 @@ const lookup = async (data) => {
 
 application = getUrlPart(window.location.hostname + window.location.pathname);
 if (application === null) {
-  console.log("Could not parse URL for application. Defaulting to officedemo");
-  application = "officedemo";
+  application = process.env.REACT_APP_DEFAULT_APPLICATION;
+  branch = process.env.REACT_APP_DEFAULT_BRANCH;
+  console.log(`Could not parse URL for application. Defaulting to ${application}`);
 }
 
 async function initialize() {
