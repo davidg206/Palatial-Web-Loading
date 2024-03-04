@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import './App.css'
 import logoPng from './assets/Images/png/Palatial-Logo_White 1.png';
 import ProgressBar from './components/ProgressBar';
@@ -59,6 +60,8 @@ function App() {
   const [RefreshMsgBox, setRefreshMsgBox] = useState(false);
   const [activeButton, setActiveButton] = useState(null);
   const [token, setToken] = useState(null);
+  const [basicSettings, setBasicSettings] = useState(null);
+  const [podName, setPodName] = useState(null);
 
   // Refs
   const { device } = useDeviceDetect();
@@ -67,6 +70,16 @@ function App() {
 
   const handleConsent = () => {
     setConsentAccepted(!consentAccepted);
+  };
+
+  const deleteInstance = async (instanceId) => {
+    await fetch('https://api.palatialxr.com/v1/remove-instance', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        podName: instanceId
+      })
+    });
   };
 
   // set progressbar animation interval
@@ -114,19 +127,45 @@ function App() {
       }
       return response.json(); // Parse JSON response
     }).then(data => {
-      if (getUserMode() === "Edit" && !data.editAllowed) {
-        console.error('Not allowed to edit');
-        delegate.onStreamReady(async () => {
-          //sendCommand("disconnectUser");
-          //deleteInstance(delegate.id);
-        });
+      console.log(data); setBasicSettings(data);
+    }).catch((error) => console.error(error) );
+  }, [token]);
+
+  useEffect(() => {
+    delegate.onStreamReady(async () => {
+      const response = await fetch('https://api.palatialxr.com/v1/send-message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: "log instance",
+          createdAt: new Date(),
+          subjectId: projectId,
+          subjectType: "projects",
+          payload: {
+            podName: delegate.id,
+            streamURL: window.location.href,
+            pixelStreamingId: delegate.id,
+            isRequestingEdit: getUserMode() === 'Edit'
+          }
+        }),
+      });
+
+      console.log('Project ID: ' + projectId);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Message sent successfully');
+        console.log('PixelStreamingID: ' + data.podName);
+        console.log("we got " + data.podName);
+        setPodName(data.podName);
+      } else {
+        console.error('Error sending message');
       }
     });
   }, []);
 
-
   useEffect(() => {
-    if (!token)
+    if (!token || !basicSettings || !podName)
       return;
     fetch('https://palatial-api.palatialxr.com/users/me', {
       method: 'GET',
@@ -146,6 +185,15 @@ function App() {
       const userData = data;
       setUserId(userData.id);
 
+      setInterval(async () => {
+        console.log('tick ' + podName);
+        const response = await axios.post('https://api.palatialxr.com/v2/streamTick', { "userId": data.id });
+        console.log(response.data.expired);
+        if (response.data.expired) {
+          deleteInstance(podName);
+        }
+      }, 1000);
+
       fetch(`https://palatial-api.palatialxr.com/projects/${projectId}`, {
         method: 'GET',
         headers: {
@@ -157,7 +205,7 @@ function App() {
         return response.json();
       }).then(data => {
         console.log('Project data: ', data);
-        if (data.createdBy !== userData.id && data.members) {
+        if (data.members.length > 0) {
           setMemberPassword(data.members[0].password);
         }
       }).catch(error => { console.error(error); });
@@ -165,7 +213,7 @@ function App() {
     .catch(error => {
       console.error('There was a problem with the user fetch operation:', error);
     });
-  }, [token, memberPassword]);
+  }, [token, memberPassword, basicSettings, podName]);
 
 
 

@@ -27,8 +27,7 @@ const useFormHandling = () => {
   }, [formStep]);
 
   const handleSubmit = async () => {
-    console.log("Checking " + memberPassword);
-    if (!checkPassword(memberPassword, userId)) {
+    if (!checkPassword(password, memberPassword)) {
       setError("Wrong password. Please try again.");
       return;
     } else {
@@ -58,12 +57,12 @@ const useFormHandling = () => {
   const handleFormTransition = () => {
     if (formStep === 1) {
       if (userName && userName.trim() !== "") {
-        setFormStep(2);
         setError('');
-        /*handleSubmitImpl(true); // <--
-        setShouldFadeOut(true); // <--
-        setFormStep(3); // <--*/
-
+        if (!memberPassword) {
+          handleSubmitImpl(true); // <--
+          setShouldFadeOut(true); // <--
+          setFormStep(3); // <--
+        } else setFormStep(2);
       } else {
         setError('Please enter a name');
       }

@@ -2,6 +2,7 @@ import 'react-app-polyfill/ie11';
 import 'core-js/features/array/find';
 import 'core-js/features/array/includes';
 import 'core-js/features/number/is-nan';
+import axios from 'axios';
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -59,7 +60,7 @@ if (!token) {
 console.log(token);
 
 delegate.onStreamReady(async () => {
-  /*const response = await fetch('https://api.palatialxr.com/v1/send-message', {
+/*  const response = await fetch('https://api.palatialxr.com/v1/send-message', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -77,14 +78,17 @@ delegate.onStreamReady(async () => {
   });
 
   console.log('Project ID: ' + projectId);
+  let podName = null;
 
   if (response.ok) {
     const data = await response.json();
     console.log('Message sent successfully');
     console.log('PixelStreamingID: ' + data.podName);
+    setPodName(data.podName);
   } else {
     console.error('Error sending message');
-  }*/
+  }
+*/
 
   delegate.onPlayAction();
   const dropdown = document.getElementById('dropdown');

@@ -90,7 +90,9 @@ async function initialize() {
     projectId = p1.subjectId;
     application = p2.application;
   } else {
+    console.log('Looking up ' + application);
     const p = await lookup({ application: application });
+    console.log('!!p = ' + !!p);
     if (p) {
       projectId = p.subjectId;
     }
